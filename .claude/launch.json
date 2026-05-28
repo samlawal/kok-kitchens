@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kok-kitchens-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd /Users/samuellawal/Code/kok-kitchens && npm run dev -- --port 3001"],
+      "port": 3001
+    }
+  ]
+}
