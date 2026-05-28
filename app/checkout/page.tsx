@@ -23,7 +23,7 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  const deliveryFee = deliveryType === "delivery" ? 2000 : 0;
+  const deliveryFee = deliveryType === "delivery" ? 4.99 : 0;
   const grandTotal = totalPrice + deliveryFee;
 
   function updateField(field: string, value: string) {
@@ -128,7 +128,7 @@ export default function CheckoutPage() {
                         Delivery
                       </p>
                       <p className="text-xs text-stone-500">
-                        {formatPrice(2000)}
+                        {formatPrice(4.99)}
                       </p>
                     </div>
                   </button>
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
                         required
                         value={form.phone}
                         onChange={(e) => updateField("phone", e.target.value)}
-                        placeholder="+234..."
+                        placeholder="+44..."
                         className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                       />
                     </div>
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                           onChange={(e) =>
                             updateField("city", e.target.value)
                           }
-                          placeholder="e.g. Lagos, Abuja"
+                          placeholder="e.g. Radlett, Borehamwood, Watford"
                           className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                         />
                       </div>

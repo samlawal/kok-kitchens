@@ -111,7 +111,7 @@ export default function CateringPage() {
                   type="tel"
                   name="phone"
                   required
-                  placeholder="+234..."
+                  placeholder="+44..."
                   className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                 />
               </div>

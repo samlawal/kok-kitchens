@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | KokKitchens",
   },
   description:
-    "Order authentic Nigerian meals for delivery or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",
+    "Order authentic Nigerian meals for delivery across Hertfordshire or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",
 };
 
 export default function RootLayout({

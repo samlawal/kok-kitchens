@@ -27,8 +27,8 @@ export default function HeroSection() {
 
           <p className="mt-6 text-lg sm:text-xl text-stone-300 leading-relaxed max-w-xl">
             From smoky party jollof to rich egusi soup — order
-            authentic Nigerian meals for delivery, or let us cater your
-            next event with unforgettable flavours.
+            authentic Nigerian meals for delivery across Hertfordshire,
+            or let us cater your next event with unforgettable flavours.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">

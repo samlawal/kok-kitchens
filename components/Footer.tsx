@@ -14,8 +14,9 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-stone-400">
-              Authentic Nigerian cuisine made with love. From our kitchen to
-              your table — feeding individuals and events across the city.
+              Authentic Nigerian cuisine made with love. From our kitchen
+              in Hertfordshire to your table — feeding individuals and
+              events across the region.
             </p>
           </div>
 
@@ -48,16 +49,12 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-orange-500 shrink-0" />
-                +234 801 234 5678
-              </li>
-              <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-orange-500 shrink-0" />
-                hello@kokkitchens.com
+                hello@kokkitchen.co.uk
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-orange-500 shrink-0 mt-0.5" />
-                Lagos, Nigeria
+                Hertfordshire, United Kingdom
               </li>
             </ul>
           </div>
