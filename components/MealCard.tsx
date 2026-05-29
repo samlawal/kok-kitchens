@@ -2,58 +2,106 @@
 
 import Link from "next/link";
 import { Plus, Flame } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
 import type { MenuItem } from "@/lib/types";
 
+const categoryEmoji: Record<string, string> = {
+  "rice-dishes": "🍚",
+  "soups-swallows": "🥘",
+  "grills-proteins": "🍖",
+  sides: "🍌",
+  snacks: "🥟",
+  drinks: "🥤",
+  "party-packs": "🎉",
+};
+
 export default function MealCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
+  const [justAdded, setJustAdded] = useState(false);
+
+  function handleAdd() {
+    addItem(item);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
+  }
+
+  const emoji = categoryEmoji[item.category] || "🍛";
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
+    <motion.div
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-xl transition-shadow duration-300"
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+    >
       <Link href={`/menu/${item.slug}`} className="block">
-        <div className="aspect-[4/3] overflow-hidden bg-stone-100">
-          <div className="h-full w-full bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-6xl">
-            🍛
-          </div>
+        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center relative">
+          <motion.span
+            className="text-6xl select-none"
+            whileHover={{ scale: 1.2, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 200 }}
+          >
+            {emoji}
+          </motion.span>
+          {item.spicy && (
+            <span className="absolute top-3 right-3 bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+              <Flame className="h-3 w-3" /> Spicy
+            </span>
+          )}
+          {item.servings && (
+            <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full">
+              {item.servings}
+            </span>
+          )}
         </div>
       </Link>
 
       <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-start justify-between gap-2">
-          <Link href={`/menu/${item.slug}`}>
-            <h3 className="font-semibold text-stone-900 group-hover:text-orange-600 transition-colors">
-              {item.name}
-            </h3>
-          </Link>
-          {item.spicy && (
-            <Flame className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
-          )}
-        </div>
+        <Link href={`/menu/${item.slug}`}>
+          <h3 className="font-semibold text-stone-900 group-hover:text-orange-600 transition-colors">
+            {item.name}
+          </h3>
+        </Link>
 
         <p className="mt-1 text-sm text-stone-500 line-clamp-2 flex-1">
           {item.description}
         </p>
 
-        {item.servings && (
-          <p className="mt-1 text-xs font-medium text-orange-600">
-            {item.servings}
-          </p>
-        )}
-
         <div className="mt-3 flex items-center justify-between">
           <span className="text-lg font-bold text-stone-900">
             {formatPrice(item.price)}
           </span>
-          <button
-            onClick={() => addItem(item)}
-            className="flex items-center gap-1.5 rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 active:scale-95 transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            Add
-          </button>
+
+          <AnimatePresence mode="wait">
+            {justAdded ? (
+              <motion.span
+                key="added"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="flex items-center gap-1 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white"
+              >
+                Added!
+              </motion.span>
+            ) : (
+              <motion.button
+                key="add"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={handleAdd}
+                whileTap={{ scale: 0.9 }}
+                className="flex items-center gap-1.5 rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Add
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

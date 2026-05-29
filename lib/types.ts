@@ -2,6 +2,7 @@ export type Category =
   | "rice-dishes"
   | "soups-swallows"
   | "grills-proteins"
+  | "sides"
   | "snacks"
   | "drinks"
   | "party-packs";
@@ -46,6 +47,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   "rice-dishes": "Rice Dishes",
   "soups-swallows": "Soups & Swallows",
   "grills-proteins": "Grills & Proteins",
+  sides: "Sides",
   snacks: "Snacks",
   drinks: "Drinks",
   "party-packs": "Party Packs",

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ShoppingBag, Menu, X, ChefHat } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
 
 export default function Header() {
@@ -16,11 +17,16 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-stone-200">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <ChefHat className="h-8 w-8 text-orange-600 transition-transform group-hover:rotate-12" />
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <ChefHat className="h-8 w-8 text-orange-600" />
+            </motion.div>
             <span className="text-xl font-bold tracking-tight text-stone-900">
               Kok<span className="text-orange-600">Kitchens</span>
             </span>
@@ -31,26 +37,37 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-stone-600 hover:text-orange-600 transition-colors"
+                className="relative text-sm font-medium text-stone-600 hover:text-orange-600 transition-colors group"
               >
                 {link.label}
+                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-orange-600 transition-all group-hover:w-full" />
               </Link>
             ))}
           </nav>
 
           <div className="flex items-center gap-4">
-            <button
+            <motion.button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 text-stone-600 hover:text-orange-600 transition-colors"
               aria-label="Open cart"
+              whileTap={{ scale: 0.9 }}
             >
               <ShoppingBag className="h-6 w-6" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-[11px] font-bold text-white">
-                  {totalItems}
-                </span>
-              )}
-            </button>
+              <AnimatePresence>
+                {totalItems > 0 && (
+                  <motion.span
+                    key={totalItems}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                    className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-[11px] font-bold text-white"
+                  >
+                    {totalItems}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -66,20 +83,36 @@ export default function Header() {
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <nav className="md:hidden border-t border-stone-100 py-4 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-base font-medium text-stone-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        )}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.nav
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="md:hidden overflow-hidden border-t border-stone-100"
+            >
+              <div className="py-4 space-y-1">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-base font-medium text-stone-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

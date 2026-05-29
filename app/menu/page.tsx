@@ -1,40 +1,60 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { menuItems } from "@/lib/menu-data";
 import type { Category } from "@/lib/types";
 import CategoryFilter from "@/components/CategoryFilter";
 import MealCard from "@/components/MealCard";
+import { FadeIn } from "@/components/MotionWrapper";
 
 export default function MenuPage() {
   const [category, setCategory] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");
 
-  const filtered = menuItems.filter((item) => {
-    const matchesCategory =
-      category === "all" || item.category === category;
-    const matchesSearch =
-      !search ||
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.description.toLowerCase().includes(search.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filtered = useMemo(
+    () =>
+      menuItems.filter((item) => {
+        const matchesCategory =
+          category === "all" || item.category === category;
+        const matchesSearch =
+          !search ||
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.description.toLowerCase().includes(search.toLowerCase());
+        return matchesCategory && matchesSearch;
+      }),
+    [category, search]
+  );
 
   return (
     <div className="bg-stone-50 min-h-screen">
       <div className="bg-gradient-to-b from-stone-900 to-stone-800 py-16 text-center">
-        <h1 className="text-4xl font-bold text-white tracking-tight">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold text-white tracking-tight"
+        >
           Our Menu
-        </h1>
-        <p className="mt-3 text-stone-400 max-w-md mx-auto">
-          Authentic Nigerian dishes made with love — pick your favourites
-          and order in minutes
-        </p>
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-3 text-stone-400 max-w-md mx-auto"
+        >
+          {menuItems.length} authentic Nigerian dishes made with love — pick
+          your favourites and order in minutes
+        </motion.p>
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8"
+        >
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
             <input
@@ -46,21 +66,51 @@ export default function MenuPage() {
             />
           </div>
           <CategoryFilter selected={category} onChange={setCategory} />
-        </div>
+        </motion.div>
 
-        {filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-5xl mb-4">😔</div>
-            <p className="text-stone-500 text-lg">
-              No dishes found — try a different search or category
+        <AnimatePresence mode="wait">
+          {filtered.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="text-center py-20"
+            >
+              <div className="text-5xl mb-4">😔</div>
+              <p className="text-stone-500 text-lg">
+                No dishes found — try a different search or category
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={category + search}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              {filtered.map((item, i) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(i * 0.04, 0.4) }}
+                >
+                  <MealCard item={item} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {filtered.length > 0 && (
+          <FadeIn delay={0.3} className="mt-6 text-center">
+            <p className="text-sm text-stone-400">
+              Showing {filtered.length} of {menuItems.length} dishes
             </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filtered.map((item) => (
-              <MealCard key={item.id} item={item} />
-            ))}
-          </div>
+          </FadeIn>
         )}
       </div>
     </div>
