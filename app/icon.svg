@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea580c"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <!-- "K" lettermark -->
+  <text x="256" y="380" text-anchor="middle" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="360" font-weight="800" letter-spacing="-10">K</text>
+  <!-- Subtle steam/flame accent -->
+  <path d="M340 100 Q350 70 340 50 Q330 70 340 100Z" fill="white" opacity="0.6"/>
+  <path d="M370 110 Q380 75 370 52 Q360 75 370 110Z" fill="white" opacity="0.4"/>
+  <path d="M310 115 Q320 80 310 58 Q300 80 310 115Z" fill="white" opacity="0.3"/>
+</svg>
