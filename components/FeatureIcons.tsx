@@ -2,64 +2,63 @@
 
 import { motion } from "framer-motion";
 
-// ── Animated Flame (Made Fresh) ──────────────────────────
+// ── Animated Pot + Steam (Made Fresh) ────────────────────
 export function FlameIcon({ animated = true }: { animated?: boolean }) {
   if (!animated) {
     return (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-        <path
-          d="M20 4c0 0-8 8-8 16a8 8 0 0016 0c0-3-1.5-5.5-3-7.5 0 0-.5 3-3 4.5-1-3-2-6.5-2-13z"
-          fill="#f97316"
-        />
-        <path
-          d="M20 18c0 0-3 2.5-3 6a3 3 0 006 0c0-1.5-.8-2.5-1.5-3.5 0 0-.2 1.2-1.5 2-.3-1.2-.5-2.5-.5-4.5z"
-          fill="#fbbf24"
-        />
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* Pot body */}
+        <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" fill="#f97316" opacity="0.15" stroke="none" />
+        <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" />
+        {/* Lid */}
+        <path d="M6 22h28" />
+        <path d="M18 22v-2h4v2" />
+        {/* Handles */}
+        <path d="M8 26H5" />
+        <path d="M32 26h3" />
+        {/* Static steam */}
+        <path d="M15 16c0-3 2-4 0-7" opacity="0.4" />
+        <path d="M20 15c0-3 2-4 0-7" opacity="0.3" />
+        <path d="M25 16c0-3 2-4 0-7" opacity="0.4" />
       </svg>
     );
   }
 
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      {/* Outer flame */}
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {/* Pot body */}
+      <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" fill="#f97316" opacity="0.12" stroke="none" />
+      <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" />
+      {/* Lid with gentle rattle */}
+      <motion.g
+        animate={{ y: [0, -1.5, 0], rotate: [0, 0.8, -0.5, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "20px 22px" }}
+      >
+        <path d="M6 22h28" />
+        <path d="M18 22v-2h4v2" />
+      </motion.g>
+      {/* Handles */}
+      <path d="M8 26H5" />
+      <path d="M32 26h3" />
+      {/* Rising steam wisps */}
       <motion.path
-        d="M20 4c0 0-8 8-8 16a8 8 0 0016 0c0-3-1.5-5.5-3-7.5 0 0-.5 3-3 4.5-1-3-2-6.5-2-13z"
-        fill="#f97316"
-        animate={{
-          d: [
-            "M20 4c0 0-8 8-8 16a8 8 0 0016 0c0-3-1.5-5.5-3-7.5 0 0-.5 3-3 4.5-1-3-2-6.5-2-13z",
-            "M20 6c0 0-9 7-9 15a9 9 0 0018 0c0-3.5-2-6-3.5-8 0 0-1 3.5-3.5 4-0.5-2.5-1.5-5.5-2-11z",
-            "M20 4c0 0-8 8-8 16a8 8 0 0016 0c0-3-1.5-5.5-3-7.5 0 0-.5 3-3 4.5-1-3-2-6.5-2-13z",
-          ],
-        }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        d="M14 16 Q12 12 14 8"
+        strokeWidth="1.5" fill="none"
+        animate={{ y: [2, -6], opacity: [0, 0.5, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
       />
-      {/* Inner flame */}
       <motion.path
-        d="M20 18c0 0-3 2.5-3 6a3 3 0 006 0c0-1.5-.8-2.5-1.5-3.5 0 0-.2 1.2-1.5 2-.3-1.2-.5-2.5-.5-4.5z"
-        fill="#fbbf24"
-        animate={{
-          d: [
-            "M20 18c0 0-3 2.5-3 6a3 3 0 006 0c0-1.5-.8-2.5-1.5-3.5 0 0-.2 1.2-1.5 2-.3-1.2-.5-2.5-.5-4.5z",
-            "M20 17c0 0-3.5 3-3.5 6.5a3.5 3.5 0 007 0c0-1.8-1-3-1.8-4 0 0-.3 1.5-1.7 2.2-.4-1.5-.8-3-.5-4.7z",
-            "M20 18c0 0-3 2.5-3 6a3 3 0 006 0c0-1.5-.8-2.5-1.5-3.5 0 0-.2 1.2-1.5 2-.3-1.2-.5-2.5-.5-4.5z",
-          ],
-          opacity: [0.9, 1, 0.9],
-        }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        d="M20 15 Q22 11 20 7"
+        strokeWidth="1.5" fill="none"
+        animate={{ y: [2, -7], opacity: [0, 0.55, 0] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeOut", delay: 0.6 }}
       />
-      {/* Sparks */}
-      <motion.circle
-        cx="16" cy="10" r="1"
-        fill="#fbbf24"
-        animate={{ y: [0, -6, -12], opacity: [0, 0.8, 0], x: [-2, -4, -3] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-      />
-      <motion.circle
-        cx="24" cy="12" r="0.8"
-        fill="#f97316"
-        animate={{ y: [0, -8, -14], opacity: [0, 0.6, 0], x: [1, 3, 2] }}
-        transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
+      <motion.path
+        d="M26 16 Q28 12 26 8"
+        strokeWidth="1.5" fill="none"
+        animate={{ y: [2, -5], opacity: [0, 0.45, 0] }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeOut", delay: 1.2 }}
       />
     </svg>
   );
