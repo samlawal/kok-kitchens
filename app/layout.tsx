@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "KOKKitchens — Authentic Nigerian Food Ordering & Catering",
-    template: "%s | KOKKitchens",
+    default: "KOK Kitchen — Authentic Nigerian Food Ordering & Catering",
+    template: "%s | KOK Kitchen",
   },
   description:
     "Order authentic Nigerian meals for delivery across Hertfordshire or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",

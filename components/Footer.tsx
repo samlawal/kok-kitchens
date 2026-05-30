@@ -13,7 +13,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4">
               <ChefHat className="h-7 w-7 text-orange-500" />
               <span className="text-lg font-bold text-white">
-                KOK<span className="text-orange-500">Kitchens</span>
+                KOK <span className="text-orange-500">Kitchen</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-stone-400">
@@ -116,7 +116,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
-          &copy; {new Date().getFullYear()} KOKKitchens. All rights reserved.
+          &copy; {new Date().getFullYear()} KOK Kitchen. All rights reserved.
         </div>
       </div>
     </footer>

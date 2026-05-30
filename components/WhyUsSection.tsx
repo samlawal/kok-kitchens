@@ -67,7 +67,7 @@ export default function WhyUsSection() {
             The KOK Difference
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Why KOKKitchens?
+            Why KOK Kitchen?
           </h2>
           <p className="mt-3 text-stone-400 max-w-lg mx-auto">
             We&apos;re not just another food delivery service — we&apos;re bringing
