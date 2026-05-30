@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { put, list, del } from "@vercel/blob";
-import sharp from "sharp";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 const MAX_WIDTH = 800;
@@ -45,6 +44,9 @@ export async function POST(request: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Dynamic import — avoids build-time native binary issues
+    const sharp = (await import("sharp")).default;
 
     // Auto-optimize: resize + convert to WebP
     const optimized = await sharp(buffer)
