@@ -33,7 +33,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { menuItem, quantity }];
     });
-    setIsCartOpen(true);
   }, []);
 
   const removeItem = useCallback((itemId: string) => {
