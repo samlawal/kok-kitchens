@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
@@ -104,8 +105,20 @@ export default function CartDrawer() {
                         transition={{ duration: 0.25 }}
                         className="flex gap-4 rounded-xl bg-stone-50 p-3"
                       >
-                        <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-2xl shrink-0">
-                          🍛
+                        <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-orange-100 to-amber-50 overflow-hidden relative shrink-0">
+                          {item.menuItem.image ? (
+                            <Image
+                              src={item.menuItem.image}
+                              alt={item.menuItem.name}
+                              fill
+                              sizes="64px"
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-2xl">
+                              🍛
+                            </div>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium text-stone-900 text-sm truncate">
