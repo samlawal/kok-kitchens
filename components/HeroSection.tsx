@@ -198,7 +198,7 @@ export default function HeroSection() {
             Catering Services
           </Link>
           <a
-            href="https://wa.me/4474478271?text=Hi%20Kok%20Kitchen!%20I%27d%20like%20to%20place%20an%20order"
+            href="https://wa.me/44744782712?text=Hi%20Kok%20Kitchen!%20I%27d%20like%20to%20place%20an%20order"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-green-700/50 px-8 py-4 text-base font-semibold text-green-400 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all"

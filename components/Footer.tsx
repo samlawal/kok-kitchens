@@ -61,7 +61,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://wa.me/4474478271"
+                  href="https://wa.me/44744782712"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
@@ -101,7 +101,7 @@ export default function Footer() {
                 IG
               </a>
               <a
-                href="https://wa.me/4474478271"
+                href="https://wa.me/44744782712"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-stone-800 hover:bg-green-600 transition-colors"
