@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { FlameIcon, DeliveryIcon, ClocheIcon } from "./FeatureIcons";
 
 const taglines = [
   "Party Jollof",
@@ -218,28 +219,34 @@ export default function HeroSection() {
         >
           {[
             {
-              icon: "🔥",
               title: "Made Fresh",
               desc: "Cooked to order, never frozen",
+              Icon: FlameIcon,
             },
             {
-              icon: "🚚",
               title: "Fast Delivery",
               desc: "Across Hertfordshire & beyond",
+              Icon: DeliveryIcon,
             },
             {
-              icon: "🎉",
               title: "Event Catering",
               desc: "20 to 200+ guests, we handle it",
+              Icon: ClocheIcon,
             },
-          ].map((card, i) => (
+          ].map((card) => (
             <motion.div
               key={card.title}
               whileHover={{ y: -4, scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm px-6 py-5 text-center hover:border-orange-500/20 hover:bg-white/[0.06] transition-colors"
+              className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] backdrop-blur-sm px-6 py-6 text-center hover:border-orange-500/20 hover:bg-white/[0.06] transition-colors"
             >
-              <span className="text-3xl block mb-2">{card.icon}</span>
+              {/* Animated icon on desktop, static on mobile */}
+              <div className="hidden sm:flex justify-center mb-3">
+                <card.Icon animated={true} />
+              </div>
+              <div className="flex sm:hidden justify-center mb-3">
+                <card.Icon animated={false} />
+              </div>
               <p className="text-sm font-semibold text-white">{card.title}</p>
               <p className="text-xs text-stone-500 mt-1">{card.desc}</p>
             </motion.div>
