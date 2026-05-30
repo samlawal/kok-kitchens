@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, ArrowLeft } from "lucide-react";
 import { formatPrice } from "@/lib/menu-data";
@@ -27,6 +29,8 @@ export default function MealDetailClient({
   related: MenuItem[];
 }) {
   const emoji = categoryEmoji[item.category] || "🍛";
+  const [imgError, setImgError] = useState(false);
+  const hasImage = item.image && !imgError;
 
   return (
     <div className="bg-stone-50 min-h-screen">
@@ -49,17 +53,35 @@ export default function MealDetailClient({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center relative"
+            className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 relative"
           >
-            <motion.span
-              className="text-[140px] select-none"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {emoji}
-            </motion.span>
+            {hasImage ? (
+              <Image
+                src={item.image}
+                alt={item.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <motion.span
+                  className="text-[140px] select-none"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  {emoji}
+                </motion.span>
+              </div>
+            )}
             {item.spicy && (
-              <span className="absolute top-4 right-4 bg-red-500/90 text-white text-sm font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+              <span className="absolute top-4 right-4 bg-red-500/90 text-white text-sm font-bold px-3 py-1.5 rounded-full flex items-center gap-1 z-10">
                 <Flame className="h-4 w-4" /> Spicy
               </span>
             )}

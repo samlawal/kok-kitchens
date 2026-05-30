@@ -588,7 +588,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Our signature party jollof in a half cooler — enough to feed a crowd. Smoky, spicy, and unforgettable.",
     price: 50,
-    image: "/meals/jollof-rice.jpg",
+    image: "/meals/jollof-rice-half-cooler.jpg",
     category: "party-packs",
     tags: ["catering", "party-favourite"],
     spicy: true,
@@ -601,7 +601,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Full cooler of our legendary party jollof. The centrepiece of any celebration — smoky, perfectly seasoned, and cooked to perfection.",
     price: 100,
-    image: "/meals/jollof-rice.jpg",
+    image: "/meals/jollof-rice-cooler.jpg",
     category: "party-packs",
     tags: ["catering", "party-favourite", "best-value"],
     spicy: true,
@@ -615,7 +615,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Colourful Nigerian fried rice in a half cooler, loaded with vegetables and seasoned to perfection for your event.",
     price: 60,
-    image: "/meals/fried-rice.jpg",
+    image: "/meals/fried-rice-half-cooler.jpg",
     category: "party-packs",
     tags: ["catering"],
     servings: "Half cooler — serves 10-15",
@@ -627,7 +627,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Full cooler of vibrant Nigerian fried rice. Packed with mixed vegetables, liver, and prawns — a party essential.",
     price: 120,
-    image: "/meals/fried-rice.jpg",
+    image: "/meals/fried-rice-cooler.jpg",
     category: "party-packs",
     tags: ["catering", "best-value"],
     servings: "Full cooler — serves 25-30",

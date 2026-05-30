@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -21,6 +22,7 @@ const categoryEmoji: Record<string, string> = {
 export default function MealCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
   const [justAdded, setJustAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   function handleAdd() {
     addItem(item);
@@ -29,6 +31,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
   }
 
   const emoji = categoryEmoji[item.category] || "🍛";
+  const hasImage = item.image && !imgError;
 
   return (
     <motion.div
@@ -37,21 +40,34 @@ export default function MealCard({ item }: { item: MenuItem }) {
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
       <Link href={`/menu/${item.slug}`} className="block">
-        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center relative">
-          <motion.span
-            className="text-6xl select-none"
-            whileHover={{ scale: 1.2, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 200 }}
-          >
-            {emoji}
-          </motion.span>
+        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative">
+          {hasImage ? (
+            <Image
+              src={item.image}
+              alt={item.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <motion.span
+                className="text-6xl select-none"
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              >
+                {emoji}
+              </motion.span>
+            </div>
+          )}
           {item.spicy && (
-            <span className="absolute top-3 right-3 bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+            <span className="absolute top-3 right-3 bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 z-10">
               <Flame className="h-3 w-3" /> Spicy
             </span>
           )}
           {item.servings && (
-            <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full">
+            <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full z-10">
               {item.servings}
             </span>
           )}
