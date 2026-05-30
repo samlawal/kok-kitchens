@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about KokKitchens — our story, our passion for authentic Nigerian cuisine, and our commitment to delivering the best food experience.",
+    "Learn about KOKKitchens — our story, our passion for authentic Nigerian cuisine, and our commitment to delivering the best food experience.",
 };
 
 export default function AboutPage() {
@@ -25,11 +25,11 @@ export default function AboutPage() {
             <div className="flex items-center gap-3 mb-6">
               <ChefHat className="h-8 w-8 text-orange-600" />
               <h2 className="text-2xl font-bold text-stone-900 m-0">
-                About KokKitchens
+                About KOKKitchens
               </h2>
             </div>
             <p className="text-stone-600 leading-relaxed text-lg">
-              KokKitchens was born from a simple love — the love for authentic
+              KOKKitchens was born from a simple love — the love for authentic
               Nigerian food made the way our grandmothers taught us. We believe
               every meal should tell a story, carry warmth, and bring people
               together.

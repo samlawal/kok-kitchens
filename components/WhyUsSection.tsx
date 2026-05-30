@@ -64,10 +64,10 @@ export default function WhyUsSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <FadeIn className="text-center mb-14">
           <p className="text-xs font-semibold text-orange-500 uppercase tracking-[0.25em] mb-3">
-            The Kok Difference
+            The KOK Difference
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Why KokKitchens?
+            Why KOKKitchens?
           </h2>
           <p className="mt-3 text-stone-400 max-w-lg mx-auto">
             We&apos;re not just another food delivery service — we&apos;re bringing

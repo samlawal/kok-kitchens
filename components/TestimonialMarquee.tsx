@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const testimonials = [
   { text: "Best jollof in Hertfordshire, hands down!", author: "Sarah W." },
   { text: "The egusi soup reminded me of home. Incredible.", author: "Chidi O." },
-  { text: "Our wedding guests couldn't stop eating. Thank you Kok Kitchen!", author: "Temi & David" },
+  { text: "Our wedding guests couldn't stop eating. Thank you KOK Kitchen!", author: "Temi & David" },
   { text: "Peppered chicken is addictive. We order every weekend now.", author: "James R." },
   { text: "Finally, real Nigerian food in Borehamwood!", author: "Funke A." },
   { text: "The small chops platter was a hit at our party.", author: "Michelle T." },
