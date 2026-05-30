@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { sendOwnerNotification, sendCustomerConfirmation } from "@/lib/email";
+import { sendPushNotification } from "@/lib/notify";
 
 function generateRef() {
   const now = new Date();
@@ -90,11 +91,19 @@ export async function POST(request: Request) {
       notes: customer.notes,
     };
 
-    // Fire emails in background — don't block the response
+    // Fire notifications in background — don't block the response
     Promise.all([
       sendOwnerNotification(emailData),
       sendCustomerConfirmation(emailData),
-    ]).catch((err) => console.error("Email send failed:", err));
+      sendPushNotification({
+        ref,
+        customerName: customer.name,
+        customerPhone: customer.phone,
+        deliveryType,
+        items: orderItems,
+        total: orderTotal,
+      }),
+    ]).catch((err) => console.error("Notification send failed:", err));
 
     return NextResponse.json(
       { success: true, ref, message: "Order placed successfully" },
