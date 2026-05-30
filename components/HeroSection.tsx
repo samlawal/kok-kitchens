@@ -3,22 +3,36 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Utensils } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
-const heroImages = [
-  { src: "/meals/jollof-rice.jpg", alt: "Jollof Rice", rotate: -3, delay: 0 },
-  { src: "/meals/egusi-soup.jpg", alt: "Egusi Soup", rotate: 4, delay: 0.15 },
-  { src: "/meals/suya.jpg", alt: "Suya", rotate: -2, delay: 0.3 },
-  { src: "/meals/peppered-chicken.jpg", alt: "Peppered Chicken", rotate: 3, delay: 0.45 },
-  { src: "/meals/asun.jpg", alt: "Asun", rotate: -4, delay: 0.6 },
-  { src: "/meals/small-chops.jpg", alt: "Small Chops", rotate: 2, delay: 0.75 },
+const heroSlides = [
+  { src: "/meals/jollof-rice.jpg", label: "Party Jollof Rice" },
+  { src: "/meals/peppered-chicken.jpg", label: "Peppered Chicken" },
+  { src: "/meals/egusi-soup.jpg", label: "Egusi Soup" },
+  { src: "/meals/asun.jpg", label: "Asun" },
+  { src: "/meals/suya.jpg", label: "Suya" },
+  { src: "/meals/fried-rice.jpg", label: "Fried Rice" },
+  { src: "/meals/peppered-goat-meat.jpg", label: "Peppered Goat" },
+  { src: "/meals/small-chops.jpg", label: "Small Chops" },
 ];
 
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % heroSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const slide = heroSlides[current];
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-orange-950 min-h-[90vh] flex items-center">
       {/* Animated gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -29,15 +43,10 @@ export default function HeroSection() {
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl"
         />
-        <motion.div
-          animate={{ x: [0, 15, 0], y: [0, -25, 0], scale: [1, 1.2, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full bg-red-600/5 blur-3xl"
-        />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left — text content */}
           <div className="max-w-2xl">
             <motion.div
@@ -94,7 +103,7 @@ export default function HeroSection() {
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <a
-                href="https://wa.me/4474478271"
+                href="https://wa.me/4474478271?text=Hi%20Kok%20Kitchen!%20I%27d%20like%20to%20place%20an%20order"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center justify-center gap-2 rounded-full border-2 border-green-600 px-8 py-4 text-base font-semibold text-white hover:bg-green-600 transition-all"
@@ -130,110 +139,87 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right — floating food photo collage */}
-          <div className="hidden lg:block relative h-[500px]">
-            <div className="relative w-full h-full">
-              {/* Top-left large */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="absolute top-0 left-4 w-52 h-52 z-20"
-              >
+          {/* Right — auto-sliding food showcase */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative hidden lg:block"
+          >
+            {/* Main showcase frame */}
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/10">
+              <AnimatePresence mode="wait">
                 <motion.div
-                  animate={{ y: [0, -8, 0], rotate: [-3, -1, -3] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 rotate-[-3deg]"
+                  key={current}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="absolute inset-0"
                 >
-                  <Image src="/meals/jollof-rice.jpg" alt="Jollof Rice" fill className="object-cover" sizes="208px" />
+                  <Image
+                    src={slide.src}
+                    alt={slide.label}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 0vw, 448px"
+                    priority={current === 0}
+                  />
+                  {/* Gradient overlay at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 </motion.div>
-              </motion.div>
+              </AnimatePresence>
 
-              {/* Top-right */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.45 }}
-                className="absolute top-4 right-0 w-44 h-44 z-10"
-              >
-                <motion.div
-                  animate={{ y: [0, 10, 0], rotate: [4, 6, 4] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                  className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 rotate-[4deg]"
-                >
-                  <Image src="/meals/egusi-soup.jpg" alt="Egusi Soup" fill className="object-cover" sizes="176px" />
-                </motion.div>
-              </motion.div>
+              {/* Dish name label */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={current}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.4 }}
+                    className="text-xl font-bold text-white"
+                  >
+                    {slide.label}
+                  </motion.p>
+                </AnimatePresence>
 
-              {/* Center — hero dish (large) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 40 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="absolute top-28 left-20 w-64 h-64 z-30"
-              >
-                <motion.div
-                  animate={{ y: [0, -12, 0], rotate: [2, 0, 2] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                  className="w-full h-full rounded-3xl overflow-hidden shadow-2xl shadow-orange-900/50 border-2 border-orange-400/20 rotate-[2deg]"
-                >
-                  <Image src="/meals/peppered-chicken.jpg" alt="Peppered Chicken" fill className="object-cover" sizes="256px" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                </motion.div>
-              </motion.div>
+                {/* Progress dots */}
+                <div className="flex gap-2 mt-3">
+                  {heroSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrent(i)}
+                      className="group relative h-1.5 rounded-full overflow-hidden transition-all duration-300"
+                      style={{ width: i === current ? "2rem" : "0.75rem" }}
+                      aria-label={`Slide ${i + 1}`}
+                    >
+                      <span className="absolute inset-0 bg-white/30 rounded-full" />
+                      {i === current && (
+                        <motion.span
+                          className="absolute inset-0 bg-orange-400 rounded-full origin-left"
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: 4, ease: "linear" }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-              {/* Middle-right */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: 20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                transition={{ duration: 0.7, delay: 0.6 }}
-                className="absolute top-52 right-4 w-40 h-40 z-20"
-              >
-                <motion.div
-                  animate={{ y: [0, 8, 0], rotate: [-2, -4, -2] }}
-                  transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 rotate-[-2deg]"
-                >
-                  <Image src="/meals/suya.jpg" alt="Suya" fill className="object-cover" sizes="160px" />
-                </motion.div>
-              </motion.div>
-
-              {/* Bottom-left */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.7 }}
-                className="absolute bottom-8 left-0 w-44 h-44 z-10"
-              >
-                <motion.div
-                  animate={{ y: [0, -6, 0], rotate: [3, 5, 3] }}
-                  transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-                  className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 rotate-[3deg]"
-                >
-                  <Image src="/meals/asun.jpg" alt="Asun" fill className="object-cover" sizes="176px" />
-                </motion.div>
-              </motion.div>
-
-              {/* Bottom-right small accent */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.85 }}
-                className="absolute bottom-0 right-12 w-36 h-36 z-20"
-              >
-                <motion.div
-                  animate={{ y: [0, 10, 0], rotate: [-4, -2, -4] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-                  className="w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border-2 border-white/10 rotate-[-4deg]"
-                >
-                  <Image src="/meals/spring-rolls.jpg" alt="Small Chops" fill className="object-cover" sizes="144px" />
-                </motion.div>
-              </motion.div>
-
-              {/* Decorative glow behind collage */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-orange-500/8 blur-[80px] pointer-events-none" />
+              {/* Decorative corner accent */}
+              <div className="absolute top-4 right-4 z-10">
+                <div className="bg-orange-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full">
+                  Kok Kitchen
+                </div>
+              </div>
             </div>
-          </div>
+
+            {/* Glow behind the showcase */}
+            <div className="absolute -inset-8 rounded-3xl bg-orange-500/10 blur-[60px] pointer-events-none -z-10" />
+          </motion.div>
         </div>
       </div>
 
