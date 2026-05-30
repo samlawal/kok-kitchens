@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X, ChefHat } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
@@ -9,6 +9,13 @@ import { useCart } from "@/lib/cart-context";
 export default function Header() {
   const { totalItems, setIsCartOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const navLinks = [
     { href: "/menu", label: "Menu" },
@@ -17,18 +24,39 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
+          : "bg-white/95 backdrop-blur-md border-b border-stone-200"
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div
+          className={`flex items-center justify-between transition-all duration-300 ${
+            scrolled ? "h-14" : "h-16"
+          }`}
+        >
           <Link href="/" className="flex items-center gap-2 group">
             <motion.div
               whileHover={{ rotate: 15 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <ChefHat className="h-8 w-8 text-orange-600" />
+              <ChefHat
+                className={`h-8 w-8 transition-colors duration-300 ${
+                  scrolled ? "text-orange-400" : "text-orange-600"
+                }`}
+              />
             </motion.div>
-            <span className="text-xl font-bold tracking-tight text-stone-900">
-              Kok<span className="text-orange-600">Kitchens</span>
+            <span
+              className={`text-xl font-bold tracking-tight transition-colors duration-300 ${
+                scrolled ? "text-white" : "text-stone-900"
+              }`}
+            >
+              Kok
+              <span className={scrolled ? "text-orange-400" : "text-orange-600"}>
+                Kitchens
+              </span>
             </span>
           </Link>
 
@@ -37,10 +65,18 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative text-sm font-medium text-stone-600 hover:text-orange-600 transition-colors group"
+                className={`relative text-sm font-medium transition-colors group ${
+                  scrolled
+                    ? "text-stone-300 hover:text-orange-400"
+                    : "text-stone-600 hover:text-orange-600"
+                }`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-orange-600 transition-all group-hover:w-full" />
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 w-0 transition-all group-hover:w-full ${
+                    scrolled ? "bg-orange-400" : "bg-orange-600"
+                  }`}
+                />
               </Link>
             ))}
           </nav>
@@ -48,7 +84,11 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <motion.button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2 text-stone-600 hover:text-orange-600 transition-colors"
+              className={`relative p-2 transition-colors ${
+                scrolled
+                  ? "text-stone-300 hover:text-orange-400"
+                  : "text-stone-600 hover:text-orange-600"
+              }`}
               aria-label="Open cart"
               whileTap={{ scale: 0.9 }}
             >
@@ -71,7 +111,9 @@ export default function Header() {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-stone-600"
+              className={`md:hidden p-2 ${
+                scrolled ? "text-stone-300" : "text-stone-600"
+              }`}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -90,7 +132,9 @@ export default function Header() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden overflow-hidden border-t border-stone-100"
+              className={`md:hidden overflow-hidden border-t ${
+                scrolled ? "border-stone-800" : "border-stone-100"
+              }`}
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link, i) => (
@@ -103,7 +147,11 @@ export default function Header() {
                     <Link
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block px-3 py-2 rounded-lg text-base font-medium text-stone-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                      className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
+                        scrolled
+                          ? "text-stone-300 hover:bg-stone-800 hover:text-orange-400"
+                          : "text-stone-700 hover:bg-orange-50 hover:text-orange-600"
+                      }`}
                     >
                       {link.label}
                     </Link>
