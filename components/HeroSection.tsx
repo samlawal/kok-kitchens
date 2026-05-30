@@ -7,15 +7,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const heroSlides = [
-  { src: "/meals/jollof-rice.jpg", label: "Party Jollof Rice" },
-  { src: "/meals/scotch-bonnet-okra.jpg", label: "Fresh Nigerian Ingredients" },
-  { src: "/meals/peppered-chicken.jpg", label: "Peppered Chicken" },
-  { src: "/meals/egusi-soup.jpg", label: "Egusi Soup" },
-  { src: "/meals/asun.jpg", label: "Asun" },
-  { src: "/meals/fried-plantain.jpg", label: "Fried Plantain (Dodo)" },
-  { src: "/meals/suya.jpg", label: "Suya" },
-  { src: "/meals/okra-soup.jpg", label: "Okra Soup" },
-  { src: "/meals/peppered-goat-meat.jpg", label: "Peppered Goat" },
+  { src: "/meals/jollof-rice.webp", label: "Party Jollof Rice" },
+  { src: "/meals/scotch-bonnet-okra.webp", label: "Fresh Nigerian Ingredients" },
+  { src: "/meals/peppered-chicken.webp", label: "Peppered Chicken" },
+  { src: "/meals/egusi-soup.webp", label: "Egusi Soup" },
+  { src: "/meals/asun.webp", label: "Asun" },
+  { src: "/meals/fried-plantain.webp", label: "Fried Plantain (Dodo)" },
+  { src: "/meals/suya.webp", label: "Suya" },
+  { src: "/meals/okra-soup.webp", label: "Okra Soup" },
+  { src: "/meals/peppered-goat-meat.webp", label: "Peppered Goat" },
 ];
 
 export default function HeroSection() {

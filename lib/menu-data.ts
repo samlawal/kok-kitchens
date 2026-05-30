@@ -9,7 +9,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Our signature smoky party jollof cooked low and slow with ripe tomatoes, scotch bonnets, and a blend of aromatic spices. Perfect for sharing.",
     price: 25,
-    image: "/meals/jollof-rice.jpg",
+    image: "/meals/jollof-rice.webp",
     category: "rice-dishes",
     tags: ["popular", "party-favourite"],
     featured: true,
@@ -23,7 +23,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Colourful stir-fried rice loaded with mixed vegetables, liver, and prawns. A party staple seasoned to perfection.",
     price: 30,
-    image: "/meals/fried-rice.jpg",
+    image: "/meals/fried-rice.webp",
     category: "rice-dishes",
     tags: ["popular"],
     servings: "Small tray — serves 4-6",
@@ -35,7 +35,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Local unpolished ofada rice served with your choice of stew. Earthy, aromatic, and full of traditional flavour.",
     price: 50,
-    image: "/meals/ofada-rice.jpg",
+    image: "/meals/ofada-rice.webp",
     category: "rice-dishes",
     tags: ["traditional"],
     servings: "Small tray",
@@ -47,7 +47,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Stir-fried noodles tossed with vegetables, seasoning, and your choice of protein. A quick, satisfying crowd-pleaser.",
     price: 50,
-    image: "/meals/noodles.jpg",
+    image: "/meals/noodles.webp",
     category: "rice-dishes",
     tags: ["comfort-food"],
     servings: "Small tray — serves 4-6",
@@ -61,7 +61,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Thick melon seed soup loaded with spinach, stockfish, assorted meats, and shaki. Rich, hearty, and deeply satisfying.",
     price: 50,
-    image: "/meals/egusi-soup.jpg",
+    image: "/meals/egusi-soup.webp",
     category: "soups-swallows",
     tags: ["popular", "traditional"],
     featured: true,
@@ -74,7 +74,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Yoruba-style spinach stew cooked with palm oil, scotch bonnets, locust beans, and assorted meats or fish.",
     price: 45,
-    image: "/meals/efo-riro.jpg",
+    image: "/meals/efo-riro.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     spicy: true,
@@ -87,7 +87,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Draw-style okra soup cooked with assorted meats, dried fish, palm oil, and a blend of traditional spices. Perfect with any swallow.",
     price: 45,
-    image: "/meals/okra-soup.jpg",
+    image: "/meals/okra-soup.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     servings: "Small pot",
@@ -99,7 +99,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Rich, draw ogbono soup cooked with palm oil, assorted meats, dried fish, and leafy vegetables. Silky smooth and full of flavour.",
     price: 45,
-    image: "/meals/ogbono-soup.jpg",
+    image: "/meals/ogbono-soup.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     servings: "Small pot",
@@ -111,7 +111,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Smooth Yoruba bean soup traditionally paired with ewedu and amala. Creamy, comforting, and rich in protein.",
     price: 45,
-    image: "/meals/gbegiri-soup.jpg",
+    image: "/meals/gbegiri-soup.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     servings: "From small pot",
@@ -123,7 +123,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Aromatic and fiery pepper soup with a potent spice blend. Warming, deeply flavoured, and perfect for cold evenings.",
     price: 50,
-    image: "/meals/pepper-soup.jpg",
+    image: "/meals/pepper-soup.webp",
     category: "soups-swallows",
     tags: ["spicy"],
     spicy: true,
@@ -135,7 +135,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Rich green pepper sauce made with assorted meats, locust beans, and palm oil. A Yoruba delicacy with a fiery kick.",
     price: 50,
-    image: "/meals/ayamase.jpg",
+    image: "/meals/ayamase.webp",
     category: "soups-swallows",
     tags: ["traditional", "spicy"],
     spicy: true,
@@ -148,7 +148,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Tender goat meat slow-cooked in a rich tomato and pepper stew. Hearty, warming, and full of bold Nigerian flavour.",
     price: 55,
-    image: "/meals/goat-meat-stew.jpg",
+    image: "/meals/goat-meat-stew.webp",
     category: "soups-swallows",
     tags: ["popular"],
     servings: "Small tray",
@@ -160,7 +160,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Flavourful fish stew made with fresh fish, tomatoes, peppers, and onions. Light yet deeply satisfying.",
     price: 55,
-    image: "/meals/fish-stew.jpg",
+    image: "/meals/fish-stew.webp",
     category: "soups-swallows",
     tags: [],
     servings: "Small pot",
@@ -172,7 +172,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Fall-off-the-bone oxtail braised in a rich, flavourful tomato and pepper stew. A premium comfort classic.",
     price: 55,
-    image: "/meals/oxtail-stew.jpg",
+    image: "/meals/oxtail-stew.webp",
     category: "soups-swallows",
     tags: ["premium"],
     servings: "Small tray",
@@ -184,7 +184,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Smooth, stretchy pounded yam — the king of Nigerian swallows. Perfect paired with any of our soups.",
     price: 2,
-    image: "/meals/pounded-yam.jpg",
+    image: "/meals/pounded-yam.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     servings: "Per wrap",
@@ -196,7 +196,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Silky yam flour swallow — a Yoruba staple best enjoyed with ewedu, gbegiri, or any draw soup.",
     price: 2,
-    image: "/meals/amala.jpg",
+    image: "/meals/amala.webp",
     category: "soups-swallows",
     tags: ["traditional"],
     servings: "Per wrap",
@@ -210,7 +210,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Whole fish seasoned and grilled to perfection, then tossed in a fiery pepper and onion sauce. A true showstopper.",
     price: 130,
-    image: "/meals/peppered-fish.jpg",
+    image: "/meals/peppered-fish.webp",
     category: "grills-proteins",
     tags: ["premium", "party-favourite"],
     spicy: true,
@@ -223,7 +223,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Crispy fried chicken smothered in a thick, spicy bell pepper and onion sauce. Finger-licking good.",
     price: 45,
-    image: "/meals/peppered-chicken.jpg",
+    image: "/meals/peppered-chicken.webp",
     category: "grills-proteins",
     tags: ["popular"],
     spicy: true,
@@ -236,7 +236,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Tender beef pieces cooked in a rich, fiery pepper sauce with onions and spices. Bold and satisfying.",
     price: 40,
-    image: "/meals/peppered-beef.jpg",
+    image: "/meals/peppered-beef.webp",
     category: "grills-proteins",
     tags: ["popular"],
     spicy: true,
@@ -248,7 +248,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Succulent goat meat cooked in a smoky, fiery pepper sauce. Rich, bold, and deeply flavoured — a Nigerian favourite.",
     price: 70,
-    image: "/meals/peppered-goat-meat.jpg",
+    image: "/meals/peppered-goat-meat.webp",
     category: "grills-proteins",
     tags: ["premium"],
     spicy: true,
@@ -260,7 +260,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Smoked turkey tossed in a spicy pepper sauce with onions and bell peppers. Smoky, spicy, and irresistible.",
     price: 65,
-    image: "/meals/peppered-smoked-turkey.jpg",
+    image: "/meals/peppered-smoked-turkey.webp",
     category: "grills-proteins",
     tags: ["party-favourite"],
     spicy: true,
@@ -272,7 +272,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Giant African snails cooked in a fiery blend of scotch bonnets, onions, and aromatic spices. A true delicacy.",
     price: 7,
-    image: "/meals/peppered-snail.jpg",
+    image: "/meals/peppered-snail.webp",
     category: "grills-proteins",
     tags: ["premium"],
     spicy: true,
@@ -285,7 +285,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Smoky grilled meat tossed in a fiery pepper sauce with onions and bell peppers. A Lagos party classic you won't forget.",
     price: 55,
-    image: "/meals/asun.jpg",
+    image: "/meals/asun.webp",
     category: "grills-proteins",
     tags: ["party-favourite"],
     spicy: true,
@@ -297,7 +297,7 @@ export const menuItems: MenuItem[] = [
     description:
       "A generous mix of beef, tripe (shaki), cow skin (ponmo), and cow foot in rich pepper sauce. Perfect for sharing.",
     price: 55,
-    image: "/meals/assorted-meat.jpg",
+    image: "/meals/assorted-meat.webp",
     category: "grills-proteins",
     tags: ["popular"],
     servings: "Small tray",
@@ -309,7 +309,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Spicy fried gizzard tossed with sweet fried plantain cubes in a pepper and onion sauce. Addictively good.",
     price: 55,
-    image: "/meals/dodo-gizzard.jpg",
+    image: "/meals/dodo-gizzard.webp",
     category: "grills-proteins",
     tags: ["popular", "party-favourite"],
     spicy: true,
@@ -322,7 +322,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Thinly sliced beef marinated in ground peanuts and suya spice, grilled over open flame. Served with sliced onions and extra yaji.",
     price: 2.5,
-    image: "/meals/suya.jpg",
+    image: "/meals/suya.webp",
     category: "grills-proteins",
     tags: ["street-food", "popular"],
     spicy: true,
@@ -336,7 +336,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Seasoned beef skewers grilled to perfection. Simple, smoky, and satisfying — a true street food favourite.",
     price: 2.5,
-    image: "/meals/stick-meat.jpg",
+    image: "/meals/stick-meat.webp",
     category: "grills-proteins",
     tags: ["street-food"],
     servings: "Per stick",
@@ -350,7 +350,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Sweet ripe plantain sliced and fried until golden and caramelised. The perfect side to any Nigerian meal.",
     price: 20,
-    image: "/meals/fried-plantain.jpg",
+    image: "/meals/fried-plantain.webp",
     category: "sides",
     tags: ["popular"],
     featured: true,
@@ -363,7 +363,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Chunky yam pieces deep-fried until crispy and golden. Served with pepper sauce for dipping.",
     price: 25,
-    image: "/meals/fried-yam.jpg",
+    image: "/meals/fried-yam.webp",
     category: "sides",
     tags: ["popular"],
     servings: "From £25",
@@ -375,7 +375,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Slow-cooked honey beans in a rich pepper and palm oil sauce with onions and crayfish. Hearty and satisfying.",
     price: 25,
-    image: "/meals/beans.jpg",
+    image: "/meals/beans.webp",
     category: "sides",
     tags: ["traditional"],
     servings: "From £25",
@@ -387,7 +387,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Soft yam cooked in a rich pepper and tomato sauce with palm oil, onions, and crayfish. Comfort food at its best.",
     price: 40,
-    image: "/meals/yam-pottage.jpg",
+    image: "/meals/yam-pottage.webp",
     category: "sides",
     tags: ["comfort-food"],
     servings: "Small tray",
@@ -399,7 +399,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Steamed bean pudding wrapped in leaves, made from blended peeled beans with peppers, onions, and boiled eggs. Soft and savoury.",
     price: 2.5,
-    image: "/meals/moi-moi.jpg",
+    image: "/meals/moi-moi.webp",
     category: "sides",
     tags: ["traditional"],
     servings: "Per wrap",
@@ -411,7 +411,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Crisp mixed greens with fresh vegetables, perfect as a light side to balance your meal.",
     price: 15,
-    image: "/meals/salad.jpg",
+    image: "/meals/salad.webp",
     category: "sides",
     tags: [],
   },
@@ -424,7 +424,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Golden, fluffy Nigerian doughnuts lightly sweetened and deep-fried to perfection. A beloved party snack.",
     price: 20,
-    image: "/meals/puff-puff.jpg",
+    image: "/meals/puff-puff.webp",
     category: "snacks",
     tags: ["street-food", "sweet"],
     servings: "From £20 per tray",
@@ -436,7 +436,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Flaky golden pastry filled with seasoned minced beef, potatoes, and carrots. A bakery classic.",
     price: 2,
-    image: "/meals/meat-pie.jpg",
+    image: "/meals/meat-pie.webp",
     category: "snacks",
     tags: ["popular"],
   },
@@ -447,7 +447,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Bite-sized version of the classic meat pie — perfect for parties and events. Flaky pastry, savoury filling.",
     price: 1.2,
-    image: "/meals/meat-pie-mini.jpg",
+    image: "/meals/meat-pie-mini.webp",
     category: "snacks",
     tags: ["party-favourite"],
   },
@@ -458,7 +458,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Flaky golden pastry filled with seasoned fish, onions, and peppers. A delicious alternative to the classic meat pie.",
     price: 2,
-    image: "/meals/fish-pie.jpg",
+    image: "/meals/fish-pie.webp",
     category: "snacks",
     tags: [],
   },
@@ -469,7 +469,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Bite-sized fish pie — perfect finger food for parties and gatherings. Light, flaky, and packed with flavour.",
     price: 1.2,
-    image: "/meals/fish-pie-mini.jpg",
+    image: "/meals/fish-pie-mini.webp",
     category: "snacks",
     tags: ["party-favourite"],
   },
@@ -480,7 +480,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Crispy pastry rolls filled with seasoned minced chicken and vegetables. A must-have party snack.",
     price: 15,
-    image: "/meals/spring-rolls.jpg",
+    image: "/meals/spring-rolls.webp",
     category: "snacks",
     tags: ["party-favourite"],
     servings: "Per platter",
@@ -492,7 +492,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Golden fried pastry parcels filled with spiced minced meat and vegetables. Crispy, savoury, and irresistible.",
     price: 15,
-    image: "/meals/samosa.jpg",
+    image: "/meals/samosa.webp",
     category: "snacks",
     tags: ["party-favourite"],
     servings: "Per platter",
@@ -504,7 +504,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Flaky pastry wrapped around seasoned sausage meat, baked until golden. A classic party favourite.",
     price: 15,
-    image: "/meals/sausage-roll.jpg",
+    image: "/meals/sausage-roll.webp",
     category: "snacks",
     tags: ["party-favourite"],
     servings: "Per platter",
@@ -518,7 +518,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Nigeria's favourite mocktail — a refreshing mix of Fanta, Sprite, grenadine, Angostura bitters, and cucumber slices.",
     price: 4.99,
-    image: "/meals/chapman.jpg",
+    image: "/meals/chapman.webp",
     category: "drinks",
     tags: ["non-alcoholic"],
   },
@@ -529,7 +529,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Chilled hibiscus flower drink infused with pineapple, ginger, and cloves. Naturally tangy and refreshing.",
     price: 3.99,
-    image: "/meals/zobo.jpg",
+    image: "/meals/zobo.webp",
     category: "drinks",
     tags: ["non-alcoholic", "natural"],
   },
@@ -540,7 +540,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Naturally fermented palm sap — sweet, mildly alcoholic, and served chilled. A true taste of tradition.",
     price: 8.99,
-    image: "/meals/palm-wine.jpg",
+    image: "/meals/palm-wine.webp",
     category: "drinks",
     tags: ["alcoholic", "traditional"],
   },
@@ -551,7 +551,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Smooth, spiced millet drink with ginger, cloves, and a hint of sweetness. A Northern Nigerian favourite served chilled.",
     price: 3.99,
-    image: "/meals/kunu.jpg",
+    image: "/meals/kunu.webp",
     category: "drinks",
     tags: ["non-alcoholic", "traditional"],
   },
@@ -562,7 +562,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Creamy tiger nut milk blended with dates, coconut, and ginger. Naturally sweet and incredibly refreshing.",
     price: 4.99,
-    image: "/meals/tiger-nut.jpg",
+    image: "/meals/tiger-nut.webp",
     category: "drinks",
     tags: ["non-alcoholic", "natural"],
   },
@@ -573,7 +573,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Fiery homemade ginger juice with lemon and honey. Warming, zesty, and packed with natural goodness.",
     price: 3.49,
-    image: "/meals/ginger-drink.jpg",
+    image: "/meals/ginger-drink.webp",
     category: "drinks",
     tags: ["non-alcoholic", "natural"],
     spicy: true,
@@ -587,7 +587,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Our signature party jollof in a half cooler — enough to feed a crowd. Smoky, spicy, and unforgettable.",
     price: 50,
-    image: "/meals/jollof-rice-half-cooler.jpg",
+    image: "/meals/jollof-rice-half-cooler.webp",
     category: "party-packs",
     tags: ["catering", "party-favourite"],
     spicy: true,
@@ -600,7 +600,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Full cooler of our legendary party jollof. The centrepiece of any celebration — smoky, perfectly seasoned, and cooked to perfection.",
     price: 100,
-    image: "/meals/jollof-rice-cooler.jpg",
+    image: "/meals/jollof-rice-cooler.webp",
     category: "party-packs",
     tags: ["catering", "party-favourite", "best-value"],
     spicy: true,
@@ -613,7 +613,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Colourful Nigerian fried rice in a half cooler, loaded with vegetables and seasoned to perfection for your event.",
     price: 60,
-    image: "/meals/fried-rice-half-cooler.jpg",
+    image: "/meals/fried-rice-half-cooler.webp",
     category: "party-packs",
     tags: ["catering"],
     servings: "Half cooler — serves 10-15",
@@ -625,7 +625,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Full cooler of vibrant Nigerian fried rice. Packed with mixed vegetables, liver, and prawns — a party essential.",
     price: 120,
-    image: "/meals/fried-rice-cooler.jpg",
+    image: "/meals/fried-rice-cooler.webp",
     category: "party-packs",
     tags: ["catering", "best-value"],
     servings: "Full cooler — serves 25-30",
@@ -637,7 +637,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Large pot of rich tomato and pepper stew with your choice of chicken or beef. Perfect for catering and events.",
     price: 90,
-    image: "/meals/chicken-beef-stew.jpg",
+    image: "/meals/chicken-beef-stew.webp",
     category: "party-packs",
     tags: ["catering"],
     servings: "Big pot — serves 15-20",
@@ -649,7 +649,7 @@ export const menuItems: MenuItem[] = [
     description:
       "The ultimate party starter — a mix of spring rolls, samosas, crab claws, tempura king prawns, coated prawns, and sausage rolls.",
     price: 50,
-    image: "/meals/small-chops.jpg",
+    image: "/meals/small-chops.webp",
     category: "party-packs",
     tags: ["party-favourite", "catering"],
     featured: true,
