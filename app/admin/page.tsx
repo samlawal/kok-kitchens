@@ -15,6 +15,7 @@ export default function AdminPage() {
     text: string;
   } | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function handleLogin(e: React.FormEvent) {
@@ -64,6 +65,7 @@ export default function AdminPage() {
 
       if (data.success) {
         setMessage({ type: "success", text: data.message });
+        setUploadedUrl(data.url);
         setPreview(null);
         if (fileRef.current) fileRef.current.value = "";
       } else {
@@ -162,6 +164,7 @@ export default function AdminPage() {
               setSelectedItem(e.target.value);
               setMessage(null);
               setPreview(null);
+              setUploadedUrl(null);
             }}
             className="w-full rounded-lg border border-stone-700 bg-stone-900 px-4 py-3 text-white focus:border-orange-500 focus:outline-none"
           >
@@ -181,17 +184,25 @@ export default function AdminPage() {
               <p className="text-sm font-medium text-stone-300 mb-2">
                 Current photo
               </p>
-              <div className="w-40 h-40 rounded-xl overflow-hidden bg-stone-900 border border-stone-800 relative">
-                <Image
-                  src={
-                    menuItems.find((m) => m.id === selectedItem)?.image ||
-                    "/meals/placeholder.webp"
-                  }
-                  alt="Current"
-                  fill
-                  className="object-cover"
-                  sizes="160px"
-                />
+              <div className="flex gap-4 items-end">
+                <div>
+                  <div className="w-40 h-40 rounded-xl overflow-hidden bg-stone-900 border border-stone-800 relative">
+                    <Image
+                      src={
+                        uploadedUrl ||
+                        menuItems.find((m) => m.id === selectedItem)?.image ||
+                        "/meals/placeholder.webp"
+                      }
+                      alt="Current"
+                      fill
+                      className="object-cover"
+                      sizes="160px"
+                    />
+                  </div>
+                  {uploadedUrl && (
+                    <p className="text-xs text-green-400 mt-1">New photo live!</p>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
     imageSizes: [64, 96, 128, 256, 384],
     // Cache optimised images for 1 year
     minimumCacheTTL: 31536000,
+    // Allow Vercel Blob images (uploaded via /admin)
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
   },
   // Compress all responses
   compress: true,
