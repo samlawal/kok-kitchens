@@ -7,15 +7,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const heroSlides = [
-  { src: "/meals/jollof-rice.webp", label: "Party Jollof Rice" },
-  { src: "/meals/scotch-bonnet-okra.webp", label: "Fresh Nigerian Ingredients" },
-  { src: "/meals/peppered-chicken.webp", label: "Peppered Chicken" },
-  { src: "/meals/egusi-soup.webp", label: "Egusi Soup" },
-  { src: "/meals/asun.webp", label: "Asun" },
-  { src: "/meals/fried-plantain.webp", label: "Fried Plantain (Dodo)" },
-  { src: "/meals/suya.webp", label: "Suya" },
-  { src: "/meals/okra-soup.webp", label: "Okra Soup" },
-  { src: "/meals/peppered-goat-meat.webp", label: "Peppered Goat" },
+  { src: "/meals/jollof-rice.webp", label: "Party Jollof Rice", blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAACwAQCdASoKAAkABUB8JbACdACPYEAAAPPcdK+frOX4zacOe+qR/t4d3NuFAx8jsIL7CgAA" },
+  { src: "/meals/scotch-bonnet-okra.webp", label: "Fresh Nigerian Ingredients", blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADwAQCdASoHAAoABUB8JbACdADbFpyQxgAA/oFVYRyU8wtr+0odoSP5g5hFRhggrPHXGReWRiHi4cxga3tQ5AAA" },
+  { src: "/meals/peppered-chicken.webp", label: "Peppered Chicken", blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACQAQCdASoKAAkABUB8JZgCdACPXEAA/iY8k3qWYCMChv/neKU3Z5rXnQ9vwkIK2Cm7uU3OiAAAAA==" },
+  { src: "/meals/egusi-soup.webp", label: "Egusi Soup", blur: "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACwAQCdASoKAAkABUB8JZgCdADZqjmIAPtzFJaChcN5fL+H8wKTNTdyrZsE0oAA" },
+  { src: "/meals/asun.webp", label: "Asun", blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoKAAkABUB8JaACdADcqTPEAADJXhfgFIkSm1ry7PDhjdm0MbghMq+AS2cIAAAA" },
+  { src: "/meals/fried-plantain.webp", label: "Fried Plantain (Dodo)", blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAABQAgCdASoKAAcABUB8JYgC7AEVcH1DXCcm5AAA/GU+5aroZHxQq4ZU9RGxFKzypabX05cgNpJAN2L3gP3p6KK7ysfGNcZTEAA=" },
+  { src: "/meals/suya.webp", label: "Suya", blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoKAAkABUB8JaACdADzMF4gAADKKobx/H0Gd6qEaCccWWmV6s2RZDDEHxcJqngP++aAAA==" },
+  { src: "/meals/okra-soup.webp", label: "Okra Soup", blur: "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoIAAoABUB8JZQAAxPDRs0AAP7gq2vjkSXUBz6CeYE6pAkwW3DQAsfcAAA=" },
+  { src: "/meals/peppered-goat-meat.webp", label: "Peppered Goat", blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAQCdASoKAAkABUB8JagCdADZDuHgAP2m7sk92AaL1IO/tOKK3+Mhrmqyy66Xula+WHJeqZWikXAAAAA=" },
 ];
 
 export default function HeroSection() {
@@ -165,6 +165,9 @@ export default function HeroSection() {
                     className="object-cover"
                     sizes="(max-width: 1024px) 0vw, 448px"
                     priority={current === 0}
+                    placeholder="blur"
+                    blurDataURL={slide.blur}
+                    quality={85}
                   />
                   {/* Gradient overlay at bottom */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
