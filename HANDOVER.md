@@ -67,7 +67,26 @@ That's it! You'll now get a push notification every time someone orders.
 
 > **Tip:** In the ntfy app settings, enable "Priority: High notifications" so order alerts bypass Do Not Disturb mode.
 
-### 2. Check Your Email
+### 2. Photo Manager (Update Dish Photos)
+
+You can update any dish photo yourself — no need to contact us.
+
+1. **Go to:** [https://kok-kitchens-samlawals-projects.vercel.app/admin](https://kok-kitchens-samlawals-projects.vercel.app/admin)
+   _(Once the custom domain is connected, this will be `kokkitchen.co.uk/admin`)_
+2. **Password:** `kok-admin-2026`
+3. **Select the dish** you want to update from the dropdown
+4. **Upload a new photo** — any format from your phone (JPG, PNG, HEIC)
+5. **Done** — the photo is automatically resized, optimized, and live on the site instantly
+
+> **Made a mistake?** Click "Undo Last Change" to revert to the previous photo.
+
+**Tips for great photos:**
+- Use natural daylight (near a window)
+- Shoot from above, looking down at the dish
+- Use a clean, plain surface (white plate, dark wood)
+- Avoid flash — it washes out food colours
+
+### 3. Check Your Email
 
 Order notification emails come from `orders@kokkitchen.co.uk`. Make sure to:
 - Check your inbox (and spam folder initially)
