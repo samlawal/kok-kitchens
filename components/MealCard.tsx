@@ -40,7 +40,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
       <Link href={`/menu/${item.slug}`} className="block">
-        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative">
+        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative meal-img-wrap">
           {hasImage ? (
             <Image
               src={item.image}

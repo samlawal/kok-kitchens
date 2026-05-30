@@ -53,7 +53,7 @@ export default function MealDetailClient({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 relative"
+            className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-orange-100 to-amber-50 relative meal-img-wrap"
           >
             {hasImage ? (
               <Image

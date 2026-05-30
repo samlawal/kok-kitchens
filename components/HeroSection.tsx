@@ -8,13 +8,14 @@ import { useState, useEffect } from "react";
 
 const heroSlides = [
   { src: "/meals/jollof-rice.jpg", label: "Party Jollof Rice" },
+  { src: "/meals/scotch-bonnet-okra.jpg", label: "Fresh Nigerian Ingredients" },
   { src: "/meals/peppered-chicken.jpg", label: "Peppered Chicken" },
   { src: "/meals/egusi-soup.jpg", label: "Egusi Soup" },
   { src: "/meals/asun.jpg", label: "Asun" },
+  { src: "/meals/fried-plantain.jpg", label: "Fried Plantain (Dodo)" },
   { src: "/meals/suya.jpg", label: "Suya" },
-  { src: "/meals/fried-rice.jpg", label: "Fried Rice" },
+  { src: "/meals/okra-soup.jpg", label: "Okra Soup" },
   { src: "/meals/peppered-goat-meat.jpg", label: "Peppered Goat" },
-  { src: "/meals/small-chops.jpg", label: "Small Chops" },
 ];
 
 export default function HeroSection() {

@@ -37,3 +37,28 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Food image treatment ────────────────────────────────── */
+/* Warm color grading + vignette to hide packaging edges */
+.meal-img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.meal-img-wrap > img {
+  filter: saturate(1.15) contrast(1.05) brightness(1.02);
+}
+
+/* Vignette overlay — darkens edges to hide trays/foil */
+.meal-img-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+  z-index: 1;
+}
