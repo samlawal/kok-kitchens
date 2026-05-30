@@ -26,7 +26,6 @@ export const menuItems: MenuItem[] = [
     image: "/meals/fried-rice.jpg",
     category: "rice-dishes",
     tags: ["popular"],
-    featured: true,
     servings: "Small tray — serves 4-6",
   },
   {
@@ -128,7 +127,6 @@ export const menuItems: MenuItem[] = [
     category: "soups-swallows",
     tags: ["spicy"],
     spicy: true,
-    featured: true,
   },
   {
     id: "ayamase",
@@ -355,6 +353,7 @@ export const menuItems: MenuItem[] = [
     image: "/meals/fried-plantain.jpg",
     category: "sides",
     tags: ["popular"],
+    featured: true,
     servings: "From £20",
   },
   {
@@ -605,7 +604,6 @@ export const menuItems: MenuItem[] = [
     category: "party-packs",
     tags: ["catering", "party-favourite", "best-value"],
     spicy: true,
-    featured: true,
     servings: "Full cooler — serves 25-30",
   },
   {
