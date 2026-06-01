@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChefHat, Phone, Mail, MapPin } from "lucide-react";
+import OphirCredit from "./OphirCredit";
 
 export default function Footer() {
   return (
@@ -117,6 +118,10 @@ export default function Footer() {
 
         <div className="mt-10 border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
           &copy; {new Date().getFullYear()} KOK Kitchen. All rights reserved.
+        </div>
+
+        <div className="mt-6">
+          <OphirCredit variant="dark" client="kok-kitchens" />
         </div>
       </div>
     </footer>
