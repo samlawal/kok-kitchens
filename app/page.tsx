@@ -5,6 +5,7 @@ import CateringCTA from "@/components/CateringCTA";
 import StatsSection from "@/components/StatsSection";
 import HowItWorks from "@/components/HowItWorks";
 import TestimonialMarquee from "@/components/TestimonialMarquee";
+import BudgetPicks from "@/components/BudgetPicks";
 import SectionDivider from "@/components/SectionDivider";
 
 export default function Home() {
@@ -13,12 +14,13 @@ export default function Home() {
       <HeroSection />
       <FeaturedMeals />
       <SectionDivider />
+      <CateringCTA />
       <HowItWorks />
       <StatsSection />
       <TestimonialMarquee />
       <WhyUsSection />
       <SectionDivider />
-      <CateringCTA />
+      <BudgetPicks />
     </>
   );
 }

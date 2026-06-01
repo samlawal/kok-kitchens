@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X, ChefHat } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
+import { formatPrice } from "@/lib/menu-data";
 
 export default function Header() {
-  const { totalItems, setIsCartOpen } = useCart();
+  const { totalItems, totalPrice, setIsCartOpen } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -23,13 +27,37 @@ export default function Header() {
     { href: "/about", label: "About" },
   ];
 
+  // On homepage: start transparent, scroll to dark glass
+  // On other pages: start white, scroll to dark glass
+  const headerBg = scrolled
+    ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
+    : isHome
+      ? "bg-transparent border-b border-transparent"
+      : "bg-white/95 backdrop-blur-md border-b border-stone-200";
+
+  const textColor = scrolled || isHome
+    ? "text-white"
+    : "text-stone-900";
+
+  const linkColor = scrolled || isHome
+    ? "text-stone-300 hover:text-orange-400"
+    : "text-stone-600 hover:text-orange-600";
+
+  const iconColor = scrolled || isHome
+    ? "text-stone-300 hover:text-orange-400"
+    : "text-stone-600 hover:text-orange-600";
+
+  const accentColor = scrolled || isHome
+    ? "text-orange-400"
+    : "text-orange-600";
+
+  const underlineColor = scrolled || isHome
+    ? "bg-orange-400"
+    : "bg-orange-600";
+
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
-          : "bg-white/95 backdrop-blur-md border-b border-stone-200"
-      }`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${headerBg}`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
@@ -42,21 +70,11 @@ export default function Header() {
               whileHover={{ rotate: 15 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <ChefHat
-                className={`h-8 w-8 transition-colors duration-300 ${
-                  scrolled ? "text-orange-400" : "text-orange-600"
-                }`}
-              />
+              <ChefHat className={`h-8 w-8 transition-colors duration-300 ${accentColor}`} />
             </motion.div>
-            <span
-              className={`text-xl font-bold tracking-tight transition-colors duration-300 ${
-                scrolled ? "text-white" : "text-stone-900"
-              }`}
-            >
-              Kok
-              <span className={scrolled ? "text-orange-400" : "text-orange-600"}>
-                Kitchens
-              </span>
+            <span className={`text-xl font-bold tracking-tight transition-colors duration-300 ${textColor}`}>
+              KOK
+              <span className={accentColor}> Kitchen</span>
             </span>
           </Link>
 
@@ -65,34 +83,36 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative text-sm font-medium transition-colors group ${
-                  scrolled
-                    ? "text-stone-300 hover:text-orange-400"
-                    : "text-stone-600 hover:text-orange-600"
-                }`}
+                className={`relative text-sm font-medium transition-colors group ${linkColor}`}
               >
                 {link.label}
-                <span
-                  className={`absolute -bottom-1 left-0 h-0.5 w-0 transition-all group-hover:w-full ${
-                    scrolled ? "bg-orange-400" : "bg-orange-600"
-                  }`}
-                />
+                <span className={`absolute -bottom-1 left-0 h-0.5 w-0 transition-all group-hover:w-full ${underlineColor}`} />
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Mobile "Order" pill — always visible on mobile */}
+            <Link
+              href="/menu"
+              className="md:hidden inline-flex items-center rounded-full bg-orange-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-orange-500 transition-colors"
+            >
+              Order
+            </Link>
+
+            {/* Cart with total on desktop */}
             <motion.button
               onClick={() => setIsCartOpen(true)}
-              className={`relative p-2 transition-colors ${
-                scrolled
-                  ? "text-stone-300 hover:text-orange-400"
-                  : "text-stone-600 hover:text-orange-600"
-              }`}
+              className={`relative flex items-center gap-1.5 p-2 transition-colors ${iconColor}`}
               aria-label="Open cart"
               whileTap={{ scale: 0.9 }}
             >
               <ShoppingBag className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="hidden sm:inline text-xs font-semibold">
+                  {formatPrice(totalPrice)}
+                </span>
+              )}
               <AnimatePresence>
                 {totalItems > 0 && (
                   <motion.span
@@ -111,9 +131,7 @@ export default function Header() {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden p-2 ${
-                scrolled ? "text-stone-300" : "text-stone-600"
-              }`}
+              className={`md:hidden p-2 ${iconColor}`}
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -132,9 +150,7 @@ export default function Header() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className={`md:hidden overflow-hidden border-t ${
-                scrolled ? "border-stone-800" : "border-stone-100"
-              }`}
+              className="md:hidden overflow-hidden border-t border-stone-800/50"
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link, i) => (
@@ -147,11 +163,7 @@ export default function Header() {
                     <Link
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
-                        scrolled
-                          ? "text-stone-300 hover:bg-stone-800 hover:text-orange-400"
-                          : "text-stone-700 hover:bg-orange-50 hover:text-orange-600"
-                      }`}
+                      className="block px-3 py-2 rounded-lg text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-orange-400 transition-colors"
                     >
                       {link.label}
                     </Link>

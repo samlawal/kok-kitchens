@@ -67,7 +67,7 @@ export default function CategoryFilter({
       {canScrollRight && (
         <div className="absolute right-0 top-0 bottom-2 flex items-center pointer-events-none">
           <div className="w-16 h-full bg-gradient-to-l from-stone-50 via-stone-50/80 to-transparent" />
-          <div className="absolute right-0 flex items-center justify-center w-8 h-8 rounded-full bg-stone-50 animate-pulse">
+          <div className="absolute right-0 flex items-center justify-center w-8 h-8 rounded-full bg-stone-50 animate-[pulse_1.5s_ease-in-out_3]">
             <ChevronRight className="h-4 w-4 text-orange-500" />
           </div>
         </div>

@@ -4,10 +4,10 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const stats = [
-  { value: "50+", label: "Menu Items" },
-  { value: "500+", label: "Events Catered" },
-  { value: "4.9", label: "Average Rating" },
-  { value: "10k+", label: "Happy Customers" },
+  { value: "50+", label: "Dishes on Menu" },
+  { value: "7", label: "Categories" },
+  { value: "200+", label: "Guest Events" },
+  { value: "WD7", label: "Hertfordshire" },
 ];
 
 export default function StatsSection() {

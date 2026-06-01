@@ -67,7 +67,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
             </span>
           )}
           {item.servings && (
-            <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full z-10">
+            <span className="absolute bottom-3 left-3 bg-orange-600/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full z-10">
               {item.servings}
             </span>
           )}

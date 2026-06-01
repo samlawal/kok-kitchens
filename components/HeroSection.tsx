@@ -63,7 +63,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950 min-h-[100vh] flex items-center justify-center">
+    <section className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950 min-h-[85vh] lg:min-h-[100vh] flex items-center justify-center">
       {/* Layered gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -193,7 +193,7 @@ export default function HeroSection() {
           </Link>
           <Link
             href="/catering"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-700 px-10 py-4 text-base font-semibold text-stone-300 hover:border-orange-500/50 hover:text-white transition-all"
+            className="hidden sm:inline-flex items-center justify-center gap-2 rounded-full border border-stone-700 px-10 py-4 text-base font-semibold text-stone-300 hover:border-orange-500/50 hover:text-white transition-all"
           >
             Catering Services
           </Link>
