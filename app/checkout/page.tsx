@@ -2,18 +2,50 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, MapPin, Package } from "lucide-react";
+import { ArrowLeft, MapPin, Package, Truck, Info } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
 
+// Local postcodes — self-delivery at £4.99
+const LOCAL_POSTCODES = [
+  "WD6", "WD7", "WD23", "WD25", // Borehamwood, Radlett, Bushey, Watford
+  "EN5", "EN6",                   // Barnet, Potters Bar
+];
+
+// Extended postcodes — courier at £7.99
+const EXTENDED_POSTCODES = [
+  "WD1", "WD2", "WD3", "WD4", "WD5", "WD17", "WD18", "WD19", "WD24",
+  "HA0", "HA1", "HA2", "HA3", "HA4", "HA5", "HA6", "HA7", "HA8", "HA9",
+  "NW4", "NW7", "NW9", "NW11",
+  "N2", "N3", "N11", "N12", "N14", "N20",
+  "EN1", "EN2", "EN3", "EN4", "EN7", "EN8",
+  "AL1", "AL2", "AL3", "AL4", "AL10",
+  "HP1", "HP2", "HP3",
+];
+
+type DeliveryType = "delivery-local" | "delivery-extended" | "pickup";
+
+function getDeliveryZone(postcode: string): "local" | "extended" | "unknown" {
+  const prefix = postcode.toUpperCase().replace(/\s/g, "").match(/^[A-Z]+\d+/)?.[0] || "";
+  if (LOCAL_POSTCODES.includes(prefix)) return "local";
+  if (EXTENDED_POSTCODES.includes(prefix)) return "extended";
+  return "unknown";
+}
+
+function getDeliveryFee(type: DeliveryType): number {
+  if (type === "delivery-local") return 4.99;
+  if (type === "delivery-extended") return 7.99;
+  return 0;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCart();
-  const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">(
-    "delivery"
-  );
+  const [deliveryType, setDeliveryType] = useState<DeliveryType>("delivery-local");
   const [submitting, setSubmitting] = useState(false);
+  const [postcode, setPostcode] = useState("");
+  const [postcodeChecked, setPostcodeChecked] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -23,8 +55,29 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  const deliveryFee = deliveryType === "delivery" ? 4.99 : 0;
+  const deliveryFee = getDeliveryFee(deliveryType);
   const grandTotal = totalPrice + deliveryFee;
+  const isDelivery = deliveryType !== "pickup";
+
+  function handlePostcodeCheck(value: string) {
+    setPostcode(value);
+    if (value.length >= 3) {
+      const zone = getDeliveryZone(value);
+      if (zone === "local") {
+        setDeliveryType("delivery-local");
+        setPostcodeChecked(true);
+      } else if (zone === "extended") {
+        setDeliveryType("delivery-extended");
+        setPostcodeChecked(true);
+      } else {
+        setPostcodeChecked(true);
+      }
+    } else {
+      setPostcodeChecked(false);
+    }
+  }
+
+  const postcodeZone = postcode.length >= 3 ? getDeliveryZone(postcode) : null;
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -39,14 +92,9 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: items.map((i) => ({
-            id: i.menuItem.id,
-            name: i.menuItem.name,
-            price: i.menuItem.price,
-            quantity: i.quantity,
-          })),
-          customer: form,
-          deliveryType,
+          items,
+          customer: { ...form, postcode },
+          deliveryType: isDelivery ? "delivery" : "pickup",
           subtotal: totalPrice,
           deliveryFee,
           total: grandTotal,
@@ -102,62 +150,108 @@ export default function CheckoutPage() {
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-3 space-y-6">
+              {/* Delivery Method */}
               <div className="rounded-2xl bg-white border border-stone-200 p-6">
                 <h2 className="text-lg font-semibold text-stone-900 mb-4">
                   Delivery Method
                 </h2>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3 mb-4">
                   <button
                     type="button"
-                    onClick={() => setDeliveryType("delivery")}
-                    className={`flex items-center gap-3 rounded-xl border-2 p-4 transition-colors ${
-                      deliveryType === "delivery"
+                    onClick={() => { setDeliveryType("delivery-local"); setPostcodeChecked(false); }}
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
+                      deliveryType === "delivery-local"
                         ? "border-orange-500 bg-orange-50"
                         : "border-stone-200 hover:border-stone-300"
                     }`}
                   >
-                    <MapPin
-                      className={`h-5 w-5 ${
-                        deliveryType === "delivery"
-                          ? "text-orange-600"
-                          : "text-stone-400"
-                      }`}
-                    />
-                    <div className="text-left">
-                      <p className="font-medium text-stone-900 text-sm">
-                        Delivery
-                      </p>
-                      <p className="text-xs text-stone-500">
-                        {formatPrice(4.99)}
-                      </p>
+                    <MapPin className={`h-5 w-5 ${deliveryType === "delivery-local" ? "text-orange-600" : "text-stone-400"}`} />
+                    <div className="text-center">
+                      <p className="font-medium text-stone-900 text-sm">Local</p>
+                      <p className="text-xs text-stone-500">{formatPrice(4.99)}</p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setDeliveryType("delivery-extended"); setPostcodeChecked(false); }}
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
+                      deliveryType === "delivery-extended"
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-stone-200 hover:border-stone-300"
+                    }`}
+                  >
+                    <Truck className={`h-5 w-5 ${deliveryType === "delivery-extended" ? "text-orange-600" : "text-stone-400"}`} />
+                    <div className="text-center">
+                      <p className="font-medium text-stone-900 text-sm">Extended</p>
+                      <p className="text-xs text-stone-500">{formatPrice(7.99)}</p>
                     </div>
                   </button>
                   <button
                     type="button"
                     onClick={() => setDeliveryType("pickup")}
-                    className={`flex items-center gap-3 rounded-xl border-2 p-4 transition-colors ${
+                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-colors ${
                       deliveryType === "pickup"
                         ? "border-orange-500 bg-orange-50"
                         : "border-stone-200 hover:border-stone-300"
                     }`}
                   >
-                    <Package
-                      className={`h-5 w-5 ${
-                        deliveryType === "pickup"
-                          ? "text-orange-600"
-                          : "text-stone-400"
-                      }`}
-                    />
-                    <div className="text-left">
-                      <p className="font-medium text-stone-900 text-sm">
-                        Pickup
-                      </p>
+                    <Package className={`h-5 w-5 ${deliveryType === "pickup" ? "text-orange-600" : "text-stone-400"}`} />
+                    <div className="text-center">
+                      <p className="font-medium text-stone-900 text-sm">Pickup</p>
                       <p className="text-xs text-stone-500">Free</p>
                     </div>
                   </button>
                 </div>
+
+                {/* Postcode checker for delivery */}
+                {isDelivery && (
+                  <div className="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
+                    <label className="block text-sm font-medium text-stone-700 mb-2">
+                      Check your postcode
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={postcode}
+                        onChange={(e) => handlePostcodeCheck(e.target.value)}
+                        placeholder="e.g. WD7 8PQ"
+                        className="flex-1 rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 uppercase focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                        maxLength={8}
+                      />
+                    </div>
+                    {postcodeChecked && postcodeZone === "local" && (
+                      <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-xs">✓</span>
+                        Local delivery — {formatPrice(4.99)}
+                      </div>
+                    )}
+                    {postcodeChecked && postcodeZone === "extended" && (
+                      <div className="mt-2 flex items-center gap-2 text-sm text-orange-600">
+                        <Truck className="h-4 w-4" />
+                        Extended delivery — {formatPrice(7.99)}
+                      </div>
+                    )}
+                    {postcodeChecked && postcodeZone === "unknown" && (
+                      <div className="mt-2 flex items-start gap-2 text-sm text-stone-500">
+                        <Info className="h-4 w-4 shrink-0 mt-0.5" />
+                        <span>
+                          We may not deliver to this area yet.
+                          <a href="https://wa.me/44744782712?text=Hi!%20Do%20you%20deliver%20to%20my%20area%3F%20My%20postcode%20is%20" target="_blank" rel="noopener noreferrer" className="text-green-600 font-medium ml-1">
+                            WhatsApp us to check →
+                          </a>
+                        </span>
+                      </div>
+                    )}
+                    <p className="mt-2 text-xs text-stone-400">
+                      <strong>Local:</strong> Borehamwood, Radlett, Bushey, Barnet, Potters Bar
+                      <br />
+                      <strong>Extended:</strong> Watford, Harrow, North London, St Albans, Hemel
+                    </p>
+                  </div>
+                )}
               </div>
 
+              {/* Customer Details */}
               <div className="rounded-2xl bg-white border border-stone-200 p-6">
                 <h2 className="text-lg font-semibold text-stone-900 mb-4">
                   Your Details
@@ -203,7 +297,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {deliveryType === "delivery" && (
+                  {isDelivery && (
                     <>
                       <div>
                         <label className="block text-sm font-medium text-stone-700 mb-1">
@@ -213,26 +307,37 @@ export default function CheckoutPage() {
                           type="text"
                           required
                           value={form.address}
-                          onChange={(e) =>
-                            updateField("address", e.target.value)
-                          }
+                          onChange={(e) => updateField("address", e.target.value)}
                           className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                         />
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-stone-700 mb-1">
-                          City *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={form.city}
-                          onChange={(e) =>
-                            updateField("city", e.target.value)
-                          }
-                          placeholder="e.g. Radlett, Borehamwood, Watford"
-                          className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                            City *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={form.city}
+                            onChange={(e) => updateField("city", e.target.value)}
+                            placeholder="e.g. Radlett, Borehamwood"
+                            className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                            Postcode *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={postcode}
+                            onChange={(e) => handlePostcodeCheck(e.target.value)}
+                            placeholder="e.g. WD7 8PQ"
+                            className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 uppercase focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                          />
+                        </div>
                       </div>
                     </>
                   )}
@@ -253,6 +358,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            {/* Order Summary */}
             <div className="lg:col-span-2">
               <div className="rounded-2xl bg-white border border-stone-200 p-6 sticky top-24">
                 <h2 className="text-lg font-semibold text-stone-900 mb-4">
@@ -281,7 +387,15 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-stone-500">Delivery</span>
+                    <span className="text-stone-500">
+                      Delivery
+                      {deliveryType === "delivery-local" && (
+                        <span className="text-xs text-stone-400 ml-1">(local)</span>
+                      )}
+                      {deliveryType === "delivery-extended" && (
+                        <span className="text-xs text-stone-400 ml-1">(extended)</span>
+                      )}
+                    </span>
                     <span className="text-stone-700">
                       {deliveryFee === 0
                         ? "Free"
@@ -321,7 +435,7 @@ export default function CheckoutPage() {
                           (i) =>
                             `${i.quantity}x ${i.menuItem.name} (${formatPrice(i.menuItem.price * i.quantity)})`
                         )
-                        .join("\n")}\n\nSubtotal: ${formatPrice(totalPrice)}${deliveryFee > 0 ? `\nDelivery: ${formatPrice(deliveryFee)}` : ""}\nTotal: ${formatPrice(grandTotal)}\n\nDelivery type: ${deliveryType}`
+                        .join("\n")}\n\nSubtotal: ${formatPrice(totalPrice)}${deliveryFee > 0 ? `\nDelivery: ${formatPrice(deliveryFee)}` : ""}\nTotal: ${formatPrice(grandTotal)}\n\nDelivery type: ${deliveryType === "pickup" ? "Pickup" : "Delivery"}${postcode ? `\nPostcode: ${postcode}` : ""}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
