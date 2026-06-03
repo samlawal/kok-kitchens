@@ -27,31 +27,35 @@ export default function Header() {
     { href: "/about", label: "About" },
   ];
 
-  // On homepage: start transparent, scroll to dark glass
-  // On other pages: start white, scroll to dark glass
-  const headerBg = scrolled
-    ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
-    : isHome
-      ? "bg-transparent border-b border-transparent"
+  // Homepage: transparent → dark glass on scroll
+  // Other pages: white → white with shadow on scroll (stays light)
+  const headerBg = isHome
+    ? scrolled
+      ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
+      : "bg-transparent border-b border-transparent"
+    : scrolled
+      ? "bg-white/95 backdrop-blur-xl border-b border-stone-200 shadow-sm"
       : "bg-white/95 backdrop-blur-md border-b border-stone-200";
 
-  const textColor = scrolled || isHome
-    ? "text-white"
+  const isDark = isHome; // only dark text on homepage
+
+  const textColor = isDark
+    ? scrolled ? "text-white" : "text-white"
     : "text-stone-900";
 
-  const linkColor = scrolled || isHome
+  const linkColor = isDark
     ? "text-stone-300 hover:text-orange-400"
     : "text-stone-600 hover:text-orange-600";
 
-  const iconColor = scrolled || isHome
+  const iconColor = isDark
     ? "text-stone-300 hover:text-orange-400"
     : "text-stone-600 hover:text-orange-600";
 
-  const accentColor = scrolled || isHome
+  const accentColor = isDark
     ? "text-orange-400"
     : "text-orange-600";
 
-  const underlineColor = scrolled || isHome
+  const underlineColor = isDark
     ? "bg-orange-400"
     : "bg-orange-600";
 
@@ -150,7 +154,7 @@ export default function Header() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="md:hidden overflow-hidden border-t border-stone-800/50"
+              className={`md:hidden overflow-hidden border-t ${isDark ? "border-stone-800/50" : "border-stone-100"}`}
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link, i) => (
@@ -163,7 +167,11 @@ export default function Header() {
                     <Link
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block px-3 py-2 rounded-lg text-base font-medium text-stone-300 hover:bg-stone-800 hover:text-orange-400 transition-colors"
+                      className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
+                        isDark
+                          ? "text-stone-300 hover:bg-stone-800 hover:text-orange-400"
+                          : "text-stone-700 hover:bg-orange-50 hover:text-orange-600"
+                      }`}
                     >
                       {link.label}
                     </Link>
