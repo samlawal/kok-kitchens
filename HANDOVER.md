@@ -103,7 +103,7 @@ Order notification emails come from `orders@kokkitchen.co.uk`. Make sure to:
 | **Menu Item** (`/menu/jollof-rice-small-tray`) | Individual dish detail page with related items |
 | **Catering** (`/catering`) | Event catering info with quote request form |
 | **About** (`/about`) | Your story, mission, and values |
-| **Checkout** (`/checkout`) | Customer details form, delivery/pickup toggle, order summary |
+| **Checkout** (`/checkout`) | Postcode-based delivery pricing, customer form, order summary, WhatsApp option |
 | **Order Success** (`/checkout/success`) | Confirmation page after order is placed |
 
 ---
@@ -123,6 +123,47 @@ Your menu is stored in the website code at `lib/menu-data.ts`. It contains **53 
 | Party Packs | Jollof/Fried Rice Coolers, Stew Big Pot, Small Chops Platter | £50 – £120 |
 
 **To update prices or add new dishes:** Contact Ophir Digital. We'll update the menu and deploy within 24 hours.
+
+---
+
+## Delivery Zones & Pricing
+
+Your checkout automatically detects the customer's delivery zone when they type their postcode. The price adjusts in real-time:
+
+| Zone | Delivery Fee | Areas | Postcodes |
+|---|---|---|---|
+| **Local** | £4.99 | Borehamwood, Radlett, Bushey, Watford (nearby), Barnet, Potters Bar | WD6, WD7, WD23, WD25, EN5, EN6 |
+| **Extended** | £7.99 | Watford, Harrow, North London, St Albans, Hemel Hempstead | WD1-5, WD17-19, WD24, HA0-9, NW4/7/9/11, N2/3/11/12/14/20, EN1-4/7/8, AL1-4/10, HP1-3 |
+| **Pickup** | Free | Collect from KOK Kitchen | — |
+| **Out of area** | — | Customer sees "WhatsApp us to check" with a direct link | Everything else |
+
+### How It Works for Customers
+
+1. Customer adds items to cart and goes to checkout
+2. They choose **Local**, **Extended**, or **Pickup**
+3. They type their postcode — the system instantly shows:
+   - ✅ Green tick for local (£4.99)
+   - 🚚 Truck icon for extended (£7.99)
+   - ⚠️ "WhatsApp us to check" for unknown areas
+4. The order total updates automatically
+5. Customers can also tap **"Order via WhatsApp"** to send their full cart as a WhatsApp message instead
+
+### Test It Yourself
+
+Try these postcodes on your checkout page to see it in action:
+
+| Type this | Result |
+|---|---|
+| `WD7 8PQ` | ✅ Local — £4.99 (Radlett) |
+| `WD6 1JN` | ✅ Local — £4.99 (Borehamwood) |
+| `HA7 4LP` | 🚚 Extended — £7.99 (Stanmore) |
+| `NW7 1QD` | 🚚 Extended — £7.99 (Mill Hill) |
+| `AL1 3TJ` | 🚚 Extended — £7.99 (St Albans) |
+| `E1 6AN` | ⚠️ Out of area — WhatsApp link |
+
+### Expanding Your Delivery Area
+
+As your business grows, we can easily add new postcodes to either the local or extended zone. Just tell us which areas you want to cover and we'll update it within 24 hours.
 
 ---
 
