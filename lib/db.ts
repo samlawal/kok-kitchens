@@ -29,5 +29,15 @@ export async function initDb() {
     )
   `;
 
+  // Price overrides — admin can update prices without code changes
+  await sql`
+    CREATE TABLE IF NOT EXISTS price_overrides (
+      menu_item_id TEXT PRIMARY KEY,
+      price NUMERIC(10,2) NOT NULL,
+      updated_by TEXT DEFAULT 'admin',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   return true;
 }
