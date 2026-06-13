@@ -109,9 +109,8 @@ function HeroBackground() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Dark cinematic overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-950/70 to-stone-950/90" />
-      <div className="absolute inset-0 bg-gradient-to-r from-stone-950/40 to-stone-950/40" />
+      {/* Light overlay — lets food photos shine */}
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/40 via-stone-950/30 to-stone-950/50" />
     </div>
   );
 }
@@ -154,7 +153,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold text-white leading-[0.95] tracking-tight"
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold text-white leading-[0.95] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]"
         >
           <span className="block">KOK</span>
           <span className="block mt-1 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500" style={{ backgroundSize: "200% 100%" }}>
@@ -181,7 +180,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-8 h-10 flex items-center justify-center"
         >
-          <span className="text-stone-500 text-lg sm:text-xl mr-2">
+          <span className="text-stone-300 text-lg sm:text-xl mr-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
             Home of
           </span>
           <AnimatePresence mode="wait">
@@ -203,7 +202,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="mt-6 text-base sm:text-lg text-stone-400 leading-relaxed max-w-2xl mx-auto"
+          className="mt-6 text-base sm:text-lg text-stone-200 leading-relaxed max-w-2xl mx-auto drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"
         >
           Authentic Nigerian cuisine made fresh daily. Order for delivery
           across Hertfordshire or let us cater your next event — from intimate
