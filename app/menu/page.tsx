@@ -58,7 +58,7 @@ export default function MenuPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-800 py-20 text-center">
+      <div className="relative overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 py-20 text-center">
         {/* Animated mesh gradient */}
         <div className="absolute inset-0 pointer-events-none">
           <motion.div

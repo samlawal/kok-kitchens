@@ -57,9 +57,9 @@ const features = [
 
 export default function WhyUsSection() {
   return (
-    <section className="py-20 sm:py-24 bg-stone-950 relative overflow-hidden">
+    <section className="py-20 sm:py-24 bg-slate-900 relative overflow-hidden">
       {/* Subtle background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-orange-500/[0.03] blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-blue-500/[0.03] blur-[120px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <FadeIn className="text-center mb-14">

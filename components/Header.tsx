@@ -31,7 +31,7 @@ export default function Header() {
   // Other pages: white → white with shadow on scroll (stays light)
   const headerBg = isHome
     ? scrolled
-      ? "bg-stone-950/80 backdrop-blur-xl border-b border-stone-800/50 shadow-lg shadow-black/10"
+      ? "bg-slate-900/90 backdrop-blur-xl border-b border-slate-700/50 shadow-lg shadow-black/10"
       : "bg-transparent border-b border-transparent"
     : scrolled
       ? "bg-white/95 backdrop-blur-xl border-b border-stone-200 shadow-sm"
@@ -154,7 +154,7 @@ export default function Header() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className={`md:hidden overflow-hidden border-t ${isDark ? "border-stone-800/50" : "border-stone-100"}`}
+              className={`md:hidden overflow-hidden border-t ${isDark ? "border-slate-700/50" : "border-stone-100"}`}
             >
               <div className="py-4 space-y-1">
                 {navLinks.map((link, i) => (
@@ -169,7 +169,7 @@ export default function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors ${
                         isDark
-                          ? "text-stone-300 hover:bg-stone-800 hover:text-orange-400"
+                          ? "text-stone-300 hover:bg-slate-800 hover:text-orange-400"
                           : "text-stone-700 hover:bg-orange-50 hover:text-orange-600"
                       }`}
                     >

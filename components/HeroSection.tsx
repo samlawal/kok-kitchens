@@ -19,13 +19,10 @@ const taglines = [
 ];
 
 const heroImages = [
-  { src: "/meals/chapman.webp", alt: "Chapman cocktail" },
   { src: "/meals/jollof-rice.webp", alt: "Party Jollof Rice" },
-  { src: "/meals/zobo.webp", alt: "Zobo drink" },
   { src: "/meals/asun.webp", alt: "Asun with peppers" },
   { src: "/meals/fried-plantain.webp", alt: "Fried Plantain" },
   { src: "/meals/puff-puff.webp", alt: "Puff Puff" },
-  { src: "/meals/ofada-rice.webp", alt: "Ofada Rice" },
   { src: "/meals/dodo-gizzard.webp", alt: "Dodo Gizzard" },
 ];
 

@@ -42,7 +42,7 @@ export default function CateringPage() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <div className="bg-gradient-to-br from-stone-900 via-stone-800 to-orange-950 py-20 text-center">
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-orange-950 py-20 text-center">
         <Users className="h-10 w-10 text-orange-400 mx-auto mb-4" />
         <h1 className="text-4xl font-bold text-white tracking-tight">
           Catering Services
