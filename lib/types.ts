@@ -19,6 +19,8 @@ export interface MenuItem {
   featured?: boolean;
   spicy?: boolean;
   servings?: string;
+  /** "available" (default) | "unavailable" (greyed out) | "hidden" (removed from menu) */
+  availability?: "available" | "unavailable" | "hidden";
 }
 
 export interface CartItem {

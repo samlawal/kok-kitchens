@@ -39,5 +39,15 @@ export async function initDb() {
     )
   `;
 
+  // Item availability — admin can mark items as unavailable or hidden
+  await sql`
+    CREATE TABLE IF NOT EXISTS item_availability (
+      menu_item_id TEXT PRIMARY KEY,
+      status TEXT NOT NULL DEFAULT 'available',
+      updated_by TEXT DEFAULT 'admin',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   return true;
 }

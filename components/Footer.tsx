@@ -14,7 +14,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4">
               <ChefHat className="h-7 w-7 text-orange-500" />
               <span className="text-lg font-bold text-white">
-                KOK <span className="text-orange-500">Kitchen</span>
+                KOK <span className="text-orange-500">Kitchens</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed text-stone-400">
@@ -54,15 +54,15 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-orange-500 shrink-0" />
-                hello@kokkitchen.co.uk
+                orders@kokkitchens.com
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-orange-500 shrink-0" />
-                +44 7447 82712
+                +44 7447 982712
               </li>
               <li>
                 <a
-                  href="https://wa.me/44744782712"
+                  href="https://wa.me/447447982712"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors"
@@ -86,7 +86,8 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>Mon – Fri: 10am – 9pm</li>
-              <li>Sat – Sun: 11am – 10pm</li>
+              <li>Sat: 11am – 10pm</li>
+              <li>Sun: Pre-book only (call us)</li>
               <li className="pt-2">
                 <span className="text-orange-400 font-medium">
                   Catering: Available 7 days
@@ -102,7 +103,7 @@ export default function Footer() {
                 IG
               </a>
               <a
-                href="https://wa.me/44744782712"
+                href="https://wa.me/447447982712"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-stone-800 hover:bg-green-600 transition-colors"
@@ -117,7 +118,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
-          &copy; {new Date().getFullYear()} KOK Kitchen. All rights reserved.
+          &copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.
         </div>
 
         <div className="mt-6">

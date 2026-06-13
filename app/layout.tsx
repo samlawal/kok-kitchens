@@ -21,8 +21,8 @@ const siteUrl = "https://kok-kitchens-samlawals-projects.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    default: "KOK Kitchen — Authentic Nigerian Food Ordering & Catering",
-    template: "%s | KOK Kitchen",
+    default: "KOK Kitchens — Authentic Nigerian Food Ordering & Catering",
+    template: "%s | KOK Kitchens",
   },
   description:
     "Order authentic Nigerian meals for delivery across Hertfordshire or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_GB",
     url: siteUrl,
-    siteName: "KOK Kitchen",
-    title: "KOK Kitchen — Authentic Nigerian Food Ordering & Catering",
+    siteName: "KOK Kitchens",
+    title: "KOK Kitchens — Authentic Nigerian Food Ordering & Catering",
     description:
       "50+ authentic Nigerian dishes delivered across Hertfordshire. Jollof rice, egusi soup, suya, peppered chicken & more. Order online or WhatsApp us.",
     images: [
@@ -40,13 +40,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "KOK Kitchen — Authentic Nigerian Cuisine",
+        alt: "KOK Kitchens — Authentic Nigerian Cuisine",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "KOK Kitchen — Authentic Nigerian Food",
+    title: "KOK Kitchens — Authentic Nigerian Food",
     description:
       "Order authentic Nigerian meals for delivery across Hertfordshire. 50+ dishes, event catering, fast delivery.",
     images: ["/og-image.png"],

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -15,6 +16,24 @@ const taglines = [
   "Small Chops",
   "Fried Rice",
   "Pepper Soup",
+];
+
+const heroImages = [
+  { src: "/meals/chapman.webp", alt: "Chapman cocktail" },
+  { src: "/meals/jollof-rice.webp", alt: "Party Jollof Rice" },
+  { src: "/meals/zobo.webp", alt: "Zobo drink" },
+  { src: "/meals/asun.webp", alt: "Asun with peppers" },
+  { src: "/meals/fried-plantain.webp", alt: "Fried Plantain" },
+  { src: "/meals/puff-puff.webp", alt: "Puff Puff" },
+  { src: "/meals/ofada-rice.webp", alt: "Ofada Rice" },
+  { src: "/meals/dodo-gizzard.webp", alt: "Dodo Gizzard" },
+];
+
+const kenBurnsVariants = [
+  { scale: [1.0, 1.25], x: ["0%", "5%"], y: ["0%", "3%"] },
+  { scale: [1.1, 1.3], x: ["0%", "-5%"], y: ["0%", "-3%"] },
+  { scale: [1.05, 1.2], x: ["-3%", "3%"], y: ["2%", "-2%"] },
+  { scale: [1.1, 1.25], x: ["3%", "-3%"], y: ["-2%", "3%"] },
 ];
 
 // Floating ember particles
@@ -52,6 +71,51 @@ function Embers() {
   );
 }
 
+function HeroBackground() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % heroImages.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="absolute inset-0">
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={current}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            animate={kenBurnsVariants[current % kenBurnsVariants.length]}
+            transition={{ duration: 6, ease: "linear" }}
+          >
+            <Image
+              src={heroImages[current].src}
+              alt={heroImages[current].alt}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority={current === 0}
+            />
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Dark cinematic overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-950/70 to-stone-950/90" />
+      <div className="absolute inset-0 bg-gradient-to-r from-stone-950/40 to-stone-950/40" />
+    </div>
+  );
+}
+
 export default function HeroSection() {
   const [taglineIdx, setTaglineIdx] = useState(0);
 
@@ -63,43 +127,12 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950 min-h-[85vh] lg:min-h-[100vh] flex items-center justify-center">
-      {/* Layered gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ x: [0, 40, 0], y: [0, -30, 0], scale: [1, 1.2, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[10%] left-[15%] w-[500px] h-[500px] rounded-full bg-orange-600/8 blur-[120px]"
-        />
-        <motion.div
-          animate={{ x: [0, -30, 0], y: [0, 40, 0], scale: [1, 1.15, 1] }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-          className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-amber-500/6 blur-[100px]"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], opacity: [0.04, 0.08, 0.04] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-orange-500/5 blur-[150px]"
-        />
-      </div>
+    <section className="relative overflow-hidden bg-stone-950 min-h-[85vh] lg:min-h-[100vh] flex items-center justify-center">
+      {/* Cinematic rolling food background */}
+      <HeroBackground />
 
       {/* Floating embers */}
       <Embers />
-
-      {/* Subtle grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
 
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center">
         {/* Eyebrow */}
@@ -136,7 +169,7 @@ export default function HeroSection() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Kitchen
+              Kitchens
             </motion.span>
           </span>
         </motion.h1>
@@ -198,7 +231,7 @@ export default function HeroSection() {
             Catering Services
           </Link>
           <a
-            href="https://wa.me/44744782712?text=Hi%20Kok%20Kitchen!%20I%27d%20like%20to%20place%20an%20order"
+            href="https://wa.me/447447982712?text=Hi%20KOK%20Kitchens!%20I%27d%20like%20to%20place%20an%20order"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full border border-green-700/50 px-8 py-4 text-base font-semibold text-green-400 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all"

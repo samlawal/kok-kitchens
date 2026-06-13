@@ -24,7 +24,10 @@ export default function MealCard({ item }: { item: MenuItem }) {
   const [justAdded, setJustAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
+  const isUnavailable = item.availability === "unavailable";
+
   function handleAdd() {
+    if (isUnavailable) return;
     addItem(item);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
@@ -35,12 +38,16 @@ export default function MealCard({ item }: { item: MenuItem }) {
 
   return (
     <motion.div
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-stone-200 shadow-sm hover:shadow-xl transition-shadow duration-300"
-      whileHover={{ y: -4 }}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white border shadow-sm transition-shadow duration-300 ${
+        isUnavailable
+          ? "border-stone-300 opacity-75"
+          : "border-stone-200 hover:shadow-xl"
+      }`}
+      whileHover={isUnavailable ? {} : { y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
     >
       <Link href={`/menu/${item.slug}`} className="block">
-        <div className="aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative meal-img-wrap">
+        <div className={`aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative meal-img-wrap ${isUnavailable ? "grayscale" : ""}`}>
           {hasImage ? (
             <Image
               src={item.image}
@@ -71,6 +78,13 @@ export default function MealCard({ item }: { item: MenuItem }) {
               {item.servings}
             </span>
           )}
+          {isUnavailable && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-20">
+              <span className="bg-stone-900/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full">
+                Temporarily Unavailable
+              </span>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -90,32 +104,38 @@ export default function MealCard({ item }: { item: MenuItem }) {
             {formatPrice(item.price)}
           </span>
 
-          <AnimatePresence mode="wait">
-            {justAdded ? (
-              <motion.span
-                key="added"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="flex items-center gap-1 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white"
-              >
-                Added!
-              </motion.span>
-            ) : (
-              <motion.button
-                key="add"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                onClick={handleAdd}
-                whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-1.5 rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Add
-              </motion.button>
-            )}
-          </AnimatePresence>
+          {isUnavailable ? (
+            <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-stone-400 cursor-not-allowed">
+              Unavailable
+            </span>
+          ) : (
+            <AnimatePresence mode="wait">
+              {justAdded ? (
+                <motion.span
+                  key="added"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  className="flex items-center gap-1 rounded-full bg-green-600 px-4 py-2 text-sm font-medium text-white"
+                >
+                  Added!
+                </motion.span>
+              ) : (
+                <motion.button
+                  key="add"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  onClick={handleAdd}
+                  whileTap={{ scale: 0.9 }}
+                  className="flex items-center gap-1.5 rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add
+                </motion.button>
+              )}
+            </AnimatePresence>
+          )}
         </div>
       </div>
     </motion.div>

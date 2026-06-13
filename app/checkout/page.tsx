@@ -203,6 +203,17 @@ export default function CheckoutPage() {
                   </button>
                 </div>
 
+                {/* Pickup address */}
+                {deliveryType === "pickup" && (
+                  <div className="mt-4 p-4 rounded-xl bg-orange-50 border border-orange-200 flex items-start gap-2">
+                    <MapPin className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <div className="text-sm text-stone-700">
+                      <p className="font-medium text-stone-900">Pickup address</p>
+                      <p>10 Kendals Close, Radlett</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Postcode checker for delivery */}
                 {isDelivery && (
                   <div className="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
@@ -236,7 +247,7 @@ export default function CheckoutPage() {
                         <Info className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>
                           We may not deliver to this area yet.
-                          <a href="https://wa.me/44744782712?text=Hi!%20Do%20you%20deliver%20to%20my%20area%3F%20My%20postcode%20is%20" target="_blank" rel="noopener noreferrer" className="text-green-600 font-medium ml-1">
+                          <a href="https://wa.me/447447982712?text=Hi!%20Do%20you%20deliver%20to%20my%20area%3F%20My%20postcode%20is%20" target="_blank" rel="noopener noreferrer" className="text-green-600 font-medium ml-1">
                             WhatsApp us to check →
                           </a>
                         </span>
@@ -410,10 +421,16 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                {totalPrice < 20 && (
+                  <p className="mt-6 text-sm text-red-600 text-center font-medium">
+                    Minimum order amount is {formatPrice(20)}. Please add {formatPrice(20 - totalPrice)} more to proceed.
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className="mt-6 w-full rounded-full bg-orange-600 py-3.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
+                  disabled={submitting || totalPrice < 20}
+                  className="mt-4 w-full rounded-full bg-orange-600 py-3.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
                 >
                   {submitting ? "Placing Order..." : "Place Order"}
                 </button>
@@ -429,8 +446,8 @@ export default function CheckoutPage() {
                     Prefer to order via chat?
                   </p>
                   <a
-                    href={`https://wa.me/44744782712?text=${encodeURIComponent(
-                      `Hi KOK Kitchen! I'd like to order:\n\n${items
+                    href={`https://wa.me/447447982712?text=${encodeURIComponent(
+                      `Hi KOK Kitchens! I'd like to order:\n\n${items
                         .map(
                           (i) =>
                             `${i.quantity}x ${i.menuItem.name} (${formatPrice(i.menuItem.price * i.quantity)})`

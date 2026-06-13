@@ -78,7 +78,7 @@ export default function Header() {
             </motion.div>
             <span className={`text-xl font-bold tracking-tight transition-colors duration-300 ${textColor}`}>
               KOK
-              <span className={accentColor}> Kitchen</span>
+              <span className={accentColor}> Kitchens</span>
             </span>
           </Link>
 
