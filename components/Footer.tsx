@@ -4,7 +4,7 @@ import OphirCredit from "./OphirCredit";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-300 relative">
+    <footer className="bg-stone-900 text-stone-300 relative">
       {/* Orange glow accent at top */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
       <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-orange-500/[0.04] to-transparent pointer-events-none" />
@@ -97,7 +97,7 @@ export default function Footer() {
             <div className="mt-4 flex gap-3">
               <a
                 href="#"
-                className="p-2 rounded-full bg-slate-800 hover:bg-orange-600 transition-colors text-xs font-bold"
+                className="p-2 rounded-full bg-stone-800 hover:bg-orange-600 transition-colors text-xs font-bold"
                 aria-label="Instagram"
               >
                 IG
@@ -106,7 +106,7 @@ export default function Footer() {
                 href="https://wa.me/447447982712"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-slate-800 hover:bg-green-600 transition-colors"
+                className="p-2 rounded-full bg-stone-800 hover:bg-green-600 transition-colors"
                 aria-label="WhatsApp"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -117,7 +117,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-slate-700 pt-6 text-center text-xs text-slate-500">
+        <div className="mt-10 border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
           &copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.
         </div>
 
