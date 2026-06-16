@@ -96,7 +96,9 @@ export default function Footer() {
             </ul>
             <div className="mt-4 flex gap-3">
               <a
-                href="#"
+                href="https://www.instagram.com/kokkkitchen"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2 rounded-full bg-stone-800 hover:bg-orange-600 transition-colors text-xs font-bold"
                 aria-label="Instagram"
               >
