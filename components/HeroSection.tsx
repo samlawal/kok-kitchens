@@ -19,17 +19,18 @@ const taglines = [
 ];
 
 const heroImages = [
-  { src: "/meals/hero-c1.webp", alt: "KOK Kitchens spread" },
   { src: "/meals/hero-c2.webp", alt: "KOK Kitchens dish" },
   { src: "/meals/hero-c4.webp", alt: "KOK Kitchens platter" },
   { src: "/meals/hero-c5.webp", alt: "KOK Kitchens cuisine" },
-  { src: "/meals/hero-c6.webp", alt: "KOK Kitchens food" },
   { src: "/meals/hero-c7.webp", alt: "KOK Kitchens meal" },
   { src: "/meals/hero-c8.webp", alt: "KOK Kitchens feast" },
   { src: "/meals/hero-c9.webp", alt: "KOK Kitchens table" },
-  { src: "/meals/hero-c11.webp", alt: "KOK Kitchens serving" },
+  { src: "/meals/hero-c11.webp", alt: "KOK Kitchens egg salad" },
   { src: "/meals/hero-c15.webp", alt: "KOK Kitchens plate" },
   { src: "/meals/hero-c16.webp", alt: "KOK Kitchens special" },
+  { src: "/meals/hero-c20.webp", alt: "KOK Kitchens spread" },
+  { src: "/meals/hero-c21.webp", alt: "KOK Kitchens serving" },
+  { src: "/meals/hero-c22.webp", alt: "KOK Kitchens food" },
 ];
 
 const kenBurnsVariants = [
