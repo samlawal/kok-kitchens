@@ -105,8 +105,7 @@ function HeroBackground() {
               src={heroImages[current].src}
               alt={heroImages[current].alt}
               fill
-              sizes="100vw"
-              quality={90}
+              unoptimized
               className="object-cover"
               priority={current === 0}
             />
