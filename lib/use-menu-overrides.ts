@@ -3,59 +3,89 @@
 import { useEffect, useState } from "react";
 import { EMPTY_OVERRIDES, type MenuOverrides } from "./menu-overrides";
 
-// Singleton cache so every card / page shares a single /api/menu-overrides
-// fetch (price + status + image overrides) rather than each hitting the API.
-let cache: MenuOverrides | null = null;
-let inflight: Promise<MenuOverrides> | null = null;
-const subscribers = new Set<(o: MenuOverrides) => void>();
-
-function load(): Promise<MenuOverrides> {
-  if (cache) return Promise.resolve(cache);
-  if (inflight) return inflight;
-
-  inflight = fetch("/api/menu-overrides")
-    .then((r) => r.json())
-    .then((data) => {
-      if (data?.success) {
-        cache = {
-          prices: data.prices || {},
-          statuses: data.statuses || {},
-          images: data.images || {},
-        };
-        subscribers.forEach((cb) => cb(cache!));
-        return cache!;
-      }
-      // Real failure — don't cache; allow a later mount to retry.
-      inflight = null;
-      return EMPTY_OVERRIDES;
-    })
-    .catch(() => {
-      inflight = null;
-      return EMPTY_OVERRIDES;
-    });
-
-  return inflight;
+interface FetchLike {
+  json: () => Promise<unknown>;
 }
+
+export interface OverridesStore {
+  load: () => Promise<MenuOverrides>;
+  getCache: () => MenuOverrides | null;
+  subscribe: (cb: (o: MenuOverrides) => void) => () => void;
+}
+
+/**
+ * Caching state machine behind useMenuOverrides, separated from React so it
+ * can be unit-tested. Guarantees:
+ * - a single in-flight request is shared across concurrent callers
+ * - a successful response is cached for the session
+ * - a failed/!success response is NOT cached, so a later call retries
+ */
+export function createOverridesStore(
+  fetcher: () => Promise<FetchLike>
+): OverridesStore {
+  let cache: MenuOverrides | null = null;
+  let inflight: Promise<MenuOverrides> | null = null;
+  const subscribers = new Set<(o: MenuOverrides) => void>();
+
+  function load(): Promise<MenuOverrides> {
+    if (cache) return Promise.resolve(cache);
+    if (inflight) return inflight;
+
+    inflight = fetcher()
+      .then((r) => r.json())
+      .then((data) => {
+        const d = data as
+          | { success?: boolean; prices?: unknown; statuses?: unknown; images?: unknown }
+          | null;
+        if (d?.success) {
+          cache = {
+            prices: (d.prices as MenuOverrides["prices"]) || {},
+            statuses: (d.statuses as MenuOverrides["statuses"]) || {},
+            images: (d.images as MenuOverrides["images"]) || {},
+          };
+          subscribers.forEach((cb) => cb(cache!));
+          return cache!;
+        }
+        // Real failure — don't cache; allow a later mount to retry.
+        inflight = null;
+        return EMPTY_OVERRIDES;
+      })
+      .catch(() => {
+        inflight = null;
+        return EMPTY_OVERRIDES;
+      });
+
+    return inflight;
+  }
+
+  return {
+    load,
+    getCache: () => cache,
+    subscribe: (cb) => {
+      subscribers.add(cb);
+      return () => subscribers.delete(cb);
+    },
+  };
+}
+
+// Module singleton so every card / page shares one /api/menu-overrides fetch.
+const store = createOverridesStore(() => fetch("/api/menu-overrides"));
 
 /** Returns admin price/status/image overrides, fetched once per session. */
 export function useMenuOverrides(): MenuOverrides {
-  const [overrides, setOverrides] = useState<MenuOverrides>(cache || EMPTY_OVERRIDES);
+  const [overrides, setOverrides] = useState<MenuOverrides>(
+    store.getCache() || EMPTY_OVERRIDES
+  );
 
   useEffect(() => {
-    if (cache) {
-      setOverrides(cache);
+    const cached = store.getCache();
+    if (cached) {
+      setOverrides(cached);
       return;
     }
-    let active = true;
-    const cb = (next: MenuOverrides) => {
-      if (active) setOverrides(next);
-    };
-    subscribers.add(cb);
-    load();
-    return () => {
-      active = false;
-      subscribers.delete(cb);
-    };
+    const unsubscribe = store.subscribe(setOverrides);
+    store.load();
+    return unsubscribe;
   }, []);
 
   return overrides;
