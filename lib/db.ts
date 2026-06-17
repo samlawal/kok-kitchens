@@ -49,5 +49,11 @@ export async function initDb() {
     )
   `;
 
+  // Payment tracking on orders (card via Stripe vs pay-on-delivery).
+  // Defaults keep existing COD inserts working without code changes.
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT 'cod'`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT 'unpaid'`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
+
   return true;
 }

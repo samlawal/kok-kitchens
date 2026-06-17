@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, MapPin, Package, Truck, Info, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -48,6 +48,8 @@ export default function CheckoutPage() {
   const [postcodeChecked, setPostcodeChecked] = useState(false);
   const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
   const [quotingDelivery, setQuotingDelivery] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
+  const [canceled, setCanceled] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -110,8 +112,49 @@ export default function CheckoutPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
+  // Surface a notice if the customer returned from a cancelled Stripe payment.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("canceled")) {
+      setCanceled(true);
+    }
+  }, []);
+
+  async function handleCardCheckout() {
+    setSubmitting(true);
+    try {
+      const deliveryZone = deliveryType === "delivery-local" ? "local" : "extended";
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          customer: { ...form, postcode },
+          deliveryType: isDelivery ? "delivery" : "pickup",
+          deliveryZone,
+          subtotal: totalPrice,
+          deliveryFee,
+          total: grandTotal,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        window.location.href = data.url; // hand off to Stripe-hosted checkout
+      } else {
+        alert(data.message || "Could not start card payment. Please try again.");
+        setSubmitting(false);
+      }
+    } catch {
+      alert("Something went wrong starting payment. Please try again.");
+      setSubmitting(false);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (paymentMethod === "card") {
+      handleCardCheckout();
+      return;
+    }
     setSubmitting(true);
 
     try {
@@ -479,6 +522,41 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
+                {/* Payment method */}
+                <div className="mt-5">
+                  <p className="text-xs font-medium text-stone-500 mb-2">Payment</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("cod")}
+                      className={`rounded-xl border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                        paymentMethod === "cod"
+                          ? "border-orange-500 bg-orange-50 text-stone-900"
+                          : "border-stone-200 text-stone-500 hover:border-stone-300"
+                      }`}
+                    >
+                      Pay on delivery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod("card")}
+                      className={`rounded-xl border-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                        paymentMethod === "card"
+                          ? "border-orange-500 bg-orange-50 text-stone-900"
+                          : "border-stone-200 text-stone-500 hover:border-stone-300"
+                      }`}
+                    >
+                      Pay by card
+                    </button>
+                  </div>
+                </div>
+
+                {canceled && (
+                  <p className="mt-4 text-sm text-amber-600 text-center font-medium">
+                    Payment cancelled — your order wasn&apos;t placed. You can try again.
+                  </p>
+                )}
+
                 {totalPrice < 20 && (
                   <p className="mt-6 text-sm text-red-600 text-center font-medium">
                     Minimum order amount is {formatPrice(20)}. Please add {formatPrice(20 - totalPrice)} more to proceed.
@@ -490,12 +568,19 @@ export default function CheckoutPage() {
                   disabled={submitting || totalPrice < 20}
                   className="mt-4 w-full rounded-full bg-orange-600 py-3.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] transition-all"
                 >
-                  {submitting ? "Placing Order..." : "Place Order"}
+                  {submitting
+                    ? paymentMethod === "card"
+                      ? "Redirecting to payment…"
+                      : "Placing Order…"
+                    : paymentMethod === "card"
+                      ? "Pay by Card"
+                      : "Place Order"}
                 </button>
 
                 <p className="mt-3 text-xs text-stone-400 text-center">
-                  Payment on delivery. You&apos;ll receive an order
-                  confirmation via email.
+                  {paymentMethod === "card"
+                    ? "You'll be redirected to secure Stripe checkout. A confirmation email follows."
+                    : "Payment on delivery. You'll receive an order confirmation via email."}
                 </p>
 
                 {/* WhatsApp checkout alternative */}
