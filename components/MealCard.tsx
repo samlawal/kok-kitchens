@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Plus, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
+import { useUploadedImages } from "@/lib/use-uploaded-images";
 import type { MenuItem } from "@/lib/types";
 
 const categoryEmoji: Record<string, string> = {
@@ -21,10 +22,16 @@ const categoryEmoji: Record<string, string> = {
 
 export default function MealCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
+  const uploadedImages = useUploadedImages();
   const [justAdded, setJustAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
+  const imageSrc = uploadedImages[item.id] || item.image;
   const isUnavailable = item.availability === "unavailable";
+
+  // Reset the error flag when the source changes (e.g. the uploaded image
+  // resolves after the static fallback already failed to load).
+  useEffect(() => setImgError(false), [imageSrc]);
 
   function handleAdd() {
     if (isUnavailable) return;
@@ -34,7 +41,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
   }
 
   const emoji = categoryEmoji[item.category] || "🍛";
-  const hasImage = item.image && !imgError;
+  const hasImage = imageSrc && !imgError;
 
   return (
     <motion.div
@@ -50,7 +57,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
         <div className={`aspect-[4/3] overflow-hidden bg-gradient-to-br from-orange-50 to-amber-50 relative meal-img-wrap ${isUnavailable ? "grayscale" : ""}`}>
           {hasImage ? (
             <Image
-              src={item.image}
+              src={imageSrc}
               alt={item.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Flame, ArrowLeft } from "lucide-react";
 import { formatPrice } from "@/lib/menu-data";
+import { useUploadedImages } from "@/lib/use-uploaded-images";
 import type { MenuItem } from "@/lib/types";
 import AddToCartButton from "./AddToCartButton";
 import MealCard from "@/components/MealCard";
@@ -29,8 +30,12 @@ export default function MealDetailClient({
   related: MenuItem[];
 }) {
   const emoji = categoryEmoji[item.category] || "🍛";
+  const uploadedImages = useUploadedImages();
   const [imgError, setImgError] = useState(false);
-  const hasImage = item.image && !imgError;
+  const imageSrc = uploadedImages[item.id] || item.image;
+  const hasImage = imageSrc && !imgError;
+
+  useEffect(() => setImgError(false), [imageSrc]);
 
   return (
     <div className="bg-stone-50 min-h-screen">
@@ -57,7 +62,7 @@ export default function MealDetailClient({
           >
             {hasImage ? (
               <Image
-                src={item.image}
+                src={imageSrc}
                 alt={item.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"

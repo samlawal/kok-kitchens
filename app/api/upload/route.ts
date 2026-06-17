@@ -2,8 +2,17 @@ import { NextResponse } from "next/server";
 import { put, list, del } from "@vercel/blob";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
-const MAX_WIDTH = 800;
-const WEBP_QUALITY = 82;
+
+// Always store under the canonical .webp path so /api/images (which serves the
+// menu's uploaded photos) and the static fallback resolve consistently. The
+// file extension is cosmetic — browsers and Next/Image render by Content-Type,
+// which we set to match the actual uploaded bytes.
+function blobPath(menuItemId: string) {
+  return `meals/${menuItemId}.webp`;
+}
+function rollbackPath(menuItemId: string) {
+  return `meals/_rollback/${menuItemId}.webp`;
+}
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -11,7 +20,6 @@ export async function POST(request: Request) {
   const file = formData.get("file") as File;
   const menuItemId = formData.get("menuItemId") as string;
 
-  // Auth check
   if (password !== ADMIN_PASSWORD) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
@@ -26,7 +34,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // Validate file type
   if (!file.type.startsWith("image/")) {
     return NextResponse.json(
       { success: false, message: "Only image files are allowed" },
@@ -34,7 +41,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // 10MB max
   if (file.size > 10 * 1024 * 1024) {
     return NextResponse.json(
       { success: false, message: "File too large (max 10MB)" },
@@ -44,61 +50,52 @@ export async function POST(request: Request) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
+    const contentType = file.type || "image/webp";
 
-    // Dynamic import — avoids build-time native binary issues
-    const sharp = (await import("sharp")).default;
-
-    // Auto-optimize: resize + convert to WebP
-    const optimized = await sharp(buffer)
-      .resize(MAX_WIDTH, MAX_WIDTH, {
-        fit: "inside",
-        withoutEnlargement: true,
-      })
-      .webp({ quality: WEBP_QUALITY })
-      .toBuffer();
-
-    const filename = `meals/${menuItemId}.webp`;
-
-    // Check if a current image exists — save as rollback
-    const existing = await list({ prefix: `meals/${menuItemId}.webp` });
-    if (existing.blobs.length > 0) {
-      // Copy current to rollback path before overwriting
-      const currentBlob = existing.blobs[0];
-      const currentData = await fetch(currentBlob.url).then((r) =>
-        r.arrayBuffer()
-      );
-      await put(`meals/_rollback/${menuItemId}.webp`, Buffer.from(currentData), {
-        access: "public",
-        contentType: "image/webp",
-        addRandomSuffix: false,
-      });
+    // Save the current image as a rollback copy before overwriting.
+    const existing = await list({ prefix: blobPath(menuItemId) });
+    const currentBlob = existing.blobs[0];
+    if (currentBlob) {
+      try {
+        const resp = await fetch(currentBlob.url);
+        const curType = resp.headers.get("content-type") || "image/webp";
+        const curData = await resp.arrayBuffer();
+        await put(rollbackPath(menuItemId), Buffer.from(curData), {
+          access: "public",
+          contentType: curType,
+          addRandomSuffix: false,
+          allowOverwrite: true,
+        });
+      } catch (e) {
+        console.warn("Rollback save skipped:", e);
+      }
     }
 
-    // Upload the new optimized image
-    const blob = await put(filename, optimized, {
+    const blob = await put(blobPath(menuItemId), buffer, {
       access: "public",
-      contentType: "image/webp",
+      contentType,
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
 
-    const sizeKb = Math.round(optimized.length / 1024);
+    const sizeKb = Math.round(buffer.length / 1024);
 
     return NextResponse.json({
       success: true,
       url: blob.url,
       size: `${sizeKb}KB`,
-      message: `Photo updated for ${menuItemId}. Optimized to ${sizeKb}KB WebP.`,
+      message: `Photo updated for ${menuItemId} (${sizeKb}KB).`,
     });
   } catch (error) {
     console.error("Upload failed:", error);
+    const detail = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { success: false, message: "Upload failed. Please try again." },
+      { success: false, message: `Upload failed: ${detail}` },
       { status: 500 }
     );
   }
 }
 
-// Rollback endpoint
 export async function PUT(request: Request) {
   const { password, menuItemId } = await request.json();
 
@@ -110,10 +107,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    // Find rollback version
-    const rollbacks = await list({
-      prefix: `meals/_rollback/${menuItemId}.webp`,
-    });
+    const rollbacks = await list({ prefix: rollbackPath(menuItemId) });
 
     if (rollbacks.blobs.length === 0) {
       return NextResponse.json(
@@ -122,23 +116,19 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Fetch rollback data and overwrite current
     const rollbackBlob = rollbacks.blobs[0];
-    const rollbackData = await fetch(rollbackBlob.url).then((r) =>
-      r.arrayBuffer()
-    );
+    const resp = await fetch(rollbackBlob.url);
+    const rbType = resp.headers.get("content-type") || "image/webp";
+    const rollbackData = await resp.arrayBuffer();
 
-    const blob = await put(
-      `meals/${menuItemId}.webp`,
-      Buffer.from(rollbackData),
-      {
-        access: "public",
-        contentType: "image/webp",
-        addRandomSuffix: false,
-      }
-    );
+    const blob = await put(blobPath(menuItemId), Buffer.from(rollbackData), {
+      access: "public",
+      contentType: rbType,
+      addRandomSuffix: false,
+      allowOverwrite: true,
+    });
 
-    // Remove rollback copy
+    // Remove the rollback copy now that it's been restored.
     await del(rollbackBlob.url);
 
     return NextResponse.json({
@@ -148,8 +138,9 @@ export async function PUT(request: Request) {
     });
   } catch (error) {
     console.error("Rollback failed:", error);
+    const detail = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { success: false, message: "Rollback failed" },
+      { success: false, message: `Rollback failed: ${detail}` },
       { status: 500 }
     );
   }
