@@ -9,7 +9,8 @@
 - [ ] **Allergen information** — provide allergen matrix for menu items
 
 ## Backend / Ophir Digital tasks
-- [ ] **Stripe integration** — wire up publishable + secret keys once received
+- [ ] **Strong admin password** 🔒 — `ADMIN_PASSWORD` is currently the default `kok-admin-2026`, which guards `/api/upload`, `/api/pricing`, `/api/availability` and `/api/orders-status` (view + delete orders). Set a strong value in Vercel and redeploy **before launch**.
+- [ ] **Stripe go-live** — card payments are built & tested in test mode. To launch: set live `STRIPE_SECRET_KEY` (`sk_live_…`), add a **live-mode** webhook destination → `STRIPE_WEBHOOK_SECRET` (`whsec_…`), redeploy, then one real-card smoke test + refund. Steps in `docs/KOK Kitchens - Stripe Go-Live.pdf`.
 - [ ] **Domain setup on Vercel** — add custom domain, configure SSL, set up DNS records
 - [ ] **Google Analytics GA4** — create property, add tracking snippet
 - [ ] **Privacy Policy & Terms** pages — draft and publish
@@ -18,6 +19,7 @@
 - [ ] **Uber tracking URL** — `app/api/orders/route.ts` returns `trackingUrl` from a non-awaited `.then()`, so it's always `undefined`. Await the dispatch (or persist + fetch) before returning it to the confirmation page.
 - [ ] **Server-side fee validation** — checkout sends the Uber fee/total from the client; re-fetch/validate the quote server-side at order time before trusting it (low risk while payment is on delivery).
 ## Completed
+- [x] Stripe card payments — hosted Checkout built (card option alongside pay-on-delivery), verified **end-to-end in test mode** (payment → webhook → order marked paid → emails). Go-live steps in `/docs`.
 - [x] Resend email — real `RESEND_API_KEY` set, `kokkitchens.com` verified in Resend, live send confirmed; owner + customer order emails send from `orders@kokkitchens.com` (to `NOTIFICATION_EMAIL`)
 - [x] Database — Neon `DATABASE_URL` set; tables created via `GET /api/init` (orders, price_overrides, item_availability)
 - [x] Pricing + availability + photos reflect on the live menu — unified `/api/menu-overrides` + `resolveItem`, consumed by every meal card and the detail page (verified end-to-end in prod)
