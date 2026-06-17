@@ -40,6 +40,9 @@ yarn-error.log*
 /public/KOK Hero Images/
 /public/meals/backup/
 
+# Microsoft Office lock/temp files
+~$*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
