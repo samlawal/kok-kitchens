@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local-only large assets (not deployed; originals kept on disk)
+/public/KOK Hero Images/
+/public/meals/backup/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
