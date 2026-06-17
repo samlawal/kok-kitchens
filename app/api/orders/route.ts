@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { sendOwnerNotification, sendCustomerConfirmation } from "@/lib/email";
 import { sendPushNotification } from "@/lib/notify";
 import { createDelivery, isUberConfigured } from "@/lib/uber-delivery";
+import { dispatchNotifications } from "@/lib/order-notifications";
 
 function generateRef() {
   const now = new Date();
@@ -94,20 +95,20 @@ export async function POST(request: Request) {
       notes: customer.notes,
     };
 
-    // Await notifications: in serverless the function can be frozen the instant
-    // the response returns, so fire-and-forget sends get dropped before they
-    // complete. allSettled so one failing channel doesn't block the others.
-    await Promise.allSettled([
-      sendOwnerNotification(emailData),
-      sendCustomerConfirmation(emailData),
-      sendPushNotification({
-        ref,
-        customerName: customer.name,
-        customerPhone: customer.phone,
-        deliveryType,
-        items: orderItems,
-        total: orderTotal,
-      }),
+    // Await notifications before responding — see dispatchNotifications: in
+    // serverless the function can freeze on response, dropping un-awaited sends.
+    await dispatchNotifications([
+      () => sendOwnerNotification(emailData),
+      () => sendCustomerConfirmation(emailData),
+      () =>
+        sendPushNotification({
+          ref,
+          customerName: customer.name,
+          customerPhone: customer.phone,
+          deliveryType,
+          items: orderItems,
+          total: orderTotal,
+        }),
     ]);
 
     // Dispatch Uber courier for extended-zone deliveries. Awaited so the
