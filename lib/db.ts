@@ -55,5 +55,12 @@ export async function initDb() {
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT 'unpaid'`;
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
 
+  // Uber Direct courier tracking (extended-zone deliveries). Nullable —
+  // only populated when Uber is configured and a courier is dispatched.
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_id TEXT`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_status TEXT`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_tracking_url TEXT`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ`;
+
   return true;
 }

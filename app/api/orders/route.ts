@@ -108,46 +108,46 @@ export async function POST(request: Request) {
       }),
     ]).catch((err) => console.error("Notification send failed:", err));
 
-    // Dispatch Uber courier for extended-zone deliveries
+    // Dispatch Uber courier for extended-zone deliveries. Awaited so the
+    // tracking link is available for the confirmation response. The order is
+    // already saved, so a dispatch failure is logged but never fails the order.
     let trackingUrl: string | undefined;
     if (
       deliveryType === "delivery" &&
       deliveryZone === "extended" &&
       isUberConfigured()
     ) {
-      createDelivery({
-        quoteId: deliveryQuoteId,
-        orderRef: ref,
-        dropoffName: customer.name,
-        dropoffPhone: customer.phone,
-        dropoffAddress: customer.address || "",
-        dropoffCity: customer.city || "",
-        dropoffPostcode: customer.postcode || "",
-        dropoffNotes: customer.notes,
-        items: orderItems.map(
-          (i: { name: string; quantity: number }) => ({
-            name: i.name,
-            quantity: i.quantity,
-          })
-        ),
-      })
-        .then((delivery) => {
-          trackingUrl = delivery.trackingUrl;
-          console.log(
-            `[Uber] Dispatched delivery ${delivery.deliveryId} for order ${ref}`
-          );
-          const sql2 = getDb();
-          return sql2`
-            UPDATE orders
-            SET delivery_id = ${delivery.deliveryId},
-                delivery_tracking_url = ${delivery.trackingUrl},
-                delivery_status = ${delivery.status}
-            WHERE ref = ${ref}
-          `;
-        })
-        .catch((err) =>
-          console.error(`[Uber] Failed to dispatch for ${ref}:`, err)
+      try {
+        const delivery = await createDelivery({
+          quoteId: deliveryQuoteId,
+          orderRef: ref,
+          dropoffName: customer.name,
+          dropoffPhone: customer.phone,
+          dropoffAddress: customer.address || "",
+          dropoffCity: customer.city || "",
+          dropoffPostcode: customer.postcode || "",
+          dropoffNotes: customer.notes,
+          items: orderItems.map(
+            (i: { name: string; quantity: number }) => ({
+              name: i.name,
+              quantity: i.quantity,
+            })
+          ),
+        });
+        trackingUrl = delivery.trackingUrl;
+        console.log(
+          `[Uber] Dispatched delivery ${delivery.deliveryId} for order ${ref}`
         );
+        await sql`
+          UPDATE orders
+          SET delivery_id = ${delivery.deliveryId},
+              delivery_tracking_url = ${delivery.trackingUrl},
+              delivery_status = ${delivery.status}
+          WHERE ref = ${ref}
+        `;
+      } catch (err) {
+        console.error(`[Uber] Failed to dispatch for ${ref}:`, err);
+      }
     }
 
     return NextResponse.json(
