@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, MapPin, Package, Truck, Info } from "lucide-react";
+import { ArrowLeft, MapPin, Package, Truck, Info, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
@@ -46,6 +46,8 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [postcode, setPostcode] = useState("");
   const [postcodeChecked, setPostcodeChecked] = useState(false);
+  const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
+  const [quotingDelivery, setQuotingDelivery] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -55,12 +57,37 @@ export default function CheckoutPage() {
     notes: "",
   });
 
-  const deliveryFee = getDeliveryFee(deliveryType);
+  const deliveryFee = deliveryType === "delivery-extended" && uberQuote
+    ? uberQuote.fee
+    : getDeliveryFee(deliveryType);
   const grandTotal = totalPrice + deliveryFee;
   const isDelivery = deliveryType !== "pickup";
 
+  const fetchUberQuote = useCallback(async (address: string, city: string, pc: string) => {
+    if (!address || !pc) return;
+    setQuotingDelivery(true);
+    try {
+      const res = await fetch("/api/delivery/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ address, city, postcode: pc }),
+      });
+      const data = await res.json();
+      if (data.success && data.quote) {
+        setUberQuote(data.quote);
+      } else {
+        setUberQuote(null);
+      }
+    } catch {
+      setUberQuote(null);
+    } finally {
+      setQuotingDelivery(false);
+    }
+  }, []);
+
   function handlePostcodeCheck(value: string) {
     setPostcode(value);
+    setUberQuote(null);
     if (value.length >= 3) {
       const zone = getDeliveryZone(value);
       if (zone === "local") {
@@ -88,6 +115,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
+      const deliveryZone = deliveryType === "delivery-local" ? "local" : "extended";
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,6 +123,8 @@ export default function CheckoutPage() {
           items,
           customer: { ...form, postcode },
           deliveryType: isDelivery ? "delivery" : "pickup",
+          deliveryZone,
+          deliveryQuoteId: uberQuote?.id || undefined,
           subtotal: totalPrice,
           deliveryFee,
           total: grandTotal,
@@ -237,9 +267,30 @@ export default function CheckoutPage() {
                       </div>
                     )}
                     {postcodeChecked && postcodeZone === "extended" && (
-                      <div className="mt-2 flex items-center gap-2 text-sm text-orange-600">
-                        <Truck className="h-4 w-4" />
-                        Extended delivery — {formatPrice(7.99)}
+                      <div className="mt-2 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-orange-600">
+                          <Truck className="h-4 w-4" />
+                          Extended delivery — {uberQuote ? formatPrice(uberQuote.fee) : formatPrice(7.99)}
+                          {uberQuote && (
+                            <span className="text-xs text-stone-400 ml-1">
+                              (~{uberQuote.estimatedMinutes} min via courier)
+                            </span>
+                          )}
+                        </div>
+                        {!uberQuote && form.address && (
+                          <button
+                            type="button"
+                            onClick={() => fetchUberQuote(form.address, form.city, postcode)}
+                            disabled={quotingDelivery}
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-orange-600 hover:text-orange-700 disabled:opacity-50"
+                          >
+                            {quotingDelivery ? (
+                              <><Loader2 className="h-3 w-3 animate-spin" /> Getting live quote...</>
+                            ) : (
+                              "Get live delivery quote"
+                            )}
+                          </button>
+                        )}
                       </div>
                     )}
                     {postcodeChecked && postcodeZone === "unknown" && (
@@ -404,7 +455,9 @@ export default function CheckoutPage() {
                         <span className="text-xs text-stone-400 ml-1">(local)</span>
                       )}
                       {deliveryType === "delivery-extended" && (
-                        <span className="text-xs text-stone-400 ml-1">(extended)</span>
+                        <span className="text-xs text-stone-400 ml-1">
+                          ({uberQuote ? "Uber courier" : "extended"})
+                        </span>
                       )}
                     </span>
                     <span className="text-stone-700">
@@ -413,6 +466,11 @@ export default function CheckoutPage() {
                         : formatPrice(deliveryFee)}
                     </span>
                   </div>
+                  {uberQuote && deliveryType === "delivery-extended" && (
+                    <div className="text-xs text-stone-400">
+                      Est. {uberQuote.estimatedMinutes} min delivery via courier
+                    </div>
+                  )}
                   <div className="flex justify-between text-base font-bold border-t border-stone-100 pt-3">
                     <span className="text-stone-900">Total</span>
                     <span className="text-orange-600">

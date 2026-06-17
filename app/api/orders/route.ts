@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { sendOwnerNotification, sendCustomerConfirmation } from "@/lib/email";
 import { sendPushNotification } from "@/lib/notify";
+import { createDelivery, isUberConfigured } from "@/lib/uber-delivery";
 
 function generateRef() {
   const now = new Date();
@@ -18,6 +19,8 @@ export async function POST(request: Request) {
       items = [],
       customer = {},
       deliveryType = "delivery",
+      deliveryZone = "local",
+      deliveryQuoteId,
       total = 0,
     } = body;
 
@@ -105,8 +108,50 @@ export async function POST(request: Request) {
       }),
     ]).catch((err) => console.error("Notification send failed:", err));
 
+    // Dispatch Uber courier for extended-zone deliveries
+    let trackingUrl: string | undefined;
+    if (
+      deliveryType === "delivery" &&
+      deliveryZone === "extended" &&
+      isUberConfigured()
+    ) {
+      createDelivery({
+        quoteId: deliveryQuoteId,
+        orderRef: ref,
+        dropoffName: customer.name,
+        dropoffPhone: customer.phone,
+        dropoffAddress: customer.address || "",
+        dropoffCity: customer.city || "",
+        dropoffPostcode: customer.postcode || "",
+        dropoffNotes: customer.notes,
+        items: orderItems.map(
+          (i: { name: string; quantity: number }) => ({
+            name: i.name,
+            quantity: i.quantity,
+          })
+        ),
+      })
+        .then((delivery) => {
+          trackingUrl = delivery.trackingUrl;
+          console.log(
+            `[Uber] Dispatched delivery ${delivery.deliveryId} for order ${ref}`
+          );
+          const sql2 = getDb();
+          return sql2`
+            UPDATE orders
+            SET delivery_id = ${delivery.deliveryId},
+                delivery_tracking_url = ${delivery.trackingUrl},
+                delivery_status = ${delivery.status}
+            WHERE ref = ${ref}
+          `;
+        })
+        .catch((err) =>
+          console.error(`[Uber] Failed to dispatch for ${ref}:`, err)
+        );
+    }
+
     return NextResponse.json(
-      { success: true, ref, message: "Order placed successfully" },
+      { success: true, ref, trackingUrl, message: "Order placed successfully" },
       { status: 201 }
     );
   } catch (error) {
