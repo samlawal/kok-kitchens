@@ -1,50 +1,33 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { menuItems } from "@/lib/menu-data";
-import type { Category, MenuItem } from "@/lib/types";
+import type { Category } from "@/lib/types";
 import CategoryFilter from "@/components/CategoryFilter";
 import MealCard from "@/components/MealCard";
+import { useMenuOverrides } from "@/lib/use-menu-overrides";
 import { FadeIn } from "@/components/MotionWrapper";
 
 export default function MenuPage() {
   const [category, setCategory] = useState<Category | "all">("all");
   const [search, setSearch] = useState("");
-  const [statusMap, setStatusMap] = useState<Record<string, string>>({});
+  const overrides = useMenuOverrides();
 
-  // Fetch availability on mount
-  useEffect(() => {
-    fetch("/api/availability")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success && data.items) {
-          const map: Record<string, string> = {};
-          for (const row of data.items) {
-            map[row.menu_item_id as string] = row.status as string;
-          }
-          setStatusMap(map);
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  // Merge availability into menu items, filter out hidden
-  const itemsWithAvailability: MenuItem[] = useMemo(
+  // Hide items the admin marked "hidden". Price/status/image overrides are
+  // applied per-card by MealCard, so static items can be passed straight through.
+  const visibleItems = useMemo(
     () =>
-      menuItems
-        .map((item) => ({
-          ...item,
-          availability: (statusMap[item.id] || "available") as MenuItem["availability"],
-        }))
-        .filter((item) => item.availability !== "hidden"),
-    [statusMap]
+      menuItems.filter(
+        (item) => (overrides.statuses[item.id] || "available") !== "hidden"
+      ),
+    [overrides]
   );
 
   const filtered = useMemo(
     () =>
-      itemsWithAvailability.filter((item) => {
+      visibleItems.filter((item) => {
         const matchesCategory =
           category === "all" || item.category === category;
         const matchesSearch =
@@ -53,7 +36,7 @@ export default function MenuPage() {
           item.description.toLowerCase().includes(search.toLowerCase());
         return matchesCategory && matchesSearch;
       }),
-    [category, search, itemsWithAvailability]
+    [category, search, visibleItems]
   );
 
   return (

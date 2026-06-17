@@ -19,9 +19,9 @@
 - [ ] **DB migration** — add `delivery_id`, `delivery_status`, `delivery_tracking_url` columns to orders table. Until then the Uber dispatch + webhook UPDATEs throw (errors are swallowed, so orders still succeed but delivery status isn't persisted).
 - [ ] **Uber tracking URL** — `app/api/orders/route.ts` returns `trackingUrl` from a non-awaited `.then()`, so it's always `undefined`. Await the dispatch (or persist + fetch) before returning it to the confirmation page.
 - [ ] **Server-side fee validation** — checkout sends the Uber fee/total from the client; re-fetch/validate the quote server-side at order time before trusting it (low risk while payment is on delivery).
-- [ ] **Database** — confirm Neon DB `DATABASE_URL` is set in Vercel env vars
-
 ## Completed
+- [x] Database — Neon `DATABASE_URL` set; tables created via `GET /api/init` (orders, price_overrides, item_availability)
+- [x] Pricing + availability + photos reflect on the live menu — unified `/api/menu-overrides` + `resolveItem`, consumed by every meal card and the detail page (verified end-to-end in prod)
 - [x] Vercel Blob store — `BLOB_READ_WRITE_TOKEN` configured
 - [x] Instagram link — @kokkkitchen added to footer
 - [x] Hero images — client-sharpened, full resolution, unoptimized

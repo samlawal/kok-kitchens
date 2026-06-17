@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Flame, ArrowLeft } from "lucide-react";
 import { formatPrice } from "@/lib/menu-data";
-import { useUploadedImages } from "@/lib/use-uploaded-images";
+import { useMenuOverrides } from "@/lib/use-menu-overrides";
+import { resolveItem } from "@/lib/menu-overrides";
 import type { MenuItem } from "@/lib/types";
 import AddToCartButton from "./AddToCartButton";
 import MealCard from "@/components/MealCard";
@@ -30,9 +31,10 @@ export default function MealDetailClient({
   related: MenuItem[];
 }) {
   const emoji = categoryEmoji[item.category] || "🍛";
-  const uploadedImages = useUploadedImages();
+  const overrides = useMenuOverrides();
+  const resolved = resolveItem(item, overrides);
   const [imgError, setImgError] = useState(false);
-  const imageSrc = uploadedImages[item.id] || item.image;
+  const imageSrc = resolved.image;
   const hasImage = imageSrc && !imgError;
 
   useEffect(() => setImgError(false), [imageSrc]);
@@ -148,7 +150,7 @@ export default function MealDetailClient({
               className="mt-8"
             >
               <p className="text-3xl font-bold text-stone-900">
-                {formatPrice(item.price)}
+                {formatPrice(resolved.price)}
               </p>
             </motion.div>
 
@@ -158,7 +160,7 @@ export default function MealDetailClient({
               transition={{ delay: 0.5 }}
               className="mt-6"
             >
-              <AddToCartButton item={item} />
+              <AddToCartButton item={resolved} />
             </motion.div>
           </div>
         </div>

@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
-import { useUploadedImages } from "@/lib/use-uploaded-images";
+import { useMenuOverrides } from "@/lib/use-menu-overrides";
+import { resolveItem } from "@/lib/menu-overrides";
 import type { MenuItem } from "@/lib/types";
 
 const categoryEmoji: Record<string, string> = {
@@ -22,12 +23,14 @@ const categoryEmoji: Record<string, string> = {
 
 export default function MealCard({ item }: { item: MenuItem }) {
   const { addItem } = useCart();
-  const uploadedImages = useUploadedImages();
+  const overrides = useMenuOverrides();
   const [justAdded, setJustAdded] = useState(false);
   const [imgError, setImgError] = useState(false);
 
-  const imageSrc = uploadedImages[item.id] || item.image;
-  const isUnavailable = item.availability === "unavailable";
+  // Apply admin price/status/image overrides on top of the static item.
+  const resolved = resolveItem(item, overrides);
+  const imageSrc = resolved.image;
+  const isUnavailable = resolved.availability === "unavailable";
 
   // Reset the error flag when the source changes (e.g. the uploaded image
   // resolves after the static fallback already failed to load).
@@ -35,7 +38,8 @@ export default function MealCard({ item }: { item: MenuItem }) {
 
   function handleAdd() {
     if (isUnavailable) return;
-    addItem(item);
+    // Add the resolved item so the cart charges the current (overridden) price.
+    addItem(resolved);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
   }
@@ -108,7 +112,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
 
         <div className="mt-3 flex items-center justify-between">
           <span className="text-lg font-bold text-stone-900">
-            {formatPrice(item.price)}
+            {formatPrice(resolved.price)}
           </span>
 
           {isUnavailable ? (
