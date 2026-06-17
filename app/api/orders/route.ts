@@ -94,8 +94,10 @@ export async function POST(request: Request) {
       notes: customer.notes,
     };
 
-    // Fire notifications in background — don't block the response
-    Promise.all([
+    // Await notifications: in serverless the function can be frozen the instant
+    // the response returns, so fire-and-forget sends get dropped before they
+    // complete. allSettled so one failing channel doesn't block the others.
+    await Promise.allSettled([
       sendOwnerNotification(emailData),
       sendCustomerConfirmation(emailData),
       sendPushNotification({
@@ -106,7 +108,7 @@ export async function POST(request: Request) {
         items: orderItems,
         total: orderTotal,
       }),
-    ]).catch((err) => console.error("Notification send failed:", err));
+    ]);
 
     // Dispatch Uber courier for extended-zone deliveries. Awaited so the
     // tracking link is available for the confirmation response. The order is
