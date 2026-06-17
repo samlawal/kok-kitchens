@@ -10,8 +10,6 @@
 
 ## Backend / Ophir Digital tasks
 - [ ] **Stripe integration** — wire up publishable + secret keys once received
-- [ ] **Resend email service** — replace placeholder API key (`re_placeholder_add_real_key` in env), verify sending domain once kokkitchens.com is connected
-- [ ] **Order notification email** — currently set to `orders@kokkitchens.com` via `NOTIFICATION_EMAIL` env var — confirm or update
 - [ ] **Domain setup on Vercel** — add custom domain, configure SSL, set up DNS records
 - [ ] **Google Analytics GA4** — create property, add tracking snippet
 - [ ] **Privacy Policy & Terms** pages — draft and publish
@@ -20,6 +18,7 @@
 - [ ] **Uber tracking URL** — `app/api/orders/route.ts` returns `trackingUrl` from a non-awaited `.then()`, so it's always `undefined`. Await the dispatch (or persist + fetch) before returning it to the confirmation page.
 - [ ] **Server-side fee validation** — checkout sends the Uber fee/total from the client; re-fetch/validate the quote server-side at order time before trusting it (low risk while payment is on delivery).
 ## Completed
+- [x] Resend email — real `RESEND_API_KEY` set, `kokkitchens.com` verified in Resend, live send confirmed; owner + customer order emails send from `orders@kokkitchens.com` (to `NOTIFICATION_EMAIL`)
 - [x] Database — Neon `DATABASE_URL` set; tables created via `GET /api/init` (orders, price_overrides, item_availability)
 - [x] Pricing + availability + photos reflect on the live menu — unified `/api/menu-overrides` + `resolveItem`, consumed by every meal card and the detail page (verified end-to-end in prod)
 - [x] Vercel Blob store — `BLOB_READ_WRITE_TOKEN` configured
