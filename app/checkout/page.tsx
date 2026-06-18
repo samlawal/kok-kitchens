@@ -1,37 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, MapPin, Package, Truck, Info, Loader2 } from "lucide-react";
+import { ArrowLeft, MapPin, Package, Truck, Info, Loader2, Check } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/menu-data";
-
-// Local postcodes — self-delivery at £4.99
-const LOCAL_POSTCODES = [
-  "WD6", "WD7", "WD23", "WD25", // Borehamwood, Radlett, Bushey, Watford
-  "EN5", "EN6",                   // Barnet, Potters Bar
-];
-
-// Extended postcodes — courier at £7.99
-const EXTENDED_POSTCODES = [
-  "WD1", "WD2", "WD3", "WD4", "WD5", "WD17", "WD18", "WD19", "WD24",
-  "HA0", "HA1", "HA2", "HA3", "HA4", "HA5", "HA6", "HA7", "HA8", "HA9",
-  "NW4", "NW7", "NW9", "NW11",
-  "N2", "N3", "N11", "N12", "N14", "N20",
-  "EN1", "EN2", "EN3", "EN4", "EN7", "EN8",
-  "AL1", "AL2", "AL3", "AL4", "AL10",
-  "HP1", "HP2", "HP3",
-];
+import {
+  zoneFromPostcode,
+  fetchPostcode,
+  autocompletePostcode,
+  type Zone,
+} from "@/lib/postcode";
 
 type DeliveryType = "delivery-local" | "delivery-extended" | "pickup";
-
-function getDeliveryZone(postcode: string): "local" | "extended" | "unknown" {
-  const prefix = postcode.toUpperCase().replace(/\s/g, "").match(/^[A-Z]+\d+/)?.[0] || "";
-  if (LOCAL_POSTCODES.includes(prefix)) return "local";
-  if (EXTENDED_POSTCODES.includes(prefix)) return "extended";
-  return "unknown";
-}
 
 function getDeliveryFee(type: DeliveryType): number {
   if (type === "delivery-local") return 4.99;
@@ -46,6 +28,12 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [postcode, setPostcode] = useState("");
   const [postcodeChecked, setPostcodeChecked] = useState(false);
+  const [postcodeSuggestions, setPostcodeSuggestions] = useState<string[]>([]);
+  const [postcodeValid, setPostcodeValid] = useState<boolean | null>(null);
+  const [postcodeArea, setPostcodeArea] = useState<string | null>(null);
+  const [postcodeZone, setPostcodeZone] = useState<Zone | null>(null);
+  const [lookingUp, setLookingUp] = useState(false);
+  const lookupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
   const [quotingDelivery, setQuotingDelivery] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
@@ -87,26 +75,71 @@ export default function CheckoutPage() {
     }
   }, []);
 
+  // Validate a postcode via postcodes.io, then resolve the delivery zone
+  // (curated lists win; distance from the kitchen decides unlisted ones).
+  const validatePostcode = useCallback(async (value: string) => {
+    setLookingUp(true);
+    const lookup = await fetchPostcode(value);
+    setLookingUp(false);
+    setPostcodeChecked(true);
+    if (!lookup.valid) {
+      setPostcodeValid(false);
+      setPostcodeArea(null);
+      setPostcodeZone(null);
+      return;
+    }
+    setPostcodeValid(true);
+    setPostcodeArea(lookup.area ?? null);
+    const zone = zoneFromPostcode(value, {
+      latitude: lookup.latitude!,
+      longitude: lookup.longitude!,
+    });
+    setPostcodeZone(zone);
+    if (zone === "local") setDeliveryType("delivery-local");
+    else if (zone === "extended") setDeliveryType("delivery-extended");
+  }, []);
+
+  function looksComplete(pc: string) {
+    return /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(pc.trim());
+  }
+
   function handlePostcodeCheck(value: string) {
     setPostcode(value);
     setUberQuote(null);
-    if (value.length >= 3) {
-      const zone = getDeliveryZone(value);
-      if (zone === "local") {
-        setDeliveryType("delivery-local");
-        setPostcodeChecked(true);
-      } else if (zone === "extended") {
-        setDeliveryType("delivery-extended");
-        setPostcodeChecked(true);
-      } else {
-        setPostcodeChecked(true);
-      }
-    } else {
-      setPostcodeChecked(false);
+    setPostcodeValid(null);
+    setPostcodeArea(null);
+    setPostcodeZone(null);
+    setPostcodeChecked(false);
+
+    if (lookupTimer.current) clearTimeout(lookupTimer.current);
+    if (value.replace(/\s/g, "").length < 2) {
+      setPostcodeSuggestions([]);
+      return;
     }
+    lookupTimer.current = setTimeout(async () => {
+      setPostcodeSuggestions(await autocompletePostcode(value));
+      if (looksComplete(value)) validatePostcode(value);
+    }, 250);
   }
 
-  const postcodeZone = postcode.length >= 3 ? getDeliveryZone(postcode) : null;
+  function selectSuggestion(pc: string) {
+    setPostcode(pc);
+    setPostcodeSuggestions([]);
+    setUberQuote(null);
+    validatePostcode(pc);
+  }
+
+  // Address-form postcode field: no dropdown here, just keep state in sync and
+  // validate when they finish typing (on blur).
+  function handlePostcodeFieldChange(value: string) {
+    setPostcode(value);
+    setPostcodeSuggestions([]);
+    setPostcodeValid(null);
+    setPostcodeArea(null);
+    setPostcodeZone(null);
+    setPostcodeChecked(false);
+    setUberQuote(null);
+  }
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -293,16 +326,47 @@ export default function CheckoutPage() {
                     <label className="block text-sm font-medium text-stone-700 mb-2">
                       Check your postcode
                     </label>
-                    <div className="flex gap-2">
+                    <div className="relative">
                       <input
                         type="text"
                         value={postcode}
                         onChange={(e) => handlePostcodeCheck(e.target.value)}
-                        placeholder="e.g. WD7 8PQ"
-                        className="flex-1 rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 uppercase focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                        placeholder="Start typing, e.g. WD7"
+                        className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 uppercase focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                         maxLength={8}
+                        autoComplete="off"
                       />
+                      {lookingUp && (
+                        <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-stone-400" />
+                      )}
+                      {postcodeSuggestions.length > 0 && (
+                        <ul className="absolute z-20 mt-1 w-full rounded-lg border border-stone-200 bg-white shadow-lg max-h-48 overflow-auto">
+                          {postcodeSuggestions.map((pc) => (
+                            <li key={pc}>
+                              <button
+                                type="button"
+                                onClick={() => selectSuggestion(pc)}
+                                className="block w-full text-left px-4 py-2 text-sm text-stone-700 hover:bg-orange-50"
+                              >
+                                {pc}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
+                    {postcodeChecked && postcodeValid === false && (
+                      <div className="mt-2 flex items-center gap-2 text-sm text-red-600">
+                        <Info className="h-4 w-4 shrink-0" />
+                        Not a recognised UK postcode — please check it.
+                      </div>
+                    )}
+                    {postcodeChecked && postcodeValid && postcodeArea && (
+                      <div className="mt-2 flex items-center gap-1.5 text-xs text-green-600">
+                        <Check className="h-3.5 w-3.5" />
+                        {postcode.toUpperCase()} verified — {postcodeArea}
+                      </div>
+                    )}
                     {postcodeChecked && postcodeZone === "local" && (
                       <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-xs">✓</span>
@@ -438,7 +502,10 @@ export default function CheckoutPage() {
                             type="text"
                             required
                             value={postcode}
-                            onChange={(e) => handlePostcodeCheck(e.target.value)}
+                            onChange={(e) => handlePostcodeFieldChange(e.target.value)}
+                            onBlur={(e) => {
+                              if (looksComplete(e.target.value)) validatePostcode(e.target.value);
+                            }}
                             placeholder="e.g. WD7 8PQ"
                             className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 uppercase focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                           />
