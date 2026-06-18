@@ -37,6 +37,7 @@ export default function CheckoutPage() {
   const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
   const [quotingDelivery, setQuotingDelivery] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
+  const [billingSameAsDelivery, setBillingSameAsDelivery] = useState(true);
   const [canceled, setCanceled] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -164,6 +165,7 @@ export default function CheckoutPage() {
           customer: { ...form, postcode },
           deliveryType: isDelivery ? "delivery" : "pickup",
           deliveryZone,
+          prefillBilling: billingSameAsDelivery,
           subtotal: totalPrice,
           deliveryFee,
           total: grandTotal,
@@ -616,6 +618,20 @@ export default function CheckoutPage() {
                       Pay by card
                     </button>
                   </div>
+                  {paymentMethod === "card" && isDelivery && (
+                    <label className="mt-3 flex items-start gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={billingSameAsDelivery}
+                        onChange={(e) => setBillingSameAsDelivery(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 rounded border-stone-300 text-orange-600 focus:ring-orange-400"
+                      />
+                      <span className="text-xs text-stone-500 leading-relaxed">
+                        Billing address same as delivery — we&apos;ll pre-fill it on the
+                        secure payment page. Untick to enter a different one there.
+                      </span>
+                    </label>
+                  )}
                 </div>
 
                 {canceled && (

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { getDb } from "@/lib/db";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
 
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
       customer = {},
       deliveryType = "delivery",
       deliveryFee = 0,
+      prefillBilling = false,
     } = body;
 
     if (!customer.name || !customer.email || !customer.phone) {
@@ -95,14 +97,38 @@ export async function POST(request: Request) {
       });
     }
 
-    const session = await getStripe().checkout.sessions.create({
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment",
       line_items: lineItems,
-      customer_email: customer.email,
       success_url: `${origin}/checkout/success?ref=${ref}`,
       cancel_url: `${origin}/checkout?canceled=1`,
       metadata: { orderRef: ref },
-    });
+    };
+
+    // "Billing same as delivery" ticked → seed a Stripe Customer with the
+    // delivery address so Stripe's payment page pre-fills billing (editable),
+    // sparing the customer a re-type. Otherwise just attach the email and let
+    // Stripe collect billing itself. Never pass both customer and customer_email.
+    if (prefillBilling && deliveryType === "delivery" && customer.address) {
+      const stripeCustomer = await getStripe().customers.create({
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+        address: {
+          line1: customer.address,
+          city: customer.city || undefined,
+          postal_code: customer.postcode || undefined,
+          country: "GB",
+        },
+      });
+      sessionParams.customer = stripeCustomer.id;
+      sessionParams.billing_address_collection = "auto";
+      sessionParams.customer_update = { address: "auto" };
+    } else {
+      sessionParams.customer_email = customer.email;
+    }
+
+    const session = await getStripe().checkout.sessions.create(sessionParams);
 
     // Record the order as unpaid; the webhook flips it to paid on completion.
     const sql = getDb();
