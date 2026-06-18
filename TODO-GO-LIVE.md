@@ -4,6 +4,7 @@
 - [ ] **Stripe account** — client to create account and send API keys (guide sent)
 - [ ] **WhatsApp Business** — client to set up on their phone (guide sent)
 - [ ] **Uber Direct (optional)** — client to sign up for Uber Direct and send `Client ID`, `Client Secret`, `Customer ID` (guide sent). Site works on flat-rate self-delivery without it.
+- [ ] **getAddress.io key** — sign up at getaddress.io (free tier to start), get the API key, add `GETADDRESS_API_KEY` to Vercel + redeploy. Enables street-address autofill at checkout; without it, the postcode + manual address still work.
 - [ ] **Custom domain** — point kokkitchens.com (GoDaddy) DNS to Vercel
 - [ ] **Real customer testimonials** — replace placeholder quotes
 - [ ] **Delivery fees** — confirm local (£4.99) and extended (£7.99) pricing

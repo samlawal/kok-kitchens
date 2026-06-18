@@ -13,6 +13,7 @@ import {
   type Zone,
 } from "@/lib/postcode";
 import { isValidEmail, isValidUkPhone } from "@/lib/validation";
+import type { AddressSuggestion } from "@/lib/address";
 
 type DeliveryType = "delivery-local" | "delivery-extended" | "pickup";
 
@@ -34,6 +35,8 @@ export default function CheckoutPage() {
   const [postcodeArea, setPostcodeArea] = useState<string | null>(null);
   const [postcodeZone, setPostcodeZone] = useState<Zone | null>(null);
   const [lookingUp, setLookingUp] = useState(false);
+  const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(false);
   const lookupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
   const [quotingDelivery, setQuotingDelivery] = useState(false);
@@ -78,6 +81,27 @@ export default function CheckoutPage() {
     }
   }, []);
 
+  // Fetch full addresses for a postcode (getAddress.io via our proxy). Shows no
+  // dropdown if not configured/empty — checkout falls back to manual entry.
+  const fetchAddresses = useCallback(async (pc: string) => {
+    setAddressSuggestions([]);
+    setLoadingAddresses(true);
+    try {
+      const res = await fetch(`/api/address?postcode=${encodeURIComponent(pc)}`);
+      const data = await res.json();
+      setAddressSuggestions(data.success ? data.addresses : []);
+    } catch {
+      setAddressSuggestions([]);
+    } finally {
+      setLoadingAddresses(false);
+    }
+  }, []);
+
+  function selectAddress(a: AddressSuggestion) {
+    setForm((prev) => ({ ...prev, address: a.line1, city: a.city || prev.city }));
+    setAddressSuggestions([]);
+  }
+
   // Validate a postcode via postcodes.io, then resolve the delivery zone
   // (curated lists win; distance from the kitchen decides unlisted ones).
   const validatePostcode = useCallback(async (value: string) => {
@@ -89,6 +113,7 @@ export default function CheckoutPage() {
       setPostcodeValid(false);
       setPostcodeArea(null);
       setPostcodeZone(null);
+      setAddressSuggestions([]);
       return;
     }
     setPostcodeValid(true);
@@ -100,7 +125,8 @@ export default function CheckoutPage() {
     setPostcodeZone(zone);
     if (zone === "local") setDeliveryType("delivery-local");
     else if (zone === "extended") setDeliveryType("delivery-extended");
-  }, []);
+    fetchAddresses(value);
+  }, [fetchAddresses]);
 
   function looksComplete(pc: string) {
     return /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(pc.trim());
@@ -113,6 +139,7 @@ export default function CheckoutPage() {
     setPostcodeArea(null);
     setPostcodeZone(null);
     setPostcodeChecked(false);
+    setAddressSuggestions([]);
 
     if (lookupTimer.current) clearTimeout(lookupTimer.current);
     if (value.replace(/\s/g, "").length < 2) {
@@ -427,6 +454,32 @@ export default function CheckoutPage() {
                             WhatsApp us to check →
                           </a>
                         </span>
+                      </div>
+                    )}
+                    {postcodeValid && (loadingAddresses || addressSuggestions.length > 0) && (
+                      <div className="mt-3">
+                        <label className="block text-xs font-medium text-stone-600 mb-1">
+                          {loadingAddresses ? "Finding addresses…" : "Select your address"}
+                        </label>
+                        {addressSuggestions.length > 0 && (
+                          <select
+                            defaultValue=""
+                            onChange={(e) => {
+                              const i = Number(e.target.value);
+                              if (e.target.value !== "" && !Number.isNaN(i)) selectAddress(addressSuggestions[i]);
+                            }}
+                            className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                          >
+                            <option value="" disabled>
+                              {addressSuggestions.length} address{addressSuggestions.length === 1 ? "" : "es"} found — pick yours
+                            </option>
+                            {addressSuggestions.map((a, i) => (
+                              <option key={i} value={i}>
+                                {a.label}
+                              </option>
+                            ))}
+                          </select>
+                        )}
                       </div>
                     )}
                     <p className="mt-2 text-xs text-stone-400">
