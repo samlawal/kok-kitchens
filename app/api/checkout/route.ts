@@ -100,6 +100,9 @@ export async function POST(request: Request) {
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment",
       line_items: lineItems,
+      // Force GBP only — disable Adaptive Pricing so Stripe never offers the
+      // customer a local currency (e.g. USD) at checkout.
+      adaptive_pricing: { enabled: false },
       success_url: `${origin}/checkout/success?ref=${ref}`,
       cancel_url: `${origin}/checkout?canceled=1`,
       metadata: { orderRef: ref },

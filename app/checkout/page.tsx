@@ -12,6 +12,7 @@ import {
   autocompletePostcode,
   type Zone,
 } from "@/lib/postcode";
+import { isValidEmail, isValidUkPhone } from "@/lib/validation";
 
 type DeliveryType = "delivery-local" | "delivery-extended" | "pickup";
 
@@ -36,7 +37,8 @@ export default function CheckoutPage() {
   const lookupTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [uberQuote, setUberQuote] = useState<{ id: string; fee: number; estimatedMinutes: number } | null>(null);
   const [quotingDelivery, setQuotingDelivery] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("cod");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card">("card");
+  const [fieldErrors, setFieldErrors] = useState<{ email?: boolean; phone?: boolean }>({});
   const [billingSameAsDelivery, setBillingSameAsDelivery] = useState(true);
   const [canceled, setCanceled] = useState(false);
   const [form, setForm] = useState({
@@ -144,6 +146,18 @@ export default function CheckoutPage() {
 
   function updateField(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    if (field === "email" || field === "phone") {
+      setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  }
+
+  // Validate email + phone before placing/paying; returns false and flags the
+  // bad fields if either is invalid.
+  function validateContact(): boolean {
+    const emailOk = isValidEmail(form.email);
+    const phoneOk = isValidUkPhone(form.phone);
+    setFieldErrors({ email: !emailOk, phone: !phoneOk });
+    return emailOk && phoneOk;
   }
 
   // Surface a notice if the customer returned from a cancelled Stripe payment.
@@ -154,6 +168,7 @@ export default function CheckoutPage() {
   }, []);
 
   async function handleCardCheckout() {
+    if (!validateContact()) return;
     setSubmitting(true);
     try {
       const deliveryZone = deliveryType === "delivery-local" ? "local" : "extended";
@@ -190,6 +205,7 @@ export default function CheckoutPage() {
       handleCardCheckout();
       return;
     }
+    if (!validateContact()) return;
     setSubmitting(true);
 
     try {
@@ -450,8 +466,16 @@ export default function CheckoutPage() {
                         required
                         value={form.email}
                         onChange={(e) => updateField("email", e.target.value)}
-                        className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                        onBlur={() => setFieldErrors((p) => ({ ...p, email: form.email.length > 0 && !isValidEmail(form.email) }))}
+                        className={`w-full rounded-lg border px-4 py-2.5 text-sm text-stone-900 focus:ring-2 focus:outline-none ${
+                          fieldErrors.email
+                            ? "border-red-300 focus:border-red-400 focus:ring-red-100"
+                            : "border-stone-200 focus:border-orange-400 focus:ring-orange-100"
+                        }`}
                       />
+                      {fieldErrors.email && (
+                        <p className="mt-1 text-xs text-red-600">Enter a valid email address.</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-stone-700 mb-1">
@@ -462,9 +486,17 @@ export default function CheckoutPage() {
                         required
                         value={form.phone}
                         onChange={(e) => updateField("phone", e.target.value)}
+                        onBlur={() => setFieldErrors((p) => ({ ...p, phone: form.phone.length > 0 && !isValidUkPhone(form.phone) }))}
                         placeholder="+44..."
-                        className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                        className={`w-full rounded-lg border px-4 py-2.5 text-sm text-stone-900 focus:ring-2 focus:outline-none ${
+                          fieldErrors.phone
+                            ? "border-red-300 focus:border-red-400 focus:ring-red-100"
+                            : "border-stone-200 focus:border-orange-400 focus:ring-orange-100"
+                        }`}
                       />
+                      {fieldErrors.phone && (
+                        <p className="mt-1 text-xs text-red-600">Enter a valid UK phone number.</p>
+                      )}
                     </div>
                   </div>
 
@@ -689,6 +721,10 @@ export default function CheckoutPage() {
                     </svg>
                     Order via WhatsApp
                   </a>
+                  <p className="mt-2 text-[11px] text-stone-400 leading-relaxed">
+                    Opens WhatsApp to place your order by chat — we&apos;ll confirm it
+                    there. Your basket stays saved if you&apos;d rather pay online above.
+                  </p>
                 </div>
               </div>
             </div>
