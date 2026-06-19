@@ -23,6 +23,9 @@ export default function PageHero({
         unoptimized
         className="object-cover object-center brightness-110 saturate-[1.08]"
       />
+      {/* Very light brand-orange wash over the photo to tie the banners to the
+          KOK palette (kept subtle so the photo still reads). */}
+      <div className="absolute inset-0 bg-orange-600/12 mix-blend-multiply" />
       {/* A light base keeps the whole photo readable; a soft dark vignette
           centred on the text guarantees the eyebrow/heading/subtitle stay
           legible while the photo stays bright at the edges. */}
