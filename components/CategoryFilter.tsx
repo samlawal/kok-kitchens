@@ -41,7 +41,7 @@ export default function CategoryFilter({
           className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
             selected === "all"
               ? "bg-orange-600 text-white shadow-sm"
-              : "bg-white text-stone-600 border border-stone-200 hover:border-orange-300 hover:text-orange-600"
+              : "bg-white text-stone-600 border border-stone-200 hover:border-orange-300 hover:text-orange-700"
           }`}
         >
           All
@@ -53,7 +53,7 @@ export default function CategoryFilter({
             className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
               selected === key
                 ? "bg-orange-600 text-white shadow-sm"
-                : "bg-white text-stone-600 border border-stone-200 hover:border-orange-300 hover:text-orange-600"
+                : "bg-white text-stone-600 border border-stone-200 hover:border-orange-300 hover:text-orange-700"
             }`}
           >
             {label}

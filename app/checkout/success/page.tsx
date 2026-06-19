@@ -20,13 +20,13 @@ export default async function SuccessPage({
       <ClearCart />
       <div className="text-center px-4 max-w-md">
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-          <CheckCircle className="h-10 w-10 text-green-600" />
+          <CheckCircle className="h-10 w-10 text-green-700" />
         </div>
         <h1 className="text-3xl font-bold text-stone-900 mb-3">
           Order Confirmed!
         </h1>
         {ref && (
-          <p className="text-sm text-stone-400 mb-2">
+          <p className="text-sm text-stone-500 mb-2">
             Reference <span className="font-semibold text-stone-600">{ref}</span>
           </p>
         )}
@@ -34,7 +34,7 @@ export default async function SuccessPage({
           Thank you for your order. We&apos;re preparing your delicious
           Nigerian meal right now.
         </p>
-        <p className="text-sm text-stone-400 mb-8">
+        <p className="text-sm text-stone-500 mb-8">
           You&apos;ll receive a confirmation email with your order details
           shortly.{" "}
           {paidByCard

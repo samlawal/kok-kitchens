@@ -26,7 +26,7 @@ export default function CateringPage() {
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center px-4 max-w-md">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle className="h-10 w-10 text-green-600" />
+            <CheckCircle className="h-10 w-10 text-green-700" />
           </div>
           <h1 className="text-3xl font-bold text-stone-900 mb-3">
             Request Received!
@@ -78,7 +78,7 @@ export default function CateringPage() {
               className="rounded-2xl bg-white border border-stone-200 p-6 text-center"
             >
               <h3 className="font-semibold text-stone-900">{tier.label}</h3>
-              <p className="text-2xl font-bold text-orange-600 mt-1">
+              <p className="text-2xl font-bold text-orange-700 mt-1">
                 {tier.range}
               </p>
               <p className="text-sm text-stone-500 mt-1">{tier.desc}</p>

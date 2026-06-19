@@ -24,7 +24,7 @@ export default function FeaturedMeals() {
           <FadeIn delay={0.2}>
             <Link
               href="/menu"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors group"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-orange-700 hover:text-orange-700 transition-colors group"
             >
               View Full Menu
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -43,7 +43,7 @@ export default function FeaturedMeals() {
         <FadeIn delay={0.2} className="mt-8 text-center sm:hidden">
           <Link
             href="/menu"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-orange-600"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-orange-700"
           >
             View Full Menu
             <ArrowRight className="h-4 w-4" />

@@ -83,7 +83,7 @@ export default function MenuPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-3 text-stone-400 max-w-md mx-auto"
+            className="mt-3 text-stone-300 max-w-md mx-auto"
           >
             Authentic Nigerian dishes made with love — pick
             your favourites and order in minutes
@@ -98,14 +98,15 @@ export default function MenuPage() {
           transition={{ delay: 0.2 }}
           className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8"
         >
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+          <div className="relative flex-1 max-w-sm" role="search">
+            <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
             <input
-              type="text"
+              type="search"
+              aria-label="Search dishes"
               placeholder="Search dishes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-full border border-stone-200 bg-white py-2.5 pl-10 pr-4 text-sm text-stone-900 placeholder:text-stone-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none transition-colors"
+              className="w-full rounded-full border border-stone-200 bg-white py-2.5 pl-10 pr-4 text-sm text-stone-900 placeholder:text-stone-500 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none transition-colors"
             />
           </div>
           <CategoryFilter selected={category} onChange={setCategory} />
@@ -150,7 +151,7 @@ export default function MenuPage() {
 
         {filtered.length > 0 && (
           <FadeIn delay={0.3} className="mt-6 text-center">
-            <p className="text-sm text-stone-400">
+            <p className="text-sm text-stone-500">
               Showing {filtered.length} of {menuItems.length} dishes
             </p>
           </FadeIn>

@@ -101,7 +101,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
 
       <div className="flex flex-1 flex-col p-4">
         <Link href={`/menu/${item.slug}`}>
-          <h3 className="font-semibold text-stone-900 group-hover:text-orange-600 transition-colors">
+          <h3 className="font-semibold text-stone-900 group-hover:text-orange-700 transition-colors">
             {item.name}
           </h3>
         </Link>
@@ -116,7 +116,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
           </span>
 
           {isUnavailable ? (
-            <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-stone-400 cursor-not-allowed">
+            <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-stone-500 cursor-not-allowed">
               Unavailable
             </span>
           ) : (

@@ -15,7 +15,7 @@ const features = [
   },
   {
     Icon: () => (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <motion.circle cx="20" cy="20" r="14" fill="#f97316" opacity="0.1" stroke="none" />
         <motion.circle cx="20" cy="20" r="14"
           animate={{ strokeDashoffset: [88, 0] }}
@@ -29,7 +29,7 @@ const features = [
       </svg>
     ),
     StaticIcon: () => (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <circle cx="20" cy="20" r="14" fill="#f97316" opacity="0.1" stroke="none" />
         <circle cx="20" cy="20" r="14" />
         <path d="M20 10v10l6 4" />

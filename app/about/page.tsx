@@ -14,7 +14,7 @@ export default function AboutPage() {
         <h1 className="text-4xl font-bold text-white tracking-tight">
           Our Story
         </h1>
-        <p className="mt-3 text-stone-400 max-w-md mx-auto">
+        <p className="mt-3 text-stone-300 max-w-md mx-auto">
           Where passion meets tradition
         </p>
       </div>
@@ -23,7 +23,7 @@ export default function AboutPage() {
         <div className="prose prose-stone prose-lg max-w-none">
           <div className="rounded-2xl bg-white border border-stone-200 p-8 sm:p-12 mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <ChefHat className="h-8 w-8 text-orange-600" />
+              <ChefHat className="h-8 w-8 text-orange-700" />
               <h2 className="text-2xl font-bold text-stone-900 m-0">
                 About KOK Kitchens
               </h2>
@@ -69,7 +69,7 @@ export default function AboutPage() {
                 key={card.title}
                 className="rounded-2xl bg-white border border-stone-200 p-6"
               >
-                <card.icon className="h-6 w-6 text-orange-600 mb-3" />
+                <card.icon className="h-6 w-6 text-orange-700 mb-3" />
                 <h3 className="font-semibold text-stone-900 mb-2">
                   {card.title}
                 </h3>

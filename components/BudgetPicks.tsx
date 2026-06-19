@@ -35,7 +35,7 @@ export default function BudgetPicks() {
           <FadeIn delay={0.2}>
             <Link
               href="/menu"
-              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors group"
+              className="hidden sm:flex items-center gap-1 text-sm font-semibold text-orange-700 hover:text-orange-700 transition-colors group"
             >
               Full Menu
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

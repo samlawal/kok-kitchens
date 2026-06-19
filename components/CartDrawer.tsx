@@ -52,14 +52,14 @@ export default function CartDrawer() {
           >
             <div className="flex items-center justify-between border-b border-stone-200 px-6 py-4">
               <div className="flex items-center gap-2">
-                <ShoppingBag className="h-5 w-5 text-orange-600" />
+                <ShoppingBag className="h-5 w-5 text-orange-700" />
                 <h2 className="text-lg font-bold text-stone-900">
                   Your Order ({totalItems})
                 </h2>
               </div>
               <motion.button
                 onClick={() => setIsCartOpen(false)}
-                className="p-2 text-stone-400 hover:text-stone-600 transition-colors"
+                className="p-2 text-stone-500 hover:text-stone-600 transition-colors"
                 aria-label="Close cart"
                 whileTap={{ scale: 0.85 }}
               >
@@ -80,7 +80,7 @@ export default function CartDrawer() {
                 <p className="text-stone-500 text-lg font-medium">
                   Your cart is empty
                 </p>
-                <p className="text-stone-400 text-sm mt-1">
+                <p className="text-stone-500 text-sm mt-1">
                   Add some delicious Nigerian dishes to get started
                 </p>
                 <Link
@@ -124,7 +124,7 @@ export default function CartDrawer() {
                           <h4 className="font-medium text-stone-900 text-sm truncate">
                             {item.menuItem.name}
                           </h4>
-                          <p className="text-sm font-semibold text-orange-600 mt-0.5">
+                          <p className="text-sm font-semibold text-orange-700 mt-0.5">
                             {formatPrice(item.menuItem.price * item.quantity)}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
@@ -133,7 +133,7 @@ export default function CartDrawer() {
                               onClick={() =>
                                 updateQuantity(item.menuItem.id, item.quantity - 1)
                               }
-                              className="flex h-7 w-7 items-center justify-center rounded-full border border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-600 transition-colors"
+                              className="flex h-7 w-7 items-center justify-center rounded-full border border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-700 transition-colors"
                               aria-label="Decrease quantity"
                             >
                               <Minus className="h-3 w-3" />
@@ -151,7 +151,7 @@ export default function CartDrawer() {
                               onClick={() =>
                                 updateQuantity(item.menuItem.id, item.quantity + 1)
                               }
-                              className="flex h-7 w-7 items-center justify-center rounded-full border border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-600 transition-colors"
+                              className="flex h-7 w-7 items-center justify-center rounded-full border border-stone-300 text-stone-500 hover:border-orange-400 hover:text-orange-700 transition-colors"
                               aria-label="Increase quantity"
                             >
                               <Plus className="h-3 w-3" />
@@ -159,7 +159,7 @@ export default function CartDrawer() {
                             <motion.button
                               whileTap={{ scale: 0.85 }}
                               onClick={() => removeItem(item.menuItem.id)}
-                              className="ml-auto p-1 text-stone-400 hover:text-red-500 transition-colors"
+                              className="ml-auto p-1 text-stone-500 hover:text-red-500 transition-colors"
                               aria-label="Remove item"
                             >
                               <Trash2 className="h-4 w-4" />

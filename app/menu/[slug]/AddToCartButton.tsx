@@ -26,7 +26,7 @@ export default function AddToCartButton({ item }: { item: MenuItem }) {
         <motion.button
           whileTap={{ scale: 0.8 }}
           onClick={() => setQty(Math.max(1, qty - 1))}
-          className="flex h-10 w-10 items-center justify-center text-stone-500 hover:text-orange-600 transition-colors"
+          className="flex h-10 w-10 items-center justify-center text-stone-500 hover:text-orange-700 transition-colors"
           aria-label="Decrease quantity"
         >
           <Minus className="h-4 w-4" />
@@ -42,7 +42,7 @@ export default function AddToCartButton({ item }: { item: MenuItem }) {
         <motion.button
           whileTap={{ scale: 0.8 }}
           onClick={() => setQty(qty + 1)}
-          className="flex h-10 w-10 items-center justify-center text-stone-500 hover:text-orange-600 transition-colors"
+          className="flex h-10 w-10 items-center justify-center text-stone-500 hover:text-orange-700 transition-colors"
           aria-label="Increase quantity"
         >
           <Plus className="h-4 w-4" />

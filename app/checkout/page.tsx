@@ -290,7 +290,7 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
         <Link
           href="/menu"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors mb-8"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-orange-700 transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
           Continue Shopping
@@ -316,7 +316,7 @@ export default function CheckoutPage() {
                         : "border-stone-200 hover:border-stone-300"
                     }`}
                   >
-                    <MapPin className={`h-5 w-5 ${deliveryType === "delivery-local" ? "text-orange-600" : "text-stone-400"}`} />
+                    <MapPin className={`h-5 w-5 ${deliveryType === "delivery-local" ? "text-orange-700" : "text-stone-500"}`} />
                     <div className="text-center">
                       <p className="font-medium text-stone-900 text-sm">Local</p>
                       <p className="text-xs text-stone-500">{formatPrice(4.99)}</p>
@@ -331,7 +331,7 @@ export default function CheckoutPage() {
                         : "border-stone-200 hover:border-stone-300"
                     }`}
                   >
-                    <Truck className={`h-5 w-5 ${deliveryType === "delivery-extended" ? "text-orange-600" : "text-stone-400"}`} />
+                    <Truck className={`h-5 w-5 ${deliveryType === "delivery-extended" ? "text-orange-700" : "text-stone-500"}`} />
                     <div className="text-center">
                       <p className="font-medium text-stone-900 text-sm">Extended</p>
                       <p className="text-xs text-stone-500">{formatPrice(7.99)}</p>
@@ -346,7 +346,7 @@ export default function CheckoutPage() {
                         : "border-stone-200 hover:border-stone-300"
                     }`}
                   >
-                    <Package className={`h-5 w-5 ${deliveryType === "pickup" ? "text-orange-600" : "text-stone-400"}`} />
+                    <Package className={`h-5 w-5 ${deliveryType === "pickup" ? "text-orange-700" : "text-stone-500"}`} />
                     <div className="text-center">
                       <p className="font-medium text-stone-900 text-sm">Pickup</p>
                       <p className="text-xs text-stone-500">Free</p>
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
                 {/* Pickup address */}
                 {deliveryType === "pickup" && (
                   <div className="mt-4 p-4 rounded-xl bg-orange-50 border border-orange-200 flex items-start gap-2">
-                    <MapPin className="h-4 w-4 text-orange-600 shrink-0 mt-0.5" />
+                    <MapPin className="h-4 w-4 text-orange-700 shrink-0 mt-0.5" />
                     <div className="text-sm text-stone-700">
                       <p className="font-medium text-stone-900">Pickup address</p>
                       <p>10 Kendals Close, Radlett</p>
@@ -382,7 +382,7 @@ export default function CheckoutPage() {
                         autoComplete="off"
                       />
                       {lookingUp && (
-                        <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-stone-400" />
+                        <Loader2 className="absolute right-3 top-3 h-4 w-4 animate-spin text-stone-500" />
                       )}
                       {postcodeSuggestions.length > 0 && (
                         <ul className="absolute z-20 mt-1 w-full rounded-lg border border-stone-200 bg-white shadow-lg max-h-48 overflow-auto">
@@ -407,24 +407,24 @@ export default function CheckoutPage() {
                       </div>
                     )}
                     {postcodeChecked && postcodeValid && postcodeArea && (
-                      <div className="mt-2 flex items-center gap-1.5 text-xs text-green-600">
+                      <div className="mt-2 flex items-center gap-1.5 text-xs text-green-700">
                         <Check className="h-3.5 w-3.5" />
                         {postcode.toUpperCase()} verified — {postcodeArea}
                       </div>
                     )}
                     {postcodeChecked && postcodeZone === "local" && (
-                      <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                      <div className="mt-2 flex items-center gap-2 text-sm text-green-700">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-xs">✓</span>
                         Local delivery — {formatPrice(4.99)}
                       </div>
                     )}
                     {postcodeChecked && postcodeZone === "extended" && (
                       <div className="mt-2 space-y-2">
-                        <div className="flex items-center gap-2 text-sm text-orange-600">
+                        <div className="flex items-center gap-2 text-sm text-orange-700">
                           <Truck className="h-4 w-4" />
                           Extended delivery — {uberQuote ? formatPrice(uberQuote.fee) : formatPrice(7.99)}
                           {uberQuote && (
-                            <span className="text-xs text-stone-400 ml-1">
+                            <span className="text-xs text-stone-500 ml-1">
                               (~{uberQuote.estimatedMinutes} min via courier)
                             </span>
                           )}
@@ -434,7 +434,7 @@ export default function CheckoutPage() {
                             type="button"
                             onClick={() => fetchUberQuote(form.address, form.city, postcode)}
                             disabled={quotingDelivery}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-orange-600 hover:text-orange-700 disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-orange-700 hover:text-orange-700 disabled:opacity-50"
                           >
                             {quotingDelivery ? (
                               <><Loader2 className="h-3 w-3 animate-spin" /> Getting live quote...</>
@@ -450,7 +450,7 @@ export default function CheckoutPage() {
                         <Info className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>
                           We may not deliver to this area yet.
-                          <a href="https://wa.me/447447982712?text=Hi!%20Do%20you%20deliver%20to%20my%20area%3F%20My%20postcode%20is%20" target="_blank" rel="noopener noreferrer" className="text-green-600 font-medium ml-1">
+                          <a href="https://wa.me/447447982712?text=Hi!%20Do%20you%20deliver%20to%20my%20area%3F%20My%20postcode%20is%20" target="_blank" rel="noopener noreferrer" className="text-green-700 font-medium ml-1">
                             WhatsApp us to check →
                           </a>
                         </span>
@@ -482,7 +482,7 @@ export default function CheckoutPage() {
                         )}
                       </div>
                     )}
-                    <p className="mt-2 text-xs text-stone-400">
+                    <p className="mt-2 text-xs text-stone-500">
                       <strong>Local:</strong> Borehamwood, Radlett, Bushey, Barnet, Potters Bar
                       <br />
                       <strong>Extended:</strong> Watford, Harrow, North London, St Albans, Hemel
@@ -649,10 +649,10 @@ export default function CheckoutPage() {
                     <span className="text-stone-500">
                       Delivery
                       {deliveryType === "delivery-local" && (
-                        <span className="text-xs text-stone-400 ml-1">(local)</span>
+                        <span className="text-xs text-stone-500 ml-1">(local)</span>
                       )}
                       {deliveryType === "delivery-extended" && (
-                        <span className="text-xs text-stone-400 ml-1">
+                        <span className="text-xs text-stone-500 ml-1">
                           ({uberQuote ? "Uber courier" : "extended"})
                         </span>
                       )}
@@ -664,13 +664,13 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   {uberQuote && deliveryType === "delivery-extended" && (
-                    <div className="text-xs text-stone-400">
+                    <div className="text-xs text-stone-500">
                       Est. {uberQuote.estimatedMinutes} min delivery via courier
                     </div>
                   )}
                   <div className="flex justify-between text-base font-bold border-t border-stone-100 pt-3">
                     <span className="text-stone-900">Total</span>
-                    <span className="text-orange-600">
+                    <span className="text-orange-700">
                       {formatPrice(grandTotal)}
                     </span>
                   </div>
@@ -709,7 +709,7 @@ export default function CheckoutPage() {
                         type="checkbox"
                         checked={billingSameAsDelivery}
                         onChange={(e) => setBillingSameAsDelivery(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 rounded border-stone-300 text-orange-600 focus:ring-orange-400"
+                        className="mt-0.5 h-4 w-4 rounded border-stone-300 text-orange-700 focus:ring-orange-400"
                       />
                       <span className="text-xs text-stone-500 leading-relaxed">
                         Billing address same as delivery — we&apos;ll pre-fill it on the
@@ -745,7 +745,7 @@ export default function CheckoutPage() {
                       : "Place Order"}
                 </button>
 
-                <p className="mt-3 text-xs text-stone-400 text-center">
+                <p className="mt-3 text-xs text-stone-500 text-center">
                   {paymentMethod === "card"
                     ? "You'll be redirected to secure Stripe checkout. A confirmation email follows."
                     : "Payment on delivery. You'll receive an order confirmation via email."}
@@ -753,7 +753,7 @@ export default function CheckoutPage() {
 
                 {/* WhatsApp checkout alternative */}
                 <div className="mt-4 pt-4 border-t border-stone-100 text-center">
-                  <p className="text-xs text-stone-400 mb-2">
+                  <p className="text-xs text-stone-500 mb-2">
                     Prefer to order via chat?
                   </p>
                   <a
@@ -767,14 +767,14 @@ export default function CheckoutPage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-green-600 px-5 py-2.5 text-sm font-medium text-green-600 hover:bg-green-600 hover:text-white transition-all"
+                    className="inline-flex items-center gap-2 rounded-full border border-green-600 px-5 py-2.5 text-sm font-medium text-green-700 hover:bg-green-600 hover:text-white transition-all"
                   >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                     </svg>
                     Order via WhatsApp
                   </a>
-                  <p className="mt-2 text-[11px] text-stone-400 leading-relaxed">
+                  <p className="mt-2 text-[11px] text-stone-500 leading-relaxed">
                     Opens WhatsApp to place your order by chat — we&apos;ll confirm it
                     there. Your basket stays saved if you&apos;d rather pay online above.
                   </p>

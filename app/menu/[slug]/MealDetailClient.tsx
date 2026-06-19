@@ -48,7 +48,7 @@ export default function MealDetailClient({
         >
           <Link
             href="/menu"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-orange-600 transition-colors mb-8 group"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-stone-500 hover:text-orange-700 transition-colors mb-8 group"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             Back to Menu
@@ -119,7 +119,7 @@ export default function MealDetailClient({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-2 text-sm font-medium text-orange-600"
+                className="mt-2 text-sm font-medium text-orange-700"
               >
                 {item.servings}
               </motion.p>

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 export function FlameIcon({ animated = true }: { animated?: boolean }) {
   if (!animated) {
     return (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         {/* Pot body */}
         <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" fill="#f97316" opacity="0.15" stroke="none" />
         <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" />
@@ -25,7 +25,7 @@ export function FlameIcon({ animated = true }: { animated?: boolean }) {
   }
 
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {/* Pot body */}
       <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" fill="#f97316" opacity="0.12" stroke="none" />
       <path d="M8 22h24v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-8z" />
@@ -68,7 +68,7 @@ export function FlameIcon({ animated = true }: { animated?: boolean }) {
 export function DeliveryIcon({ animated = true }: { animated?: boolean }) {
   if (!animated) {
     return (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <rect x="2" y="14" width="24" height="14" rx="2" fill="#f97316" stroke="none" opacity="0.15" />
         <rect x="2" y="14" width="24" height="14" rx="2" />
         <path d="M26 18h5l4 5v5h-9V18z" />
@@ -81,7 +81,7 @@ export function DeliveryIcon({ animated = true }: { animated?: boolean }) {
   }
 
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {/* Truck body */}
       <motion.g
         animate={{ x: [0, 1, -0.5, 0] }}
@@ -142,7 +142,7 @@ export function DeliveryIcon({ animated = true }: { animated?: boolean }) {
 export function ClocheIcon({ animated = true }: { animated?: boolean }) {
   if (!animated) {
     return (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
         <path d="M4 28h32" />
         <path d="M8 28c0-8 5.4-14 12-14s12 6 12 14" fill="#f97316" opacity="0.15" stroke="none" />
         <path d="M8 28c0-8 5.4-14 12-14s12 6 12 14" />
@@ -155,7 +155,7 @@ export function ClocheIcon({ animated = true }: { animated?: boolean }) {
   }
 
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
       {/* Base plate */}
       <path d="M4 28h32" />
       <path d="M4 28v3a1 1 0 001 1h30a1 1 0 001-1v-3" />

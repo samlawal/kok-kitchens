@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { MotionConfig } from "framer-motion";
 import { CartProvider } from "@/lib/cart-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -67,13 +68,23 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <WhatsAppButton />
-        </CartProvider>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-stone-900 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+        >
+          Skip to content
+        </a>
+        <MotionConfig reducedMotion="user">
+          <CartProvider>
+            <Header />
+            <main id="main-content" tabIndex={-1} className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <CartDrawer />
+            <WhatsAppButton />
+          </CartProvider>
+        </MotionConfig>
       </body>
     </html>
   );
