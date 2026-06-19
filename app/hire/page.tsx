@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, Package, CalendarDays, Check } from "lucide-react";
 import { formatPrice } from "@/lib/menu-data";
@@ -15,6 +15,15 @@ import {
 
 export default function HirePage() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [hireImages, setHireImages] = useState<Record<string, string>>({});
+
+  // Admin-uploaded hire photos (Vercel Blob), same pattern as the menu.
+  useEffect(() => {
+    fetch("/api/hire-images")
+      .then((r) => r.json())
+      .then((d) => d.success && setHireImages(d.images))
+      .catch(() => {});
+  }, []);
   const [form, setForm] = useState({ name: "", phone: "", email: "", eventDate: "", notes: "" });
   const [errors, setErrors] = useState<{ phone?: boolean; email?: boolean }>({});
   const [submitting, setSubmitting] = useState(false);
@@ -139,12 +148,26 @@ export default function HirePage() {
                             qty > 0 ? "border-orange-300" : "border-stone-200"
                           }`}
                         >
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium text-stone-900 truncate">{item.name}</p>
-                            <p className="text-sm text-orange-600 font-semibold">
-                              {formatPrice(item.price)}
-                              {item.unit && <span className="text-xs text-stone-400 font-normal ml-1">/ {item.unit}</span>}
-                            </p>
+                          <div className="flex items-center gap-3 min-w-0">
+                            {hireImages[item.id] ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={hireImages[item.id]}
+                                alt={item.name}
+                                className="h-12 w-12 rounded-lg object-cover shrink-0"
+                              />
+                            ) : (
+                              <div className="h-12 w-12 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
+                                <Package className="h-5 w-5 text-stone-300" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-stone-900 truncate">{item.name}</p>
+                              <p className="text-sm text-orange-600 font-semibold">
+                                {formatPrice(item.price)}
+                                {item.unit && <span className="text-xs text-stone-400 font-normal ml-1">/ {item.unit}</span>}
+                              </p>
+                            </div>
                           </div>
                           {qty === 0 ? (
                             <button

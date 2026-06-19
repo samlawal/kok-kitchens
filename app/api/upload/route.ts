@@ -3,15 +3,20 @@ import { put, list, del } from "@vercel/blob";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 
-// Always store under the canonical .webp path so /api/images (which serves the
-// menu's uploaded photos) and the static fallback resolve consistently. The
-// file extension is cosmetic — browsers and Next/Image render by Content-Type,
-// which we set to match the actual uploaded bytes.
-function blobPath(menuItemId: string) {
-  return `meals/${menuItemId}.webp`;
+// Photos are stored per-section: "meals/{id}.webp" (menu) or "hire/{id}.webp"
+// (equipment hire). Always the canonical .webp path so resolvers + static
+// fallback line up. Extension is cosmetic — browsers render by Content-Type.
+const FOLDERS = ["meals", "hire"] as const;
+type Folder = (typeof FOLDERS)[number];
+
+function resolveFolder(type: unknown): Folder {
+  return FOLDERS.includes(type as Folder) ? (type as Folder) : "meals";
 }
-function rollbackPath(menuItemId: string) {
-  return `meals/_rollback/${menuItemId}.webp`;
+function blobPath(folder: Folder, id: string) {
+  return `${folder}/${id}.webp`;
+}
+function rollbackPath(folder: Folder, id: string) {
+  return `${folder}/_rollback/${id}.webp`;
 }
 
 export async function POST(request: Request) {
@@ -19,6 +24,7 @@ export async function POST(request: Request) {
   const password = formData.get("password") as string;
   const file = formData.get("file") as File;
   const menuItemId = formData.get("menuItemId") as string;
+  const folder = resolveFolder(formData.get("type"));
 
   if (password !== ADMIN_PASSWORD) {
     return NextResponse.json(
@@ -53,14 +59,14 @@ export async function POST(request: Request) {
     const contentType = file.type || "image/webp";
 
     // Save the current image as a rollback copy before overwriting.
-    const existing = await list({ prefix: blobPath(menuItemId) });
+    const existing = await list({ prefix: blobPath(folder, menuItemId) });
     const currentBlob = existing.blobs[0];
     if (currentBlob) {
       try {
         const resp = await fetch(currentBlob.url);
         const curType = resp.headers.get("content-type") || "image/webp";
         const curData = await resp.arrayBuffer();
-        await put(rollbackPath(menuItemId), Buffer.from(curData), {
+        await put(rollbackPath(folder, menuItemId), Buffer.from(curData), {
           access: "public",
           contentType: curType,
           addRandomSuffix: false,
@@ -71,7 +77,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const blob = await put(blobPath(menuItemId), buffer, {
+    const blob = await put(blobPath(folder, menuItemId), buffer, {
       access: "public",
       contentType,
       addRandomSuffix: false,
@@ -97,7 +103,8 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const { password, menuItemId } = await request.json();
+  const { password, menuItemId, type } = await request.json();
+  const folder = resolveFolder(type);
 
   if (password !== ADMIN_PASSWORD) {
     return NextResponse.json(
@@ -107,7 +114,7 @@ export async function PUT(request: Request) {
   }
 
   try {
-    const rollbacks = await list({ prefix: rollbackPath(menuItemId) });
+    const rollbacks = await list({ prefix: rollbackPath(folder, menuItemId) });
 
     if (rollbacks.blobs.length === 0) {
       return NextResponse.json(
@@ -121,7 +128,7 @@ export async function PUT(request: Request) {
     const rbType = resp.headers.get("content-type") || "image/webp";
     const rollbackData = await resp.arrayBuffer();
 
-    const blob = await put(blobPath(menuItemId), Buffer.from(rollbackData), {
+    const blob = await put(blobPath(folder, menuItemId), Buffer.from(rollbackData), {
       access: "public",
       contentType: rbType,
       addRandomSuffix: false,

@@ -15,10 +15,12 @@ import {
   Eye,
   EyeOff,
   ToggleLeft,
+  Package,
 } from "lucide-react";
 import { menuItems, formatPrice } from "@/lib/menu-data";
+import { hireItems } from "@/lib/hire-data";
 
-type Tab = "photos" | "pricing" | "availability";
+type Tab = "photos" | "hire-photos" | "pricing" | "availability";
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
@@ -87,6 +89,17 @@ export default function AdminPage() {
             Photos
           </button>
           <button
+            onClick={() => setActiveTab("hire-photos")}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
+              activeTab === "hire-photos"
+                ? "bg-orange-600 text-white"
+                : "text-stone-400 hover:text-white"
+            }`}
+          >
+            <Package className="h-4 w-4" />
+            Hire
+          </button>
+          <button
             onClick={() => setActiveTab("pricing")}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
               activeTab === "pricing"
@@ -110,7 +123,8 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {activeTab === "photos" && <PhotosTab password={password} />}
+        {activeTab === "photos" && <PhotosTab password={password} items={menuItems} type="meals" />}
+        {activeTab === "hire-photos" && <PhotosTab password={password} items={hireItems} type="hire" />}
         {activeTab === "pricing" && <PricingTab password={password} />}
         {activeTab === "availability" && <AvailabilityTab password={password} />}
       </div>
@@ -118,8 +132,17 @@ export default function AdminPage() {
   );
 }
 
-// ── Photos Tab ─────────────────────────────────────────────
-function PhotosTab({ password }: { password: string }) {
+// ── Photos Tab (menu dishes or hire items) ─────────────────
+function PhotosTab({
+  password,
+  items,
+  type,
+}: {
+  password: string;
+  items: { id: string; name: string; category?: string; image?: string }[];
+  type: "meals" | "hire";
+}) {
+  const noun = type === "hire" ? "hire item" : "dish";
   const [selectedItem, setSelectedItem] = useState("");
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{
@@ -154,6 +177,7 @@ function PhotosTab({ password }: { password: string }) {
     formData.append("file", file);
     formData.append("menuItemId", selectedItem);
     formData.append("password", password);
+    formData.append("type", type);
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
@@ -180,7 +204,7 @@ function PhotosTab({ password }: { password: string }) {
       const res = await fetch("/api/upload", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, menuItemId: selectedItem }),
+        body: JSON.stringify({ password, menuItemId: selectedItem, type }),
       });
       const data = await res.json();
       setMessage({
@@ -197,12 +221,12 @@ function PhotosTab({ password }: { password: string }) {
   return (
     <div>
       <p className="text-stone-400 text-sm mb-6">
-        Upload new dish photos — auto-optimized to WebP
+        Upload {noun} photos — auto-optimized to WebP
       </p>
 
       <div className="mb-6">
         <label className="block text-sm font-medium text-stone-300 mb-2">
-          Select dish to update
+          Select {noun} to update
         </label>
         <select
           value={selectedItem}
@@ -214,10 +238,10 @@ function PhotosTab({ password }: { password: string }) {
           }}
           className="w-full rounded-lg border border-stone-700 bg-stone-900 px-4 py-3 text-white focus:border-orange-500 focus:outline-none"
         >
-          <option value="">Choose a dish...</option>
-          {menuItems.map((item) => (
+          <option value="">Choose a {noun}...</option>
+          {items.map((item) => (
             <option key={item.id} value={item.id}>
-              {item.name} — {item.category}
+              {item.name}{item.category ? ` — ${item.category}` : ""}
             </option>
           ))}
         </select>
@@ -229,7 +253,7 @@ function PhotosTab({ password }: { password: string }) {
             <p className="text-sm font-medium text-stone-300 mb-2">Current photo</p>
             <div className="w-40 h-40 rounded-xl overflow-hidden bg-stone-900 border border-stone-800 relative">
               <Image
-                src={uploadedUrl || menuItems.find((m) => m.id === selectedItem)?.image || "/meals/placeholder.webp"}
+                src={uploadedUrl || items.find((m) => m.id === selectedItem)?.image || "/meals/placeholder.webp"}
                 alt="Current"
                 fill
                 className="object-cover"

@@ -18,12 +18,17 @@ const KNOWN_EXT = /\.(webp|jpe?g|png)$/i;
  * - prefers the canonical ".webp" file when duplicate extensions exist
  * - appends "?v=<uploadedAt ms>" so Next/Image busts its cache on re-upload
  */
-export function buildImageMap(blobs: BlobLike[]): Record<string, string> {
+export function buildImageMap(
+  blobs: BlobLike[],
+  prefix = "meals/"
+): Record<string, string> {
   const images: Record<string, string> = {};
   const chosenIsWebp: Record<string, boolean> = {};
 
   for (const blob of blobs) {
-    const path = blob.pathname.replace(/^meals\//, "");
+    const path = blob.pathname.startsWith(prefix)
+      ? blob.pathname.slice(prefix.length)
+      : blob.pathname;
     if (path.startsWith("_rollback/")) continue;
     if (!KNOWN_EXT.test(path)) continue;
 
