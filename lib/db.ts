@@ -62,5 +62,41 @@ export async function initDb() {
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_tracking_url TEXT`;
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ`;
 
+  // Equipment-hire stock — how many of each hire item KOK owns. Availability
+  // is computed live (total_qty minus overlapping bookings), so this number
+  // only changes when the business buys more or writes off damaged/lost stock.
+  await sql`
+    CREATE TABLE IF NOT EXISTS hire_inventory (
+      item_id TEXT PRIMARY KEY,
+      total_qty INTEGER NOT NULL DEFAULT 0,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  // Hire bookings — a date-ranged reservation and its lifecycle. Statuses:
+  // enquiry (soft hold until hold_expires_at) -> confirmed -> out -> returned
+  // -> closed, plus cancelled. Stock is held by enquiry(non-expired)/confirmed/
+  // out/returned bookings whose [hire_out_date, return_date] overlaps a request.
+  await sql`
+    CREATE TABLE IF NOT EXISTS hire_bookings (
+      id SERIAL PRIMARY KEY,
+      ref TEXT UNIQUE NOT NULL,
+      customer_name TEXT NOT NULL,
+      customer_phone TEXT NOT NULL,
+      customer_email TEXT,
+      hire_out_date DATE NOT NULL,
+      return_date DATE NOT NULL,
+      items JSONB NOT NULL,
+      status TEXT NOT NULL DEFAULT 'enquiry',
+      notes TEXT,
+      hold_expires_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  // Lookups when computing availability for a date window.
+  await sql`CREATE INDEX IF NOT EXISTS hire_bookings_dates_idx ON hire_bookings (status, hire_out_date, return_date)`;
+
   return true;
 }

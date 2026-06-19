@@ -29,6 +29,55 @@ export default function HirePage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmedRef, setConfirmedRef] = useState<string | null>(null);
 
+  // Live, date-driven availability for stock-managed items. Empty until a valid
+  // event date is chosen; items without an inventory row stay uncapped.
+  const [availability, setAvailability] = useState<
+    Record<string, { total: number; booked: number; available: number }>
+  >({});
+  const [availLoading, setAvailLoading] = useState(false);
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+
+  const eventDate = form.eventDate;
+  useEffect(() => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) {
+      setAvailability({});
+      return;
+    }
+    let cancelled = false;
+    setAvailLoading(true);
+    fetch(`/api/hire-availability?date=${eventDate}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (!cancelled && d.success) setAvailability(d.managed || {});
+      })
+      .catch(() => {
+        if (!cancelled) setAvailability({});
+      })
+      .finally(() => {
+        if (!cancelled) setAvailLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [eventDate]);
+
+  // If the chosen date can't supply what's already in the list, trim it down.
+  useEffect(() => {
+    setQuantities((prev) => {
+      let changed = false;
+      const copy = { ...prev };
+      for (const id of Object.keys(copy)) {
+        const a = availability[id];
+        if (a && copy[id] > a.available) {
+          changed = true;
+          if (a.available <= 0) delete copy[id];
+          else copy[id] = a.available;
+        }
+      }
+      return changed ? copy : prev;
+    });
+  }, [availability]);
+
   const selections: HireSelection[] = useMemo(
     () =>
       hireItems
@@ -93,10 +142,10 @@ export default function HirePage() {
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
         <div className="text-center px-4 max-w-md">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-            <Check className="h-10 w-10 text-green-600" />
+            <Check className="h-10 w-10 text-green-700" />
           </div>
           <h1 className="text-3xl font-bold text-stone-900 mb-2">Enquiry sent!</h1>
-          <p className="text-sm text-stone-400 mb-2">Reference <span className="font-semibold text-stone-600">{confirmedRef}</span></p>
+          <p className="text-sm text-stone-500 mb-2">Reference <span className="font-semibold text-stone-600">{confirmedRef}</span></p>
           <p className="text-stone-500 leading-relaxed mb-8">
             Thanks — we&apos;ll be in touch shortly to confirm availability, deposit
             and delivery/collection.
@@ -133,6 +182,32 @@ export default function HirePage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Catalogue */}
           <div className="lg:col-span-3 space-y-10">
+            <div className="rounded-xl border border-stone-200 bg-white p-4">
+              <label htmlFor="hire-event-date" className="block text-sm font-semibold text-stone-900">
+                Your event date
+              </label>
+              <p className="text-xs text-stone-500 mt-0.5 mb-2">
+                Pick a date and we&apos;ll show you what&apos;s available.
+              </p>
+              <div className="relative max-w-xs">
+                <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-stone-500 pointer-events-none" aria-hidden="true" />
+                <input
+                  id="hire-event-date"
+                  type="date"
+                  min={today}
+                  value={form.eventDate}
+                  onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
+                  className="w-full rounded-lg border border-stone-200 pl-9 pr-3 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
+                />
+              </div>
+              {availLoading ? (
+                <p className="text-xs text-stone-500 mt-2">Checking availability…</p>
+              ) : !eventDate ? (
+                <p className="text-xs text-stone-500 mt-2">
+                  Choose a date to see live stock and avoid disappointment.
+                </p>
+              ) : null}
+            </div>
             {HIRE_CATEGORY_ORDER.map((cat) => (
               <section key={cat}>
                 <h2 className="text-lg font-semibold text-stone-900 mb-4">{HIRE_CATEGORY_LABELS[cat]}</h2>
@@ -141,12 +216,15 @@ export default function HirePage() {
                     .filter((i) => i.category === cat)
                     .map((item) => {
                       const qty = quantities[item.id] || 0;
+                      const a = availability[item.id];
+                      const soldOut = !!a && a.available <= 0;
+                      const atMax = !!a && qty >= a.available;
                       return (
                         <div
                           key={item.id}
                           className={`flex items-center justify-between gap-3 rounded-xl border bg-white p-4 transition-colors ${
                             qty > 0 ? "border-orange-300" : "border-stone-200"
-                          }`}
+                          } ${soldOut ? "opacity-70" : ""}`}
                         >
                           <div className="flex items-center gap-3 min-w-0">
                             {hireImages[item.id] ? (
@@ -163,13 +241,34 @@ export default function HirePage() {
                             )}
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-stone-900 truncate">{item.name}</p>
-                              <p className="text-sm text-orange-600 font-semibold">
+                              <p className="text-sm text-orange-700 font-semibold">
                                 {formatPrice(item.price)}
-                                {item.unit && <span className="text-xs text-stone-400 font-normal ml-1">/ {item.unit}</span>}
+                                {item.unit && <span className="text-xs text-stone-500 font-normal ml-1">/ {item.unit}</span>}
                               </p>
+                              {a && (
+                                <p
+                                  className={`text-[11px] font-medium mt-0.5 ${
+                                    a.available <= 0
+                                      ? "text-red-600"
+                                      : a.available <= 3
+                                        ? "text-amber-700"
+                                        : "text-green-700"
+                                  }`}
+                                >
+                                  {a.available <= 0
+                                    ? "Fully booked for this date"
+                                    : a.available <= 3
+                                      ? `Only ${a.available} left`
+                                      : `${a.available} available`}
+                                </p>
+                              )}
                             </div>
                           </div>
-                          {qty === 0 ? (
+                          {soldOut ? (
+                            <span className="shrink-0 rounded-full bg-stone-100 px-3 py-1.5 text-xs font-medium text-stone-500">
+                              Fully booked
+                            </span>
+                          ) : qty === 0 ? (
                             <button
                               type="button"
                               onClick={() => setQty(item.id, 1)}
@@ -179,11 +278,19 @@ export default function HirePage() {
                             </button>
                           ) : (
                             <div className="shrink-0 flex items-center gap-2 rounded-full border border-stone-200 bg-white px-1">
-                              <button type="button" onClick={() => setQty(item.id, -1)} aria-label="Decrease" className="flex h-7 w-7 items-center justify-center text-stone-500 hover:text-orange-600">
+                              <button type="button" onClick={() => setQty(item.id, -1)} aria-label="Decrease" className="flex h-7 w-7 items-center justify-center text-stone-500 hover:text-orange-700">
                                 <Minus className="h-3.5 w-3.5" />
                               </button>
                               <span className="w-5 text-center text-sm font-semibold text-stone-900">{qty}</span>
-                              <button type="button" onClick={() => setQty(item.id, 1)} aria-label="Increase" className="flex h-7 w-7 items-center justify-center text-stone-500 hover:text-orange-600">
+                              <button
+                                type="button"
+                                onClick={() => setQty(item.id, 1)}
+                                disabled={atMax}
+                                aria-label="Increase"
+                                className={`flex h-7 w-7 items-center justify-center ${
+                                  atMax ? "text-stone-300 cursor-not-allowed" : "text-stone-500 hover:text-orange-700"
+                                }`}
+                              >
                                 <Plus className="h-3.5 w-3.5" />
                               </button>
                             </div>
@@ -200,12 +307,12 @@ export default function HirePage() {
           <div className="lg:col-span-2">
             <div className="rounded-2xl bg-white border border-stone-200 p-6 sticky top-24">
               <div className="flex items-center gap-2 mb-4">
-                <Package className="h-5 w-5 text-orange-600" />
+                <Package className="h-5 w-5 text-orange-700" />
                 <h2 className="text-lg font-semibold text-stone-900">Your hire list</h2>
               </div>
 
               {selections.length === 0 ? (
-                <p className="text-sm text-stone-400 mb-4">
+                <p className="text-sm text-stone-500 mb-4">
                   Add items from the catalogue to start your enquiry.
                 </p>
               ) : (
@@ -218,9 +325,9 @@ export default function HirePage() {
                   ))}
                   <div className="flex justify-between text-base font-bold border-t border-stone-100 pt-3 mt-2">
                     <span className="text-stone-900">Estimated total</span>
-                    <span className="text-orange-600">{formatPrice(total)}</span>
+                    <span className="text-orange-700">{formatPrice(total)}</span>
                   </div>
-                  <p className="text-[11px] text-stone-400">Estimate only — we&apos;ll confirm availability, deposit and delivery.</p>
+                  <p className="text-[11px] text-stone-500">Estimate only — we&apos;ll confirm availability, deposit and delivery.</p>
                 </div>
               )}
 
@@ -251,7 +358,7 @@ export default function HirePage() {
                   {errors.email && <p className="mt-1 text-xs text-red-600">Enter a valid email address.</p>}
                 </div>
                 <div className="relative">
-                  <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-stone-400 pointer-events-none" />
+                  <CalendarDays className="absolute left-3 top-3 h-4 w-4 text-stone-500 pointer-events-none" />
                   <input
                     type="date" aria-label="Event date"
                     value={form.eventDate} onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
@@ -272,7 +379,7 @@ export default function HirePage() {
               </form>
 
               <div className="mt-3 text-center">
-                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-green-600 hover:text-green-700">
+                <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-green-700 hover:text-green-700">
                   or enquire on WhatsApp →
                 </a>
               </div>

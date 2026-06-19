@@ -2,13 +2,41 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { dispatchNotifications } from "@/lib/order-notifications";
 import { hireItems } from "@/lib/hire-data";
+import { getDb } from "@/lib/db";
+import { computeAvailability, type HireBooking } from "@/lib/hire-availability";
 
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || "orders@kokkitchens.com";
-const NTFY_TOPIC = process.env.NTFY_TOPIC || "kok-kitchen-orders";
+// Hire has its own ntfy topic so equipment enquiries don't mix into the
+// time-critical food-order stream (and can be muted/handled separately).
+const NTFY_HIRE_TOPIC = process.env.NTFY_HIRE_TOPIC || "kok-kitchen-hire";
+// How long a fresh enquiry holds its stock before the soft hold lapses.
+const HOLD_HOURS = 48;
 
 interface EnquiryItem {
   id: string;
   quantity: number;
+}
+
+interface InvRow {
+  item_id: string;
+  total_qty: number;
+}
+interface BookingRow {
+  status: string;
+  hire_out_date: string | Date;
+  return_date: string | Date;
+  items: unknown;
+  hold_expires_at: string | Date | null;
+}
+
+function toIsoDate(v: string | Date): string {
+  if (v instanceof Date) {
+    const y = v.getFullYear();
+    const m = `${v.getMonth() + 1}`.padStart(2, "0");
+    const d = `${v.getDate()}`.padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+  return String(v).slice(0, 10);
 }
 
 function gbp(n: number) {
@@ -35,9 +63,9 @@ export async function POST(request: Request) {
         const it = byId.get(id);
         const qty = Number(quantity);
         if (!it || !Number.isFinite(qty) || qty <= 0) return null;
-        return { name: it.name, qty, price: it.price, line: it.price * qty };
+        return { id: it.id, name: it.name, qty, price: it.price, line: it.price * qty };
       })
-      .filter((l): l is { name: string; qty: number; price: number; line: number } => l !== null);
+      .filter((l): l is { id: string; name: string; qty: number; price: number; line: number } => l !== null);
 
     if (lines.length === 0) {
       return NextResponse.json(
@@ -48,6 +76,77 @@ export async function POST(request: Request) {
 
     const total = lines.reduce((s, l) => s + l.line, 0);
     const ref = `HIRE-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+
+    // When a valid event date is supplied, re-check availability server-side
+    // and persist a soft-hold booking so two customers can't oversell the same
+    // stock. Items without an inventory row are unmanaged (no cap). If the DB
+    // or tables aren't ready, we skip persistence and still send the enquiry.
+    const eventIso = /^\d{4}-\d{2}-\d{2}$/.test(String(eventDate || ""))
+      ? String(eventDate)
+      : null;
+
+    if (eventIso) {
+      try {
+        const sql = getDb();
+        const invRows = (await sql`
+          SELECT item_id, total_qty FROM hire_inventory
+        `) as unknown as InvRow[];
+        const inventory: Record<string, number> = {};
+        for (const r of invRows) inventory[r.item_id] = Number(r.total_qty);
+
+        const bookingRows = (await sql`
+          SELECT status,
+                 hire_out_date::text AS hire_out_date,
+                 return_date::text AS return_date,
+                 items, hold_expires_at
+          FROM hire_bookings
+          WHERE status IN ('enquiry', 'confirmed', 'out', 'returned')
+        `) as unknown as BookingRow[];
+        const existing: HireBooking[] = bookingRows.map((r) => ({
+          status: r.status,
+          hire_out_date: toIsoDate(r.hire_out_date),
+          return_date: toIsoDate(r.return_date),
+          items: Array.isArray(r.items) ? (r.items as HireBooking["items"]) : [],
+          hold_expires_at: r.hold_expires_at
+            ? new Date(r.hold_expires_at).toISOString()
+            : null,
+        }));
+
+        const avail = computeAvailability(inventory, existing, eventIso, eventIso);
+        const shortfalls = lines
+          .filter((l) => l.id in avail && l.qty > avail[l.id].available)
+          .map((l) => `${l.name} (${avail[l.id].available} left for ${eventIso})`);
+
+        if (shortfalls.length > 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              message: `Some items aren't available for that date: ${shortfalls.join(
+                ", "
+              )}. Please adjust quantities or pick another date.`,
+            },
+            { status: 409 }
+          );
+        }
+
+        const holdExpires = new Date(
+          Date.now() + HOLD_HOURS * 60 * 60 * 1000
+        ).toISOString();
+        const bookingItems = lines.map((l) => ({ item_id: l.id, quantity: l.qty }));
+        await sql`
+          INSERT INTO hire_bookings
+            (ref, customer_name, customer_phone, customer_email, hire_out_date, return_date, items, status, notes, hold_expires_at)
+          VALUES (
+            ${ref}, ${name}, ${phone}, ${email || null}, ${eventIso}, ${eventIso},
+            ${JSON.stringify(bookingItems)}, 'enquiry', ${notes || null}, ${holdExpires}
+          )
+        `;
+      } catch (error) {
+        // Persistence is best-effort for the MVP — never block the enquiry
+        // email on a DB hiccup. (Availability shortfalls above DO block.)
+        console.error("Hire booking persistence skipped:", error);
+      }
+    }
     const itemsText = lines.map((l) => `${l.qty}× ${l.name} — ${gbp(l.line)}`).join("\n");
     const itemsHtml = lines
       .map(
@@ -89,7 +188,7 @@ export async function POST(request: Request) {
           html: ownerHtml,
         }),
       () =>
-        fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+        fetch(`https://ntfy.sh/${NTFY_HIRE_TOPIC}`, {
           method: "POST",
           headers: {
             Title: `New hire enquiry — ${name}`,

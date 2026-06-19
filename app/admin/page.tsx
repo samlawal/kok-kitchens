@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import {
   Upload,
@@ -16,11 +16,16 @@ import {
   EyeOff,
   ToggleLeft,
   Package,
+  Boxes,
 } from "lucide-react";
 import { menuItems, formatPrice } from "@/lib/menu-data";
-import { hireItems } from "@/lib/hire-data";
+import {
+  hireItems,
+  HIRE_CATEGORY_LABELS,
+  HIRE_CATEGORY_ORDER,
+} from "@/lib/hire-data";
 
-type Tab = "photos" | "hire-photos" | "pricing" | "availability";
+type Tab = "photos" | "hire-photos" | "pricing" | "availability" | "hire-stock";
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
@@ -48,12 +53,14 @@ export default function AdminPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter admin password"
+            aria-label="Admin password"
+            autoComplete="current-password"
             className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-3 text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none"
             required
           />
           <button
             type="submit"
-            className="mt-4 w-full rounded-lg bg-orange-600 py-3 text-sm font-semibold text-white hover:bg-orange-500 transition-colors"
+            className="mt-4 w-full rounded-lg bg-orange-600 py-3 text-sm font-semibold text-white hover:bg-orange-700 transition-colors"
           >
             Sign In
           </button>
@@ -121,12 +128,24 @@ export default function AdminPage() {
             <ToggleLeft className="h-4 w-4" />
             Availability
           </button>
+          <button
+            onClick={() => setActiveTab("hire-stock")}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
+              activeTab === "hire-stock"
+                ? "bg-orange-600 text-white"
+                : "text-stone-400 hover:text-white"
+            }`}
+          >
+            <Boxes className="h-4 w-4" />
+            Hire stock
+          </button>
         </div>
 
         {activeTab === "photos" && <PhotosTab password={password} items={menuItems} type="meals" />}
         {activeTab === "hire-photos" && <PhotosTab password={password} items={hireItems} type="hire" />}
         {activeTab === "pricing" && <PricingTab password={password} />}
         {activeTab === "availability" && <AvailabilityTab password={password} />}
+        {activeTab === "hire-stock" && <HireStockTab password={password} />}
       </div>
     </div>
   );
@@ -285,7 +304,7 @@ function PhotosTab({
             <button
               onClick={handleUpload}
               disabled={!preview || uploading}
-              className="flex items-center gap-2 rounded-lg bg-orange-600 px-6 py-3 text-sm font-semibold text-white hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 rounded-lg bg-orange-600 px-6 py-3 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {uploading ? <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" /> : <Upload className="h-4 w-4" />}
               {uploading ? "Uploading..." : "Upload & Replace"}
@@ -440,7 +459,7 @@ function PricingTab({ password }: { password: string }) {
         <button
           onClick={handleSave}
           disabled={changed.size === 0 || saving}
-          className="flex items-center gap-2 rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {saving ? (
             <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
@@ -803,6 +822,312 @@ function AvailabilityTab({ password }: { password: string }) {
           <li><strong className="text-red-400">Hidden</strong> — dish is completely removed from the menu. Customers won&apos;t see it at all. Use for seasonal items or dishes you&apos;ve discontinued.</li>
           <li>All changes are <strong className="text-stone-300">instant</strong> — no deploy or developer needed</li>
           <li>Tap the <Eye className="h-3 w-3 inline" /> icon to make available, <EyeOff className="h-3 w-3 inline" /> for unavailable or hidden</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// ── Hire Stock Tab (inventory counts + bookings) ───────────
+interface HireBookingAdmin {
+  id: number;
+  ref: string;
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string | null;
+  hireOutDate: string;
+  returnDate: string;
+  items: { item_id: string; quantity: number }[];
+  status: string;
+  holdExpiresAt: string | null;
+  createdAt: string | null;
+}
+
+const BOOKING_STATUSES = ["enquiry", "confirmed", "out", "returned", "closed", "cancelled"];
+
+function HireStockTab({ password }: { password: string }) {
+  const [inventory, setInventory] = useState<Record<string, number>>({});
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [bookings, setBookings] = useState<HireBookingAdmin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [savingItem, setSavingItem] = useState<string | null>(null);
+  const [savingBooking, setSavingBooking] = useState<number | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const nameById = useMemo(
+    () => Object.fromEntries(hireItems.map((i) => [i.id, i.name])) as Record<string, string>,
+    []
+  );
+
+  function reload() {
+    setLoading(true);
+    fetch(`/api/hire-admin?password=${encodeURIComponent(password)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) {
+          setInventory(d.inventory || {});
+          setBookings(d.bookings || []);
+          if (d.warning) setMessage({ type: "error", text: d.warning });
+        } else {
+          setMessage({ type: "error", text: d.message || "Failed to load" });
+        }
+      })
+      .catch(() => setMessage({ type: "error", text: "Failed to load hire data" }))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    reload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [password]);
+
+  const draftFor = (id: string) => drafts[id] ?? String(inventory[id] ?? 0);
+  const isChanged = (id: string) => draftFor(id) !== String(inventory[id] ?? 0);
+
+  async function saveStock(itemId: string) {
+    const totalQty = Math.max(0, Math.floor(Number(draftFor(itemId)) || 0));
+    setSavingItem(itemId);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/hire-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, op: "setStock", itemId, totalQty }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInventory((p) => ({ ...p, [itemId]: totalQty }));
+        setDrafts((p) => {
+          const c = { ...p };
+          delete c[itemId];
+          return c;
+        });
+        setMessage({ type: "success", text: `${nameById[itemId]} stock set to ${totalQty}` });
+      } else {
+        setMessage({ type: "error", text: data.message });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to save stock" });
+    } finally {
+      setSavingItem(null);
+    }
+  }
+
+  async function clearStock(itemId: string) {
+    setSavingItem(itemId);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/hire-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, op: "deleteStock", itemId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setInventory((p) => {
+          const c = { ...p };
+          delete c[itemId];
+          return c;
+        });
+        setDrafts((p) => {
+          const c = { ...p };
+          delete c[itemId];
+          return c;
+        });
+        setMessage({ type: "success", text: `${nameById[itemId]} is no longer stock-managed` });
+      } else {
+        setMessage({ type: "error", text: data.message });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to clear stock" });
+    } finally {
+      setSavingItem(null);
+    }
+  }
+
+  async function setBookingStatus(id: number, status: string) {
+    setSavingBooking(id);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/hire-admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, op: "setStatus", id, status }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+        setMessage({ type: "success", text: `Booking ${data.id} updated to ${status}` });
+      } else {
+        setMessage({ type: "error", text: data.message });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to update booking" });
+    } finally {
+      setSavingBooking(null);
+    }
+  }
+
+  const totalUnits = Object.values(inventory).reduce((s, n) => s + n, 0);
+  const activeBookings = bookings.filter(
+    (b) => !["closed", "cancelled"].includes(b.status)
+  ).length;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
+        <p className="text-stone-400 text-sm">
+          Set how many of each item you own — availability is worked out automatically per event date.
+        </p>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-stone-400 bg-stone-800 px-3 py-1.5 rounded-full">
+            {totalUnits} units owned
+          </span>
+          <button onClick={reload} className="text-xs text-stone-500 hover:text-white">
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {HIRE_CATEGORY_ORDER.map((cat) => {
+        const items = hireItems.filter((i) => i.category === cat);
+        if (items.length === 0) return null;
+        return (
+          <div key={cat} className="mb-6">
+            <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-3">
+              {HIRE_CATEGORY_LABELS[cat]}
+            </h3>
+            <div className="space-y-2">
+              {items.map((item) => {
+                const changed = isChanged(item.id);
+                const saving = savingItem === item.id;
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 rounded-xl px-4 py-3 border border-stone-800 bg-stone-900/40"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white truncate">{item.name}</p>
+                      <p className="text-xs text-stone-500">
+                        {formatPrice(item.price)}
+                        {item.unit ? ` / ${item.unit}` : ""}
+                      </p>
+                    </div>
+                    <label className="sr-only" htmlFor={`stock-${item.id}`}>
+                      {item.name} stock
+                    </label>
+                    <input
+                      id={`stock-${item.id}`}
+                      type="number"
+                      min={0}
+                      inputMode="numeric"
+                      value={draftFor(item.id)}
+                      onChange={(e) =>
+                        setDrafts((p) => ({ ...p, [item.id]: e.target.value }))
+                      }
+                      className="w-20 rounded-lg border border-stone-700 bg-stone-900 px-3 py-2 text-sm text-right text-white focus:border-orange-500 focus:outline-none"
+                    />
+                    <button
+                      onClick={() => saveStock(item.id)}
+                      disabled={!changed || saving}
+                      className="rounded-lg px-3 py-2 text-xs font-medium transition-colors disabled:opacity-30 bg-orange-600 text-white hover:bg-orange-700"
+                    >
+                      {saving ? "…" : "Save"}
+                    </button>
+                    {item.id in inventory && (
+                      <button
+                        onClick={() => clearStock(item.id)}
+                        disabled={saving}
+                        title="Stop managing stock for this item"
+                        className="rounded-lg px-2 py-2 text-xs font-medium text-stone-500 hover:text-red-400 disabled:opacity-30"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider">Bookings</h3>
+          <span className="text-xs text-stone-500">{activeBookings} active</span>
+        </div>
+        {loading ? (
+          <p className="text-sm text-stone-500">Loading…</p>
+        ) : bookings.length === 0 ? (
+          <p className="text-sm text-stone-500">No hire bookings yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {bookings.map((b) => (
+              <div key={b.id} className="rounded-xl px-4 py-3 border border-stone-800 bg-stone-900/40">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-white">
+                      {b.customerName}{" "}
+                      <span className="text-stone-500 font-normal">· {b.ref}</span>
+                    </p>
+                    <p className="text-xs text-stone-500">
+                      {b.hireOutDate}
+                      {b.returnDate !== b.hireOutDate ? ` → ${b.returnDate}` : ""} ·{" "}
+                      <a href={`tel:${b.customerPhone}`} className="hover:text-stone-300">
+                        {b.customerPhone}
+                      </a>
+                    </p>
+                  </div>
+                  <select
+                    value={b.status}
+                    disabled={savingBooking === b.id}
+                    onChange={(e) => setBookingStatus(b.id, e.target.value)}
+                    aria-label={`Status for ${b.ref}`}
+                    className="rounded-lg border border-stone-700 bg-stone-900 px-2 py-1.5 text-xs text-white focus:border-orange-500 focus:outline-none"
+                  >
+                    {BOOKING_STATUSES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="text-xs text-stone-400 mt-1.5">
+                  {b.items
+                    .map((it) => `${it.quantity}× ${nameById[it.item_id] || it.item_id}`)
+                    .join(", ")}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {message && (
+        <div
+          className={`mt-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm ${
+            message.type === "success"
+              ? "bg-green-900/30 border border-green-800 text-green-300"
+              : "bg-red-900/30 border border-red-800 text-red-300"
+          }`}
+        >
+          {message.type === "success" ? (
+            <Check className="h-4 w-4 shrink-0" />
+          ) : (
+            <AlertCircle className="h-4 w-4 shrink-0" />
+          )}
+          {message.text}
+        </div>
+      )}
+
+      <div className="mt-8 rounded-xl border border-stone-800 bg-stone-900/50 p-6 text-sm text-stone-400">
+        <p className="font-medium text-stone-300 mb-2">How hire stock works:</p>
+        <ul className="space-y-1.5 list-disc list-inside">
+          <li>Set how many of each item you own. Customers see live availability for their chosen date.</li>
+          <li>Items with no count set are <strong className="text-stone-300">unmanaged</strong> — shown without a stock cap.</li>
+          <li>A booking holds stock while it&apos;s <strong className="text-green-400">enquiry</strong> (48h hold), <strong className="text-blue-400">confirmed</strong>, <strong className="text-purple-400">out</strong> or <strong className="text-teal-400">returned</strong>.</li>
+          <li>Mark <strong className="text-stone-300">closed</strong> once items are cleaned and restocked; <strong className="text-red-400">cancelled</strong> releases them immediately.</li>
         </ul>
       </div>
     </div>

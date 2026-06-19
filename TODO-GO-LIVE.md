@@ -9,9 +9,13 @@
 - [ ] **Real customer testimonials** — replace placeholder quotes
 - [ ] **Delivery fees** — confirm local (£4.99) and extended (£7.99) pricing
 - [ ] **Allergen information** — provide allergen matrix for menu items
+- [ ] **Equipment hire stock** — in Admin → **Hire stock**, set how many of each item you own. Items left blank stay "unmanaged" (shown without a stock cap, exactly as before). Live availability + the customer's date picker only apply to items you give a count.
+- [ ] **Hire alerts (ntfy)** — subscribe to the **`kok-kitchen-hire`** topic in your ntfy app so equipment‑hire enquiries come through separately from food orders (`kok-kitchen-orders`).
 
 ## Backend / Ophir Digital tasks
-- [ ] **Strong admin password** 🔒 — `ADMIN_PASSWORD` is currently the default `kok-admin-2026`, which guards `/api/upload`, `/api/pricing`, `/api/availability` and `/api/orders-status` (view + delete orders). Set a strong value in Vercel and redeploy **before launch**.
+- [ ] **Strong admin password** 🔒 — `ADMIN_PASSWORD` is currently the default `kok-admin-2026`, which guards `/api/upload`, `/api/pricing`, `/api/availability`, `/api/hire-admin` (hire stock + bookings) and `/api/orders-status` (view + delete orders). Set a strong value in Vercel and redeploy **before launch**.
+- [ ] **Run `GET /api/init` after deploying this release** — now also creates the hire tables (`hire_inventory`, `hire_bookings`). Idempotent; run once on prod.
+- [ ] **Hire ntfy topic (optional)** — defaults to `kok-kitchen-hire`. Only set `NTFY_HIRE_TOPIC` in Vercel if you want a different topic name.
 - [ ] **Stripe go-live** — card payments are built & tested in test mode. To launch: set live `STRIPE_SECRET_KEY` (`sk_live_…`), add a **live-mode** webhook destination → `STRIPE_WEBHOOK_SECRET` (`whsec_…`), redeploy, then one real-card smoke test + refund. Steps in `docs/KOK Kitchens - Stripe Go-Live.pdf`.
 - [ ] **Domain setup on Vercel** — add custom domain, configure SSL, set up DNS records
 - [ ] **Google Analytics GA4** — create property, add tracking snippet
@@ -19,6 +23,8 @@
 - [ ] **Uber Direct activation** — once the client sends credentials: add `UBER_CLIENT_ID`, `UBER_CLIENT_SECRET`, `UBER_CUSTOMER_ID` (+ optional `NEXT_PUBLIC_SITE_URL`) in Vercel, redeploy, then run a sandbox test delivery before enabling. Code is built & gap-fixed; DB columns are in place.
 - [ ] **Uber: server-side fee validation** — checkout sends the delivery fee from the client; re-fetch/validate the Uber quote server-side at order/checkout time before trusting it. Do this during activation (needs live quotes to test) — matters now that card payments are live.
 ## Completed
+- [x] Equipment hire — live inventory MVP: stock counts + date‑ranged availability (`/api/hire-availability`), enquiries persist as 48h soft‑hold bookings with server‑side oversell protection + 1‑day turnaround buffer, customer date‑picker with live stock badges + capped steppers, admin **Hire stock** tab (set/clear counts, manage booking statuses), and a separate `kok-kitchen-hire` ntfy topic. Design doc + workflow diagrams in `/docs`. Verified end‑to‑end (13 unit tests + live API + UI). **Owner actions in lists above.**
+- [x] Accessibility pass — fixed the homepage header contrast/legibility over the hero, added active‑page nav state + focus indicators + skip link, site‑wide `prefers-reduced-motion` support, per‑page `<title>`s, decorative image/icon a11y, and a colour‑contrast sweep (stone‑400→500, orange/green→700). Typecheck + tests green.
 - [x] Stripe card payments — hosted Checkout built (card option alongside pay-on-delivery), verified **end-to-end in test mode** (payment → webhook → order marked paid → emails). Go-live steps in `/docs`.
 - [x] Resend email — real `RESEND_API_KEY` set, `kokkitchens.com` verified in Resend, live send confirmed; owner + customer order emails send from `orders@kokkitchens.com` (to `NOTIFICATION_EMAIL`)
 - [x] Database — Neon `DATABASE_URL` set; tables created via `GET /api/init` (orders, price_overrides, item_availability)
