@@ -21,21 +21,25 @@ npx vitest run lib/admin-auth.test.ts   # run one suite
 
 **Pass criteria:** every test green. Any red = do not release.
 
-**Current status: 93 / 93 passing** across 12 suites (last verified 19 Jun 2026).
+**Current status: 118 / 118 passing** across 15 suites (last verified 19 Jun 2026).
 
-> The pack auto-includes every `lib/*.test.ts` file — adding a new test file automatically
-> adds it to the regression run. **Policy: every bug we fix gets a regression test here so it
+> The pack auto-includes every `*.test.ts` file (lib + route handlers) — adding a new test
+> file automatically adds it to the regression run. **Policy: every bug we fix gets a regression test here so it
 > can't silently come back.**
 
 ---
 
 ## 2. Coverage by area
 
-All suites live in `lib/<name>.test.ts`.
+Most suites live in `lib/<name>.test.ts`; route-handler tests sit next to the route
+(`app/api/.../route.test.ts`).
 
 | Suite | Tests | What it guards against |
 | ------------------------ | ----: | -------------------------------------------------- |
 | `admin-auth` | 10 | Admin password check — wrong passwords rejected, whitespace-padded ones tolerated (the "Invalid password" bug) |
+| `photo-revert` | 3 | "Undo" decision — restore previous vs. delete-to-default vs. nothing |
+| `upload/route` (PUT) | 5 | The photo-Undo handler end-to-end (blob mocked): restore, delete-to-default, nothing, auth |
+| `hire-admin` | 17 | Admin hire ops — setStock/deleteStock/setStatus validation (unknown item, negative/decimal qty, bad status/id, unknown op) |
 | `hire-validation` | 17 | Hire enquiry validation — past dates, zero/invalid items, malformed dates, server-side price trust |
 | `hire-availability` | 16 | Date-ranged hire stock maths — overlap, turnaround buffer, soft-hold expiry, oversell clamping |
 | `hire-data` | 5 | Hire catalogue integrity (unique ids, valid categories/prices) |
@@ -103,6 +107,21 @@ All suites live in `lib/<name>.test.ts`.
 | HA-06 | Cancelled / closed booking | Not counted |
 | HA-07 | Zero/negative line inside a booking | Ignored |
 | HA-08 | Unmanaged item (no stock row) | No cap returned (`null`) |
+
+### 3.4 Admin photo "Undo"  ·  `photo-revert.test.ts` + `app/api/upload/route.test.ts`
+
+> **Origin:** a *recurring* photo issue. First "rollback failed — blob already exists"
+> (fixed with `allowOverwrite`), then "Undo failed after replacing an item's default image"
+> (reported 19 Jun 2026 — Jollof Rice). Root cause of the latter: replacing a default image
+> backs up no rollback copy, so Undo had nothing to restore. Undo now degrades gracefully.
+
+| ID | Case | Expected |
+|----|------|----------|
+| PU-01 | Undo with a saved previous version | Restores it; clears the rollback copy |
+| PU-02 | **Undo after replacing a default image (no rollback)** | **Deletes the upload → back to default** (was an error) |
+| PU-03 | Undo with nothing uploaded | 404 "Nothing to undo"; storage untouched |
+| PU-04 | Wrong password | 401; storage untouched |
+| PU-05 | Whitespace-padded password | Accepted (shared admin-auth fix) |
 
 ---
 
