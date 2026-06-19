@@ -44,7 +44,7 @@ export default function CateringPage() {
   return (
     <div className="min-h-screen bg-stone-50">
       <PageHero
-        image="/meals/hero-c20.webp"
+        image="/banners/catering-buffet.webp"
         eyebrow="Events & celebrations"
         title="Catering Services"
         subtitle="Let us bring authentic Nigerian cuisine to your next event — weddings, birthdays, corporate gatherings, and more. We handle everything from menu planning to on-site setup."
