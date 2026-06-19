@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyAdminPassword } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 import { hireItems } from "@/lib/hire-data";
 
@@ -36,7 +37,7 @@ function toIso(v: unknown): string | null {
 // GET /api/hire-admin?password=  → stock counts + bookings for the admin panel.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  if (searchParams.get("password") !== ADMIN_PASSWORD) {
+  if (!verifyAdminPassword(searchParams.get("password"), ADMIN_PASSWORD)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
@@ -93,7 +94,7 @@ export async function GET(request: Request) {
 // POST /api/hire-admin  { password, op: "setStock" | "setStatus", ... }
 export async function POST(request: Request) {
   const body = await request.json();
-  if (body.password !== ADMIN_PASSWORD) {
+  if (!verifyAdminPassword(body.password, ADMIN_PASSWORD)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }

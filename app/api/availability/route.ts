@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyAdminPassword } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
   try {
     const { password, updates } = await request.json();
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
       return NextResponse.json(
         { success: false, message: "Invalid password" },
         { status: 401 }

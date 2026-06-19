@@ -31,10 +31,34 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("photos");
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loggingIn, setLoggingIn] = useState(false);
 
-  function handleLogin(e: React.FormEvent) {
+  // Verify the password up front so a wrong (or whitespace-padded) one is caught
+  // here — where the field is — instead of letting the user in to fail later on
+  // every action with a confusing "Invalid password".
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setAuthenticated(true);
+    setLoginError(null);
+    setLoggingIn(true);
+    try {
+      const res = await fetch("/api/admin-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPassword(password.trim()); // send the clean value to later actions
+        setAuthenticated(true);
+      } else {
+        setLoginError(data.message || "Invalid password");
+      }
+    } catch {
+      setLoginError("Couldn't verify password — check your connection and try again.");
+    } finally {
+      setLoggingIn(false);
+    }
   }
 
   if (!authenticated) {
@@ -51,18 +75,28 @@ export default function AdminPage() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { setPassword(e.target.value); setLoginError(null); }}
             placeholder="Enter admin password"
             aria-label="Admin password"
             autoComplete="current-password"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-3 text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none"
             required
           />
+          {loginError && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg bg-red-900/30 border border-red-800 px-4 py-2.5 text-sm text-red-300">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {loginError}
+            </div>
+          )}
           <button
             type="submit"
-            className="mt-4 w-full rounded-lg bg-orange-600 py-3 text-sm font-semibold text-white hover:bg-orange-700 transition-colors"
+            disabled={loggingIn}
+            className="mt-4 w-full rounded-lg bg-orange-600 py-3 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50 transition-colors"
           >
-            Sign In
+            {loggingIn ? "Verifying…" : "Sign In"}
           </button>
         </form>
       </div>

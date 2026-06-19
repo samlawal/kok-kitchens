@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { verifyAdminPassword } from "@/lib/admin-auth";
 import { put, list, del } from "@vercel/blob";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
   const menuItemId = formData.get("menuItemId") as string;
   const folder = resolveFolder(formData.get("type"));
 
-  if (password !== ADMIN_PASSWORD) {
+  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
@@ -106,7 +107,7 @@ export async function PUT(request: Request) {
   const { password, menuItemId, type } = await request.json();
   const folder = resolveFolder(type);
 
-  if (password !== ADMIN_PASSWORD) {
+  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
