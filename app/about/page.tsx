@@ -12,6 +12,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-stone-50">
       <PageHero
+        image="/banners/about-spices.webp"
         eyebrow="Our journey"
         title="Our Story"
         subtitle="Where passion meets tradition"

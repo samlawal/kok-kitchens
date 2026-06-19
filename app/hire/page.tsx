@@ -170,6 +170,7 @@ export default function HirePage() {
   return (
     <div className="bg-stone-50 min-h-screen">
       <PageHero
+        image="/banners/hire-chafing.webp"
         eyebrow="For your event"
         title="Equipment & Tableware Hire"
         subtitle="Chafing dishes, charger plates, cutlery, glassware and coolers — everything to serve your event in style. Build your list and send an enquiry."
