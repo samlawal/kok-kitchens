@@ -117,23 +117,26 @@ export default function CateringPage() {
 
       {/* Event-setting band — carries the warm look of our page banners and
           shows the "we set the table" side of catering, not just the food. */}
-      <section className="relative overflow-hidden bg-stone-950">
+      <section className="relative overflow-hidden bg-stone-100">
         <Image
-          src="/banners/catering-event.webp"
+          src="/banners/catering-colour.webp"
           alt=""
           fill
           unoptimized
           sizes="100vw"
-          className="object-cover object-center brightness-110 saturate-[1.08]"
+          className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-orange-600/12 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-stone-950/30" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_85%_at_50%_50%,rgba(12,10,9,0.62)_0%,rgba(12,10,9,0.42)_55%,rgba(12,10,9,0)_88%)]" />
+        {/* Light, airy treatment so the white linen stays crisp while the
+            colourful florals still read: a faint warm brand tint plus a soft
+            white halo behind the dark text for legibility without washing the
+            photo out. */}
+        <div className="absolute inset-0 bg-orange-100/15 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_56%_66%_at_50%_50%,rgba(255,255,255,0.85)_0%,rgba(255,255,255,0.5)_46%,rgba(255,255,255,0)_76%)]" />
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]">
+          <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight drop-shadow-[0_1px_10px_rgba(255,255,255,0.95)]">
             We set the table, you enjoy the moment
           </h2>
-          <p className="mt-3 text-stone-100 max-w-xl mx-auto text-sm sm:text-base leading-relaxed drop-shadow-[0_1px_8px_rgba(0,0,0,0.95)]">
+          <p className="mt-3 text-stone-800 max-w-xl mx-auto text-sm sm:text-base leading-relaxed font-semibold drop-shadow-[0_1px_6px_rgba(255,255,255,1)] [text-shadow:0_0_10px_rgba(255,255,255,0.95)]">
             From intimate dinners to 200-guest weddings — we handle the menu,
             the setup and the serving so you can be a guest at your own event.
           </p>
