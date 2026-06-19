@@ -43,33 +43,67 @@ const kenBurnsVariants = [
   { scale: [1.1, 1.25], x: ["3%", "-3%"], y: ["-2%", "3%"] },
 ];
 
-// Floating ember particles
+// Floating ember particles. Their size, position and colour are randomised,
+// so we generate them on the client AFTER mount (the server renders none).
+// This avoids a hydration mismatch — Math.random() would otherwise produce
+// different inline styles on the server vs the client. They fade in from
+// opacity 0 anyway, so the one-frame delay is imperceptible.
+type Ember = {
+  width: number;
+  height: number;
+  left: number;
+  bottom: number;
+  background: string;
+  yTo: number;
+  xTo: number;
+  duration: number;
+  delay: number;
+};
+
 function Embers() {
+  const [embers, setEmbers] = useState<Ember[]>([]);
+
+  useEffect(() => {
+    setEmbers(
+      Array.from({ length: 20 }, () => ({
+        width: Math.random() * 4 + 2,
+        height: Math.random() * 4 + 2,
+        left: Math.random() * 100,
+        bottom: -(Math.random() * 10),
+        background: `rgba(${200 + Math.random() * 55}, ${
+          100 + Math.random() * 80
+        }, ${20 + Math.random() * 40}, ${0.4 + Math.random() * 0.4})`,
+        yTo: -(400 + Math.random() * 600),
+        xTo: (Math.random() - 0.5) * 200,
+        duration: 6 + Math.random() * 8,
+        delay: Math.random() * 10,
+      }))
+    );
+  }, []);
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 20 }).map((_, i) => (
+      {embers.map((ember, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full"
           style={{
-            width: Math.random() * 4 + 2,
-            height: Math.random() * 4 + 2,
-            left: `${Math.random() * 100}%`,
-            bottom: `-${Math.random() * 10}%`,
-            background: `rgba(${200 + Math.random() * 55}, ${
-              100 + Math.random() * 80
-            }, ${20 + Math.random() * 40}, ${0.4 + Math.random() * 0.4})`,
+            width: ember.width,
+            height: ember.height,
+            left: `${ember.left}%`,
+            bottom: `${ember.bottom}%`,
+            background: ember.background,
           }}
           animate={{
-            y: [0, -(400 + Math.random() * 600)],
-            x: [0, (Math.random() - 0.5) * 200],
+            y: [0, ember.yTo],
+            x: [0, ember.xTo],
             opacity: [0, 0.8, 0.6, 0],
             scale: [0.5, 1, 0.3],
           }}
           transition={{
-            duration: 6 + Math.random() * 8,
+            duration: ember.duration,
             repeat: Infinity,
-            delay: Math.random() * 10,
+            delay: ember.delay,
             ease: "easeOut",
           }}
         />
