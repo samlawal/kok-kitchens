@@ -2,16 +2,9 @@ import { NextResponse } from "next/server";
 import { verifyAdminPassword } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 import { hireItems } from "@/lib/hire-data";
+import { validateHireAdminOp } from "@/lib/hire-admin";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
-const VALID_STATUSES = new Set([
-  "enquiry",
-  "confirmed",
-  "out",
-  "returned",
-  "closed",
-  "cancelled",
-]);
 const validItemIds = new Set(hireItems.map((i) => i.id));
 
 interface InvRow {
@@ -101,57 +94,37 @@ export async function POST(request: Request) {
     );
   }
 
+  // Validate the op + arguments (pure, unit-tested in lib/hire-admin.test.ts)
+  // before touching the database.
+  const result = validateHireAdminOp(body, validItemIds);
+  if (!result.ok) {
+    return NextResponse.json(
+      { success: false, message: result.message },
+      { status: result.status }
+    );
+  }
+
   try {
     const sql = getDb();
 
-    if (body.op === "setStock") {
-      const itemId = String(body.itemId || "");
-      const n = Number(body.totalQty);
-      if (!validItemIds.has(itemId) || !Number.isFinite(n) || n < 0) {
-        return NextResponse.json(
-          { success: false, message: "Invalid item or quantity" },
-          { status: 400 }
-        );
-      }
-      const totalQty = Math.floor(n);
+    if (result.op === "setStock") {
       await sql`
         INSERT INTO hire_inventory (item_id, total_qty, updated_at)
-        VALUES (${itemId}, ${totalQty}, NOW())
-        ON CONFLICT (item_id) DO UPDATE SET total_qty = ${totalQty}, updated_at = NOW()
+        VALUES (${result.itemId}, ${result.totalQty}, NOW())
+        ON CONFLICT (item_id) DO UPDATE SET total_qty = ${result.totalQty}, updated_at = NOW()
       `;
-      return NextResponse.json({ success: true, itemId, totalQty });
+      return NextResponse.json({ success: true, itemId: result.itemId, totalQty: result.totalQty });
     }
 
-    if (body.op === "deleteStock") {
-      const itemId = String(body.itemId || "");
-      if (!validItemIds.has(itemId)) {
-        return NextResponse.json(
-          { success: false, message: "Invalid item" },
-          { status: 400 }
-        );
-      }
+    if (result.op === "deleteStock") {
       // Removing the row makes the item "unmanaged" again (no stock cap shown).
-      await sql`DELETE FROM hire_inventory WHERE item_id = ${itemId}`;
-      return NextResponse.json({ success: true, itemId, deleted: true });
+      await sql`DELETE FROM hire_inventory WHERE item_id = ${result.itemId}`;
+      return NextResponse.json({ success: true, itemId: result.itemId, deleted: true });
     }
 
-    if (body.op === "setStatus") {
-      const id = Number(body.id);
-      const status = String(body.status || "");
-      if (!Number.isInteger(id) || !VALID_STATUSES.has(status)) {
-        return NextResponse.json(
-          { success: false, message: "Invalid booking or status" },
-          { status: 400 }
-        );
-      }
-      await sql`UPDATE hire_bookings SET status = ${status}, updated_at = NOW() WHERE id = ${id}`;
-      return NextResponse.json({ success: true, id, status });
-    }
-
-    return NextResponse.json(
-      { success: false, message: "Unknown operation" },
-      { status: 400 }
-    );
+    // result.op === "setStatus"
+    await sql`UPDATE hire_bookings SET status = ${result.status}, updated_at = NOW() WHERE id = ${result.id}`;
+    return NextResponse.json({ success: true, id: result.id, status: result.status });
   } catch (error) {
     console.error("hire-admin POST failed:", error);
     const detail = error instanceof Error ? error.message : String(error);
