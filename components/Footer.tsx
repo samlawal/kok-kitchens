@@ -40,6 +40,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/hire" className="hover:text-orange-400 transition-colors">
+                  Equipment Hire
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-orange-400 transition-colors">
                   About Us
                 </Link>
