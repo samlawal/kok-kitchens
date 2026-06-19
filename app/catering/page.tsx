@@ -20,8 +20,8 @@ const CATERING_FAQS = [
     a: "Absolutely — we tailor every menu, so you can mix and match from our 50+ Nigerian dishes like jollof rice, egusi soup and suya. Just tell us what you fancy on the quote form and we’ll plan it with you.",
   },
   {
-    q: "Can you cater for allergies and dietary requirements?",
-    a: "We tailor menus and can look at vegetarian, plant-based and other dietary needs, so please flag any allergies on the quote form. We’ll confirm exactly what we can do for your event.",
+    q: "Can you cater for allergies, dietary needs and special requests?",
+    a: "Absolutely — we’re happy to cater for special requests, including vegetarian, plant-based and other dietary needs. Just flag any allergies or specifics on the quote form and we’ll confirm the details for your event.",
   },
   {
     q: "Which areas do you cover, and do you set up on site?",
