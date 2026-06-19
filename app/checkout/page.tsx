@@ -429,6 +429,14 @@ export default function CheckoutPage() {
                             </span>
                           )}
                         </div>
+                        {!uberQuote && (
+                          <p className="text-xs text-stone-500 leading-relaxed">
+                            {formatPrice(7.99)} is our standard delivery rate. For a few
+                            further-out postcodes it can be a little more — we&apos;ll give you a
+                            quick call to agree the delivery charge before we deliver, so
+                            there are never any surprises.
+                          </p>
+                        )}
                         {!uberQuote && form.address && (
                           <button
                             type="button"
