@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdminPassword } from "@/lib/admin-auth";
+import { revertAction } from "@/lib/photo-revert";
 import { put, list, del } from "@vercel/blob";
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
@@ -116,14 +117,31 @@ export async function PUT(request: Request) {
 
   try {
     const rollbacks = await list({ prefix: rollbackPath(folder, menuItemId) });
+    const current = await list({ prefix: blobPath(folder, menuItemId) });
+    const action = revertAction(
+      rollbacks.blobs.length > 0,
+      current.blobs.length > 0
+    );
 
-    if (rollbacks.blobs.length === 0) {
+    if (action === "nothing") {
       return NextResponse.json(
-        { success: false, message: "No previous version to rollback to" },
+        { success: false, message: "Nothing to undo — no uploaded photo for this item." },
         { status: 404 }
       );
     }
 
+    // No saved previous version: the upload replaced the item's default image,
+    // so "undo" means remove the upload and fall back to the original.
+    if (action === "delete-to-default") {
+      await del(current.blobs[0].url);
+      return NextResponse.json({
+        success: true,
+        reverted: "default",
+        message: `Removed the uploaded photo for ${menuItemId} — back to the original image.`,
+      });
+    }
+
+    // Restore the saved previous version.
     const rollbackBlob = rollbacks.blobs[0];
     const resp = await fetch(rollbackBlob.url);
     const rbType = resp.headers.get("content-type") || "image/webp";
@@ -142,7 +160,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({
       success: true,
       url: blob.url,
-      message: `Rolled back photo for ${menuItemId}`,
+      message: `Restored the previous photo for ${menuItemId}`,
     });
   } catch (error) {
     console.error("Rollback failed:", error);
