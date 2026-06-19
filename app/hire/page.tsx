@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Minus, Plus, Package, CalendarDays, Check } from "lucide-react";
 import { formatPrice } from "@/lib/menu-data";
 import { isValidEmail, isValidUkPhone } from "@/lib/validation";
+import PageHero from "@/components/PageHero";
 import {
   hireItems,
   hireTotal,
@@ -168,15 +169,11 @@ export default function HirePage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-800 py-16 text-center px-4">
-        <p className="text-xs font-semibold text-orange-500 uppercase tracking-[0.25em] mb-3">For your event</p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Equipment &amp; Tableware Hire</h1>
-        <p className="mt-3 text-stone-300 max-w-xl mx-auto text-sm sm:text-base">
-          Chafing dishes, charger plates, cutlery, glassware and coolers — everything
-          to serve your event in style. Build your list and send an enquiry.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="For your event"
+        title="Equipment & Tableware Hire"
+        subtitle="Chafing dishes, charger plates, cutlery, glassware and coolers — everything to serve your event in style. Build your list and send an enquiry."
+      />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">

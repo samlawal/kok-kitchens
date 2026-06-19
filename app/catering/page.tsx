@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Users, Calendar, Send, CheckCircle } from "lucide-react";
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 
 export default function CateringPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -42,17 +43,11 @@ export default function CateringPage() {
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <div className="bg-gradient-to-br from-stone-900 via-stone-800 to-orange-950 py-20 text-center">
-        <Users className="h-10 w-10 text-orange-400 mx-auto mb-4" />
-        <h1 className="text-4xl font-bold text-white tracking-tight">
-          Catering Services
-        </h1>
-        <p className="mt-4 text-stone-300 max-w-lg mx-auto leading-relaxed">
-          Let us bring authentic Nigerian cuisine to your next event — weddings,
-          birthdays, corporate gatherings, and more. We handle everything from
-          menu planning to on-site setup.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Events & celebrations"
+        title="Catering Services"
+        subtitle="Let us bring authentic Nigerian cuisine to your next event — weddings, birthdays, corporate gatherings, and more. We handle everything from menu planning to on-site setup."
+      />
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">

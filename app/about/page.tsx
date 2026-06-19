@@ -1,5 +1,6 @@
 import { ChefHat, Heart, Award, Users } from "lucide-react";
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -10,14 +11,11 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-stone-50">
-      <div className="bg-gradient-to-b from-stone-900 to-stone-800 py-20 text-center">
-        <h1 className="text-4xl font-bold text-white tracking-tight">
-          Our Story
-        </h1>
-        <p className="mt-3 text-stone-300 max-w-md mx-auto">
-          Where passion meets tradition
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Our journey"
+        title="Our Story"
+        subtitle="Where passion meets tradition"
+      />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="prose prose-stone prose-lg max-w-none">

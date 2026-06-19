@@ -9,6 +9,7 @@ import CategoryFilter from "@/components/CategoryFilter";
 import MealCard from "@/components/MealCard";
 import { useMenuOverrides } from "@/lib/use-menu-overrides";
 import { FadeIn } from "@/components/MotionWrapper";
+import PageHero from "@/components/PageHero";
 
 export default function MenuPage() {
   const [category, setCategory] = useState<Category | "all">("all");
@@ -41,55 +42,11 @@ export default function MenuPage() {
 
   return (
     <div className="bg-stone-50 min-h-screen">
-      <div className="relative overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-800 py-20 text-center">
-        {/* Animated mesh gradient */}
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div
-            animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-0 left-1/4 w-80 h-80 rounded-full bg-orange-600/[0.06] blur-[100px]"
-          />
-          <motion.div
-            animate={{ x: [0, -20, 0], y: [0, 20, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-amber-500/[0.05] blur-[80px]"
-          />
-        </div>
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
-        <div className="relative">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-xs font-semibold text-orange-400 uppercase tracking-[0.25em] mb-4"
-          >
-            {menuItems.length}+ Dishes
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-bold text-white tracking-tight"
-          >
-            Our Menu
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-3 text-stone-300 max-w-md mx-auto"
-          >
-            Authentic Nigerian dishes made with love — pick
-            your favourites and order in minutes
-          </motion.p>
-        </div>
-      </div>
+      <PageHero
+        eyebrow={`${menuItems.length}+ Dishes`}
+        title="Our Menu"
+        subtitle="Authentic Nigerian dishes made with love — pick your favourites and order in minutes"
+      />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
