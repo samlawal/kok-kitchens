@@ -5,6 +5,10 @@ const UBER_CUSTOMER_ID = process.env.UBER_CUSTOMER_ID || "";
 // selected by the credentials, not the URL. (Kept as one constant to avoid a
 // misleading env switch that looks like it changes the endpoint but doesn't.)
 const UBER_BASE_URL = "https://api.uber.com/v1/customers";
+// OAuth host per current Uber Direct docs (was login.uber.com historically).
+// Overridable in case Uber moves it again, without a code change.
+const UBER_OAUTH_URL =
+  process.env.UBER_OAUTH_URL || "https://auth.uber.com/oauth/v2/token";
 
 const PICKUP_ADDRESS = {
   street_address: ["10 Kendals Close"],
@@ -24,7 +28,7 @@ async function getAccessToken(): Promise<string> {
     return cachedToken.token;
   }
 
-  const res = await fetch("https://login.uber.com/oauth/v2/token", {
+  const res = await fetch(UBER_OAUTH_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
