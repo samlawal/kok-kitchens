@@ -119,6 +119,37 @@ describe("computeAvailability", () => {
     const rows = computeAvailability(inv, bookings, "2026-07-10", "2026-07-10", { nowMs: NOW });
     expect(rows["chafing-single"].available).toBe(10);
   });
+
+  it("ignores cancelled and closed bookings even when they overlap", () => {
+    const bookings = [
+      booking("chafing-single", 5, "2026-07-10", "2026-07-10", { status: "cancelled" }),
+      booking("chafing-single", 4, "2026-07-10", "2026-07-10", { status: "closed" }),
+    ];
+    const rows = computeAvailability(inv, bookings, "2026-07-10", "2026-07-10", { nowMs: NOW });
+    expect(rows["chafing-single"].available).toBe(10);
+  });
+
+  it("ignores zero/negative quantity lines inside a booking", () => {
+    const bookings: HireBooking[] = [
+      {
+        status: "confirmed",
+        hire_out_date: "2026-07-10",
+        return_date: "2026-07-10",
+        items: [
+          { item_id: "chafing-single", quantity: 0 },
+          { item_id: "chafing-single", quantity: -2 },
+        ],
+      },
+    ];
+    const rows = computeAvailability(inv, bookings, "2026-07-10", "2026-07-10", { nowMs: NOW });
+    expect(rows["chafing-single"].available).toBe(10);
+  });
+
+  it("treats a request window spanning a booking as overlapping", () => {
+    const bookings = [booking("chafing-single", 6, "2026-07-12", "2026-07-12")];
+    const rows = computeAvailability(inv, bookings, "2026-07-10", "2026-07-20", { nowMs: NOW });
+    expect(rows["chafing-single"].available).toBe(4);
+  });
 });
 
 describe("availableForItem", () => {

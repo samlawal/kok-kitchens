@@ -4,6 +4,7 @@ import { dispatchNotifications } from "@/lib/order-notifications";
 import { hireItems } from "@/lib/hire-data";
 import { getDb } from "@/lib/db";
 import { computeAvailability, type HireBooking } from "@/lib/hire-availability";
+import { validateHireEnquiry } from "@/lib/hire-validation";
 
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || "orders@kokkitchens.com";
 // Hire has its own ntfy topic so equipment enquiries don't mix into the
@@ -11,11 +12,6 @@ const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || "orders@kokkitchens
 const NTFY_HIRE_TOPIC = process.env.NTFY_HIRE_TOPIC || "kok-kitchen-hire";
 // How long a fresh enquiry holds its stock before the soft hold lapses.
 const HOLD_HOURS = 48;
-
-interface EnquiryItem {
-  id: string;
-  quantity: number;
-}
 
 interface InvRow {
   item_id: string;
@@ -46,45 +42,26 @@ function gbp(n: number) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, phone, email, eventDate, notes, items = [] } = body;
+    const { name, phone, email, eventDate, notes } = body;
 
-    if (!name || !phone || !Array.isArray(items) || items.length === 0) {
+    // Validate shape, resolve authoritative catalogue lines/prices, and check
+    // the event date (real date, not in the past). Pure + unit-tested in
+    // lib/hire-validation; never trust the client's numbers.
+    const valid = validateHireEnquiry(body, hireItems);
+    if (!valid.ok) {
       return NextResponse.json(
-        { success: false, message: "Name, phone and at least one item are required" },
-        { status: 400 }
+        { success: false, message: valid.message },
+        { status: valid.status }
       );
     }
-
-    // Resolve item ids server-side — authoritative names + prices, never trust
-    // the client's numbers.
-    const byId = new Map(hireItems.map((i) => [i.id, i]));
-    const lines = (items as EnquiryItem[])
-      .map(({ id, quantity }) => {
-        const it = byId.get(id);
-        const qty = Number(quantity);
-        if (!it || !Number.isFinite(qty) || qty <= 0) return null;
-        return { id: it.id, name: it.name, qty, price: it.price, line: it.price * qty };
-      })
-      .filter((l): l is { id: string; name: string; qty: number; price: number; line: number } => l !== null);
-
-    if (lines.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "No valid hire items selected" },
-        { status: 400 }
-      );
-    }
-
-    const total = lines.reduce((s, l) => s + l.line, 0);
+    const { lines, total, eventIso } = valid;
     const ref = `HIRE-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
-    // When a valid event date is supplied, re-check availability server-side
-    // and persist a soft-hold booking so two customers can't oversell the same
-    // stock. Items without an inventory row are unmanaged (no cap). If the DB
-    // or tables aren't ready, we skip persistence and still send the enquiry.
-    const eventIso = /^\d{4}-\d{2}-\d{2}$/.test(String(eventDate || ""))
-      ? String(eventDate)
-      : null;
-
+    // When a valid (future) event date is supplied, re-check availability
+    // server-side and persist a soft-hold booking so two customers can't
+    // oversell the same stock. Items without an inventory row are unmanaged
+    // (no cap). If the DB or tables aren't ready, we skip persistence and still
+    // send the enquiry. (eventIso is already validated by validateHireEnquiry.)
     if (eventIso) {
       try {
         const sql = getDb();
