@@ -138,8 +138,9 @@ export default function PrivacyPage() {
             <p>
               We keep order and booking records for as long as needed to provide
               the service and to meet our legal and accounting obligations
-              (typically [6] years for financial records). Enquiry messages are
-              kept for [a reasonable period] and then deleted.
+              (typically 6 years for financial records, in line with UK tax
+              rules). Enquiry messages that don&apos;t lead to an order are kept
+              for up to 24 months and then deleted.
             </p>
           </section>
 
