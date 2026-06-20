@@ -92,11 +92,14 @@ export default function TermsPage() {
                 deposit is paid.
               </li>
               <li>
-                Deposit: [deposit amount / %]. Balance due [when balance is due].
+                Deposit: a 25% deposit secures your date. The balance is due 7
+                days before your event.
               </li>
               <li>
-                Cancellation: [catering cancellation / refund terms, e.g. notice
-                period and any non-refundable deposit].
+                Cancellation: cancel 14 or more days before your event for a
+                refund of everything except the deposit. Within 14 days, the full
+                amount may be charged, as we order and prepare food to your guest
+                numbers.
               </li>
             </ul>
           </section>
@@ -112,13 +115,15 @@ export default function TermsPage() {
                 you.
               </li>
               <li>
-                Hire period, deposit and any security deposit: [hire terms].
+                Hire covers your event window (typically 1–3 days). A refundable
+                security deposit may be required, returned once the items come
+                back in good order.
               </li>
               <li>
                 You are responsible for hired items while in your care. Items must
-                be returned by the agreed date in the condition supplied.
-                Loss, damage or late return may incur a charge: [damage / late
-                return terms].
+                be returned by the agreed date in the condition supplied. Loss or
+                damage is charged at full replacement cost, and late returns are
+                charged at the daily hire rate for each extra day.
               </li>
             </ul>
           </section>
