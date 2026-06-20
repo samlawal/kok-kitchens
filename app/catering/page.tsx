@@ -39,19 +39,40 @@ const CATERING_FAQS = [
 
 export default function CateringPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
-    await fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "catering", ...data }),
-    });
-
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/catering-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json().catch(() => ({}));
+      // Only show success on a real 2xx — otherwise the customer thinks the
+      // quote request went through when it never reached us.
+      if (res.ok && result.success) {
+        setSubmitted(true);
+      } else {
+        setError(
+          result.message ||
+            "Something went wrong. Please try again or WhatsApp us.",
+        );
+      }
+    } catch {
+      setError(
+        "Couldn't reach us — please check your connection or WhatsApp us.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -252,12 +273,18 @@ export default function CateringPage() {
               />
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 text-center font-medium">
+                {error}
+              </p>
+            )}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-orange-600 py-3.5 text-sm font-semibold text-white hover:bg-orange-700 active:scale-[0.98] transition-all"
+              disabled={submitting}
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-orange-600 py-3.5 text-sm font-semibold text-white hover:bg-orange-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="h-4 w-4" />
-              Submit Catering Request
+              {submitting ? "Sending…" : "Submit Catering Request"}
             </button>
           </form>
         </div>
