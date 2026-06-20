@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { verifyAdminSecret } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
 // Admin-protected read-only view of recent orders — lets us confirm a card
 // order flipped to paid after the Stripe webhook fired. No customer PII here.
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 
 export async function POST(request: Request) {
   const { password } = await request.json();
-  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(password)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
 // refs passed, never a blanket wipe, so it can't catch an unrelated order.
 export async function DELETE(request: Request) {
   const { password, refs } = await request.json();
-  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(password)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }

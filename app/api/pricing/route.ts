@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { verifyAdminSecret } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 
 // GET — fetch all price overrides
 export async function GET() {
@@ -28,7 +26,7 @@ export async function POST(request: Request) {
   try {
     const { password, updates } = await request.json();
 
-    if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+    if (!verifyAdminSecret(password)) {
       return NextResponse.json(
         { success: false, message: "Invalid password" },
         { status: 401 }
@@ -76,7 +74,7 @@ export async function DELETE(request: Request) {
   try {
     const { password, menuItemId } = await request.json();
 
-    if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+    if (!verifyAdminSecret(password)) {
       return NextResponse.json(
         { success: false, message: "Invalid password" },
         { status: 401 }

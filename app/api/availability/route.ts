@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { verifyAdminSecret } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 const VALID_STATUSES = ["available", "unavailable", "hidden"] as const;
 
 // GET — fetch all availability overrides
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
   try {
     const { password, updates } = await request.json();
 
-    if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+    if (!verifyAdminSecret(password)) {
       return NextResponse.json(
         { success: false, message: "Invalid password" },
         { status: 401 }

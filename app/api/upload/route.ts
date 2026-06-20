@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { verifyAdminSecret } from "@/lib/admin-auth";
 import { revertAction } from "@/lib/photo-revert";
 import { put, list, del } from "@vercel/blob";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 
 // Photos are stored per-section: "meals/{id}.webp" (menu) or "hire/{id}.webp"
 // (equipment hire). Always the canonical .webp path so resolvers + static
@@ -28,7 +26,7 @@ export async function POST(request: Request) {
   const menuItemId = formData.get("menuItemId") as string;
   const folder = resolveFolder(formData.get("type"));
 
-  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(password)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
@@ -108,7 +106,7 @@ export async function PUT(request: Request) {
   const { password, menuItemId, type } = await request.json();
   const folder = resolveFolder(type);
 
-  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(password)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }

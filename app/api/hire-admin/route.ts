@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { verifyAdminSecret } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 import { hireItems } from "@/lib/hire-data";
 import { validateHireAdminOp } from "@/lib/hire-admin";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "kok-admin-2026";
 const validItemIds = new Set(hireItems.map((i) => i.id));
 
 interface InvRow {
@@ -27,10 +26,11 @@ function toIso(v: unknown): string | null {
   return v instanceof Date ? v.toISOString() : new Date(String(v)).toISOString();
 }
 
-// GET /api/hire-admin?password=  → stock counts + bookings for the admin panel.
+// GET /api/hire-admin → stock counts + bookings for the admin panel. The admin
+// password travels in the `x-admin-password` header (never the query string),
+// so it can't leak into access logs, proxies or browser history.
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  if (!verifyAdminPassword(searchParams.get("password"), ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(request.headers.get("x-admin-password"))) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
 // POST /api/hire-admin  { password, op: "setStock" | "setStatus", ... }
 export async function POST(request: Request) {
   const body = await request.json();
-  if (!verifyAdminPassword(body.password, ADMIN_PASSWORD)) {
+  if (!verifyAdminSecret(body.password)) {
     return NextResponse.json(
       { success: false, message: "Invalid password" },
       { status: 401 }

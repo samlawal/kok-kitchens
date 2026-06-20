@@ -895,7 +895,7 @@ function HireStockTab({ password }: { password: string }) {
 
   function reload() {
     setLoading(true);
-    fetch(`/api/hire-admin?password=${encodeURIComponent(password)}`)
+    fetch("/api/hire-admin", { headers: { "x-admin-password": password } })
       .then((r) => r.json())
       .then((d) => {
         if (d.success) {
