@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getDb } from "@/lib/db";
 import { getStripe, isStripeConfigured } from "@/lib/stripe";
+import { SITE_URL } from "@/lib/site-url";
 
 // Mirrors generateRef in /api/orders — kept local to avoid touching that route.
 function generateRef() {
@@ -62,10 +63,7 @@ export async function POST(request: Request) {
     const orderTotal = subtotal + fee;
     const ref = generateRef();
 
-    const origin =
-      request.headers.get("origin") ||
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://kok-kitchens.vercel.app";
+    const origin = request.headers.get("origin") || SITE_URL;
 
     // Build Stripe line items from authoritative cart prices (in pence).
     const lineItems: Array<{

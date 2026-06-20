@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site-url";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = "https://kok-kitchens-samlawals-projects.vercel.app";
+  const base = SITE_URL;
 
   return {
     rules: [
