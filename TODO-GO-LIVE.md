@@ -21,7 +21,7 @@
 - [ ] **Stripe go-live** — card payments are built & tested in test mode. To launch: set live `STRIPE_SECRET_KEY` (`sk_live_…`), add a **live-mode** webhook destination → `STRIPE_WEBHOOK_SECRET` (`whsec_…`), redeploy, then one real-card smoke test + refund. Steps in `docs/KOK Kitchens - Stripe Go-Live.pdf`.
 - [ ] **Domain setup on Vercel** — add custom domain, configure SSL, set up DNS records
 - [ ] **Google Analytics GA4** — create property, add tracking snippet
-- [x] **Privacy Policy & Terms** pages — **drafted & published** at `/privacy` and `/terms`, linked from the footer + a consent line at checkout/hire. ⚠️ Owner/legal to **review and complete the bracketed placeholders** (legal entity, ICO registration, trading address, deposit/cancellation/hire-damage terms) **before launch**.
+- [x] **Privacy Policy & Terms** pages — **drafted & published** at `/privacy` and `/terms`, linked from the footer + a consent line at checkout/hire. Commercial terms (deposit, cancellation, hire) + retention periods now filled with standard UK defaults — worth a solicitor's once-over. Remaining identity fields (legal entity, trading address, ICO) come from KOK **Monday** — tracked under **Post-live tasks**.
 - [ ] **Uber Direct activation** — once the client sends credentials: add `UBER_CLIENT_ID`, `UBER_CLIENT_SECRET`, `UBER_CUSTOMER_ID` (+ optional `NEXT_PUBLIC_SITE_URL`) in Vercel, redeploy, then run a sandbox test delivery before enabling. Code is built & gap-fixed; DB columns are in place.
 - [ ] **Uber: server-side fee validation** — checkout sends the delivery fee from the client; re-fetch/validate the Uber quote server-side at order/checkout time before trusting it. Do this during activation (needs live quotes to test) — matters now that card payments are live.
 ## SEO optimisation
@@ -36,6 +36,13 @@
 - [ ] **Core Web Vitals / Lighthouse pass** — the homepage hero serves full-res `unoptimized` images, which likely hurts LCP; review sizing/optimisation, check CLS + performance. _(Dev)_
 - [ ] **GA4 + cookie consent** — needed to measure SEO/organic traffic (see analytics item above; build the consent gate in the same change). _(Dev)_
 - [ ] **Local citations / directories** — list KOK on Yell + local/Nigerian community directories with consistent NAP to reinforce local ranking. _(Owner, ongoing)_
+
+## Post-live tasks
+- [ ] **Legal-page identity fields** — KOK providing **Monday**, then update `/privacy` + `/terms`:
+  - **Trading address** _(Mon)_
+  - **ICO registration number** — or confirmation KOK will register (a business processing customer data online very likely must register + pay the ICO data-protection fee) _(Mon)_
+  - **Legal entity** name + structure (sole trader vs Ltd) — for the "Who we are" line
+  - _Until updated, both pages show bracketed placeholders on these lines only; everything else is complete._
 
 ## Completed
 - [x] **Go-live hardening pass** — fixed the hardcoded Vercel preview URL across the SEO/canonical files (now `NEXT_PUBLIC_SITE_URL` → kokkitchens.com); admin auth **fails closed in prod**, `/api/init` gated, and the hire-admin password no longer rides in the URL; added Privacy/Terms pages + footer & consent links; branded 404/error pages; checkout/catering/hire form-label accessibility (`htmlFor`/`id` + `aria-label`); favicon/apple-icon/web-manifest; `.env.example`. `npm run build` + **118 tests** green.
