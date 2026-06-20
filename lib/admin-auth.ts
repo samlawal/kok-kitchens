@@ -13,17 +13,23 @@ export function verifyAdminPassword(input: unknown, expected: string): boolean {
   return a === b;
 }
 
-// Resolve the admin password from the environment.
-//
-// In PRODUCTION we FAIL CLOSED: if ADMIN_PASSWORD is unset/blank we return null
-// so callers reject every admin request, rather than ever falling back to a
-// publicly-known default. Outside production (dev/test) we fall back to a
-// dev-only default so local work and the test suite don't need the env var.
-export function getAdminPassword(): string | null {
-  const pw = process.env.ADMIN_PASSWORD;
+// Pure resolver (ambient state injected) so the fail-closed logic is unit-tested
+// without mutating process.env. In PRODUCTION we FAIL CLOSED: if the password is
+// unset/blank we return null so callers reject every admin request, rather than
+// ever falling back to a publicly-known default. Outside production (dev/test)
+// we fall back to a dev-only default so local work and tests don't need the var.
+export function resolveAdminPassword(
+  pw: string | undefined,
+  nodeEnv: string | undefined
+): string | null {
   if (typeof pw === "string" && pw.trim().length > 0) return pw;
-  if (process.env.NODE_ENV === "production") return null;
+  if (nodeEnv === "production") return null;
   return "kok-admin-2026";
+}
+
+// Resolve the admin password from the environment.
+export function getAdminPassword(): string | null {
+  return resolveAdminPassword(process.env.ADMIN_PASSWORD, process.env.NODE_ENV);
 }
 
 // Verify an incoming secret against the configured admin password. Fails closed

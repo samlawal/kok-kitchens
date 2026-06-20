@@ -21,7 +21,7 @@ npx vitest run lib/admin-auth.test.ts   # run one suite
 
 **Pass criteria:** every test green. Any red = do not release.
 
-**Current status: 118 / 118 passing** across 15 suites (last verified 19 Jun 2026).
+**Current status: 144 / 144 passing** across 17 suites (last verified 20 Jun 2026).
 
 > The pack auto-includes every `*.test.ts` file (lib + route handlers) — adding a new test
 > file automatically adds it to the regression run. **Policy: every bug we fix gets a regression test here so it
@@ -36,11 +36,13 @@ Most suites live in `lib/<name>.test.ts`; route-handler tests sit next to the ro
 
 | Suite | Tests | What it guards against |
 | ------------------------ | ----: | -------------------------------------------------- |
-| `admin-auth` | 10 | Admin password check — wrong passwords rejected, whitespace-padded ones tolerated (the "Invalid password" bug) |
+| `admin-auth` | 16 | Admin password check — wrong/whitespace-padded passwords (the "Invalid password" bug) **and fails closed in production when `ADMIN_PASSWORD` is unset** (the go-live default-password fix) |
 | `photo-revert` | 3 | "Undo" decision — restore previous vs. delete-to-default vs. nothing |
 | `upload/route` (PUT) | 5 | The photo-Undo handler end-to-end (blob mocked): restore, delete-to-default, nothing, auth |
 | `hire-admin` | 17 | Admin hire ops — setStock/deleteStock/setStatus validation (unknown item, negative/decimal qty, bad status/id, unknown op) |
 | `hire-validation` | 17 | Hire enquiry validation — past dates, zero/invalid items, malformed dates, server-side price trust |
+| `catering-validation` | 15 | Catering enquiry validation — required fields, bad/past event dates, guest count (the silent catering-enquiry-failure fix) |
+| `site-url` | 5 | Canonical origin resolves from env, strips trailing slashes, falls back to the live domain — never a preview URL (the hardcoded-preview-URL fix) |
 | `hire-availability` | 16 | Date-ranged hire stock maths — overlap, turnaround buffer, soft-hold expiry, oversell clamping |
 | `hire-data` | 5 | Hire catalogue integrity (unique ids, valid categories/prices) |
 | `menu-overrides` | 8 | Applying admin price/availability/photo overrides to a menu item |
