@@ -94,6 +94,27 @@ Order notification emails come from `orders@kokkitchen.co.uk`. Make sure to:
 
 ---
 
+## Before You Trade — Insurance, Legal & Compliance
+
+> ⚠️ These are business/legal steps **outside the website itself**, listed here so nothing is missed. Please confirm the details with a specialist insurance broker and, where needed, a solicitor — this is a checklist, not formal legal or insurance advice. A specialist **"caterers' insurance"** package usually bundles most of the insurances below into one policy.
+
+**Insurance**
+- [ ] **Public Liability** — covers injury to customers/guests or damage to their property at events or on delivery. Many venues require **£5m** cover before they'll let you cater.
+- [ ] **Product Liability** — covers claims that your food caused harm (e.g. food poisoning, an allergic reaction). Essential for any food business; usually bundled with public liability.
+- [ ] **Employers' Liability** — **legally required** (minimum £5m) the moment you have any staff or casual event helpers. Don't skip it if anyone helps you at events.
+- [ ] **Vehicle cover for deliveries** — if you deliver in your own vehicle, your policy must include **"hire and reward" / business use**. A normal car policy does **not** cover paid deliveries. (Not needed if delivery is always via couriers.)
+- [ ] **Equipment / hire-stock cover** — for your own kitchen equipment and the items you hire out (chafing dishes, charger plates, etc.).
+- [ ] **Professional indemnity** _(optional)_ — useful if you give menu/dietary advice or sign catering contracts. Often included in caterer packages.
+
+**Legal & regulatory**
+- [ ] **Register as a food business** with your local council's Environmental Health team — required at least **28 days before** you start trading (it's free).
+- [ ] **Food hygiene** — a Level 2 Food Safety certificate for anyone handling food, a written food-safety (HACCP) system, and your food hygiene rating inspection.
+- [ ] **Allergen information** — provide the 14-allergen info for your dishes (also on the website to-do); use full ingredient labels on anything pre-packed (Natasha's Law).
+- [ ] **ICO data-protection registration** — register and pay the annual fee; it covers the customer data the website collects.
+- [ ] **Alcohol licence** — only if you'll ever serve or sell alcohol at events.
+
+---
+
 ## Your Website Pages
 
 | Page | What It Does |
