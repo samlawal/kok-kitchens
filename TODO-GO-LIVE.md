@@ -9,7 +9,7 @@
 - [ ] **Real customer testimonials** — replace the invented placeholder quotes in the homepage testimonial marquee (or remove the section until real reviews exist)
 - [ ] **Business identity & ICO** — confirm legal status (sole trader vs Ltd), register with the ICO + pay the data-protection fee if required, and supply a trading address (fills the Privacy/Terms placeholders + footer)
 - [ ] **Delivery fees** — confirm local (£4.99) and extended (£7.99) pricing
-- [ ] **Allergen information** — provide allergen matrix for menu items
+- [~] **Allergen information** — ✅ launch-minimum live: `/allergens` page + statement + "tell us before you order" notice on menu/checkout, linked in footer. **Still to do (owner):** supply the per-dish allergen data (dish × 14 allergens) so we can add the full matrix / "contains" tags. _Dev will build it from your data._
 - [ ] **Equipment hire stock** — in Admin → **Hire stock**, set how many of each item you own. Items left blank stay "unmanaged" (shown without a stock cap, exactly as before). Live availability + the customer's date picker only apply to items you give a count.
 - [ ] **Hire alerts (ntfy)** — subscribe to the **`kok-kitchen-hire`** topic in your ntfy app so equipment‑hire enquiries come through separately from food orders (`kok-kitchen-orders`).
 
