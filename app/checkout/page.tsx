@@ -368,11 +368,12 @@ export default function CheckoutPage() {
                 {/* Postcode checker for delivery */}
                 {isDelivery && (
                   <div className="mt-4 p-4 rounded-xl bg-stone-50 border border-stone-100">
-                    <label className="block text-sm font-medium text-stone-700 mb-2">
+                    <label htmlFor="co-postcode-check" className="block text-sm font-medium text-stone-700 mb-2">
                       Check your postcode
                     </label>
                     <div className="relative">
                       <input
+                        id="co-postcode-check"
                         type="text"
                         value={postcode}
                         onChange={(e) => handlePostcodeCheck(e.target.value)}
@@ -466,11 +467,12 @@ export default function CheckoutPage() {
                     )}
                     {postcodeValid && (loadingAddresses || addressSuggestions.length > 0) && (
                       <div className="mt-3">
-                        <label className="block text-xs font-medium text-stone-600 mb-1">
+                        <label htmlFor="co-address-select" className="block text-xs font-medium text-stone-600 mb-1">
                           {loadingAddresses ? "Finding addresses…" : "Select your address"}
                         </label>
                         {addressSuggestions.length > 0 && (
                           <select
+                            id="co-address-select"
                             defaultValue=""
                             onChange={(e) => {
                               const i = Number(e.target.value);
@@ -506,10 +508,11 @@ export default function CheckoutPage() {
                 </h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label htmlFor="co-name" className="block text-sm font-medium text-stone-700 mb-1">
                       Full Name *
                     </label>
                     <input
+                      id="co-name"
                       type="text"
                       required
                       value={form.name}
@@ -519,10 +522,11 @@ export default function CheckoutPage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label htmlFor="co-email" className="block text-sm font-medium text-stone-700 mb-1">
                         Email *
                       </label>
                       <input
+                        id="co-email"
                         type="email"
                         required
                         value={form.email}
@@ -539,10 +543,11 @@ export default function CheckoutPage() {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-1">
+                      <label htmlFor="co-phone" className="block text-sm font-medium text-stone-700 mb-1">
                         Phone *
                       </label>
                       <input
+                        id="co-phone"
                         type="tel"
                         required
                         value={form.phone}
@@ -564,10 +569,11 @@ export default function CheckoutPage() {
                   {isDelivery && (
                     <>
                       <div>
-                        <label className="block text-sm font-medium text-stone-700 mb-1">
+                        <label htmlFor="co-address" className="block text-sm font-medium text-stone-700 mb-1">
                           Delivery Address *
                         </label>
                         <input
+                          id="co-address"
                           type="text"
                           required
                           value={form.address}
@@ -577,10 +583,11 @@ export default function CheckoutPage() {
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor="co-city" className="block text-sm font-medium text-stone-700 mb-1">
                             City *
                           </label>
                           <input
+                            id="co-city"
                             type="text"
                             required
                             value={form.city}
@@ -590,10 +597,11 @@ export default function CheckoutPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor="co-postcode" className="block text-sm font-medium text-stone-700 mb-1">
                             Postcode *
                           </label>
                           <input
+                            id="co-postcode"
                             type="text"
                             required
                             value={postcode}
@@ -610,10 +618,11 @@ export default function CheckoutPage() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1">
+                    <label htmlFor="co-notes" className="block text-sm font-medium text-stone-700 mb-1">
                       Order Notes
                     </label>
                     <textarea
+                      id="co-notes"
                       rows={3}
                       value={form.notes}
                       onChange={(e) => updateField("notes", e.target.value)}
@@ -757,6 +766,17 @@ export default function CheckoutPage() {
                   {paymentMethod === "card"
                     ? "You'll be redirected to secure Stripe checkout. A confirmation email follows."
                     : "Payment on delivery. You'll receive an order confirmation via email."}
+                </p>
+                <p className="mt-2 text-xs text-stone-500 text-center">
+                  By placing your order you agree to our{" "}
+                  <Link href="/terms" className="underline hover:text-orange-700">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="underline hover:text-orange-700">
+                    Privacy Policy
+                  </Link>
+                  .
                 </p>
 
                 {/* WhatsApp checkout alternative */}

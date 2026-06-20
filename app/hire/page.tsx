@@ -331,13 +331,13 @@ export default function HirePage() {
 
               <form onSubmit={handleSubmit} className="space-y-3 border-t border-stone-100 pt-4">
                 <input
-                  type="text" required placeholder="Your name *"
+                  type="text" required placeholder="Your name *" aria-label="Your name"
                   value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
                 />
                 <div>
                   <input
-                    type="tel" required placeholder="Phone *"
+                    type="tel" required placeholder="Phone *" aria-label="Phone number"
                     value={form.phone}
                     onChange={(e) => { setForm({ ...form, phone: e.target.value }); setErrors((p) => ({ ...p, phone: undefined })); }}
                     onBlur={() => setErrors((p) => ({ ...p, phone: form.phone.length > 0 && !isValidUkPhone(form.phone) }))}
@@ -347,7 +347,7 @@ export default function HirePage() {
                 </div>
                 <div>
                   <input
-                    type="email" placeholder="Email (optional)"
+                    type="email" placeholder="Email (optional)" aria-label="Email (optional)"
                     value={form.email}
                     onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors((p) => ({ ...p, email: undefined })); }}
                     onBlur={() => setErrors((p) => ({ ...p, email: form.email.length > 0 && !isValidEmail(form.email) }))}
@@ -364,7 +364,7 @@ export default function HirePage() {
                   />
                 </div>
                 <textarea
-                  rows={2} placeholder="Notes (delivery area, collection, etc.)"
+                  rows={2} placeholder="Notes (delivery area, collection, etc.)" aria-label="Notes"
                   value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   className="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none resize-none"
                 />
@@ -374,6 +374,17 @@ export default function HirePage() {
                 >
                   {submitting ? "Sending…" : "Send hire enquiry"}
                 </button>
+                <p className="text-[11px] text-stone-500 text-center">
+                  By sending an enquiry you agree to our{" "}
+                  <Link href="/terms" className="underline hover:text-orange-700">
+                    Terms
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="underline hover:text-orange-700">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
               </form>
 
               <div className="mt-3 text-center">

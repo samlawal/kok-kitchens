@@ -131,7 +131,7 @@ export default function CateringPage() {
             white halo behind the dark text for legibility without washing the
             photo out. */}
         <div className="absolute inset-0 bg-orange-100/15 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_56%_66%_at_50%_50%,rgba(255,255,255,0.85)_0%,rgba(255,255,255,0.5)_46%,rgba(255,255,255,0)_76%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_64%_72%_at_50%_50%,rgba(255,255,255,0.88)_0%,rgba(255,255,255,0.56)_50%,rgba(255,255,255,0)_82%)]" />
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight drop-shadow-[0_1px_10px_rgba(255,255,255,0.95)]">
             We set the table, you enjoy the moment
@@ -151,10 +151,11 @@ export default function CateringPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="cat-name" className="block text-sm font-medium text-stone-700 mb-1">
                   Your Name *
                 </label>
                 <input
+                  id="cat-name"
                   type="text"
                   name="name"
                   required
@@ -162,10 +163,11 @@ export default function CateringPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="cat-phone" className="block text-sm font-medium text-stone-700 mb-1">
                   Phone *
                 </label>
                 <input
+                  id="cat-phone"
                   type="tel"
                   name="phone"
                   required
@@ -176,10 +178,11 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label htmlFor="cat-email" className="block text-sm font-medium text-stone-700 mb-1">
                 Email *
               </label>
               <input
+                id="cat-email"
                 type="email"
                 name="email"
                 required
@@ -189,11 +192,12 @@ export default function CateringPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="cat-eventDate" className="block text-sm font-medium text-stone-700 mb-1">
                   <Calendar className="inline h-4 w-4 mr-1" />
                   Event Date *
                 </label>
                 <input
+                  id="cat-eventDate"
                   type="date"
                   name="eventDate"
                   required
@@ -201,11 +205,12 @@ export default function CateringPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="cat-guestCount" className="block text-sm font-medium text-stone-700 mb-1">
                   <Users className="inline h-4 w-4 mr-1" />
                   Number of Guests *
                 </label>
                 <input
+                  id="cat-guestCount"
                   type="number"
                   name="guestCount"
                   required
@@ -217,10 +222,11 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label htmlFor="cat-eventType" className="block text-sm font-medium text-stone-700 mb-1">
                 Event Type
               </label>
               <select
+                id="cat-eventType"
                 name="eventType"
                 className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none"
               >
@@ -234,10 +240,11 @@ export default function CateringPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">
+              <label htmlFor="cat-details" className="block text-sm font-medium text-stone-700 mb-1">
                 Menu Preferences & Additional Details
               </label>
               <textarea
+                id="cat-details"
                 name="details"
                 rows={4}
                 placeholder="Tell us about your event, preferred dishes, dietary requirements, or any special requests..."
