@@ -127,6 +127,9 @@ export default function Footer() {
         <div className="mt-10 border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
           <p>&copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.</p>
           <div className="flex items-center gap-4">
+            <Link href="/allergens" className="hover:text-orange-400 transition-colors">
+              Allergens
+            </Link>
             <Link href="/privacy" className="hover:text-orange-400 transition-colors">
               Privacy Policy
             </Link>

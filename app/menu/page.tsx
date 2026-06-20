@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { Search, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { menuItems } from "@/lib/menu-data";
 import type { Category } from "@/lib/types";
@@ -49,6 +50,16 @@ export default function MenuPage() {
       />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <Link
+          href="/allergens"
+          className="mb-6 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 hover:bg-amber-100 transition-colors"
+        >
+          <Info aria-hidden="true" className="h-4 w-4 shrink-0 text-amber-600" />
+          <span>
+            <strong>Allergies?</strong> Please tell us before you order — see our{" "}
+            <span className="underline">allergen information</span>.
+          </span>
+        </Link>
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}

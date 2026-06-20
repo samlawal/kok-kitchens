@@ -626,7 +626,7 @@ export default function CheckoutPage() {
                       rows={3}
                       value={form.notes}
                       onChange={(e) => updateField("notes", e.target.value)}
-                      placeholder="Any special requests? (e.g. extra spicy, no onions)"
+                      placeholder="Any special requests or allergies? (e.g. extra spicy, no onions, nut allergy)"
                       className="w-full rounded-lg border border-stone-200 px-4 py-2.5 text-sm text-stone-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 focus:outline-none resize-none"
                     />
                   </div>
