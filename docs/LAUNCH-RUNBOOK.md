@@ -32,10 +32,22 @@ See [`../.env.example`](../.env.example) for the full annotated list.
   ```
 - [ ] Confirm the response is `{"success":true}`
 
-## Step 5 — Connect the domain **[Ophir↔KOK]**
-- [ ] Vercel → **Settings → Domains** → add `kokkitchens.com` (and `www`)
-- [ ] In **GoDaddy DNS**, add the exact A / CNAME records Vercel shows
-- [ ] Wait for SSL (automatic), then confirm `https://kokkitchens.com` loads
+## Step 5 — Connect the domains **[Ophir↔KOK]**
+**Domain map:** `kokkitchens.com` is the **primary** (canonical URL + email); the other four all **redirect** to it. One live site, four brand-protection redirects — no duplicate content.
+
+| Domain | Role in Vercel |
+|--------|----------------|
+| `kokkitchens.com` | Primary / production domain |
+| `www.kokkitchens.com` | Redirect → `kokkitchens.com` |
+| `kokkitchens.co.uk` · `.online` · `.org` · `.store` | Redirect → `kokkitchens.com` |
+
+- [ ] Vercel → **Settings → Domains** → add `kokkitchens.com`, set it **primary**; add `www` as **Redirect → kokkitchens.com**
+- [ ] Add `kokkitchens.co.uk`, `.online`, `.org`, `.store` → for each pick **"Redirect to" → kokkitchens.com**
+- [ ] At each domain's registrar, add the **A / CNAME** records Vercel shows; SSL auto-issues per domain
+- [ ] Verify `https://kokkitchens.com` loads, and each other domain redirects to it
+- [ ] **Turn on auto-renew + registrar lock** on all five (they expire **20 Jun 2027** — don't risk losing the brand domains)
+- [ ] Email deliverability: confirm **SPF + DKIM** (from Resend) and add a **DMARC** record on `kokkitchens.com` so order/enquiry emails land and the domain can't be spoofed
+- [ ] _(Only if you later make `.co.uk` the primary instead: re-verify it in Resend and switch the email `from`-addresses first — otherwise email breaks. Not needed for launch.)_
 
 ## Step 6 — Turn on card payments **[Ophir]** _(when KOK's Stripe is ready)_
 - [ ] In Stripe **live mode**, copy the `sk_live_…` key

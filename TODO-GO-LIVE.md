@@ -5,7 +5,7 @@
 - [ ] **WhatsApp Business** — client to set up on their phone (guide sent)
 - [ ] **Uber Direct (optional)** — client to sign up for Uber Direct and send `Client ID`, `Client Secret`, `Customer ID` (guide sent). Site works on flat-rate self-delivery without it.
 - [ ] **getAddress.io key** — sign up at getaddress.io (free tier to start), get the API key, add `GETADDRESS_API_KEY` to Vercel + redeploy. Enables street-address autofill at checkout; without it, the postcode + manual address still work.
-- [ ] **Custom domain** — point kokkitchens.com (GoDaddy) DNS to Vercel
+- [ ] **Domains** — KOK owns **kokkitchens.com** (primary) plus **.co.uk / .online / .org / .store** (brand redirects). Give Ophir registrar/DNS access, and turn on **auto-renew + registrar lock** on all five (they expire 20 Jun 2027).
 - [ ] **Real customer testimonials** — replace the invented placeholder quotes in the homepage testimonial marquee (or remove the section until real reviews exist)
 - [ ] **Business identity & ICO** — confirm legal status (sole trader vs Ltd), register with the ICO + pay the data-protection fee if required, and supply a trading address (fills the Privacy/Terms placeholders + footer)
 - [ ] **Delivery fees** — confirm local (£4.99) and extended (£7.99) pricing
@@ -19,7 +19,7 @@
 - [ ] **Set `NEXT_PUBLIC_SITE_URL=https://kokkitchens.com` in Vercel** — drives the canonical SEO/OG tags, sitemap, Stripe redirect and Uber tracking webhook. Falls back to the kokkitchens.com default in code if unset, but set it explicitly.
 - [ ] **Hire ntfy topic (optional)** — defaults to `kok-kitchen-hire`. Only set `NTFY_HIRE_TOPIC` in Vercel if you want a different topic name.
 - [ ] **Stripe go-live** — card payments are built & tested in test mode. To launch: set live `STRIPE_SECRET_KEY` (`sk_live_…`), add a **live-mode** webhook destination → `STRIPE_WEBHOOK_SECRET` (`whsec_…`), redeploy, then one real-card smoke test + refund. Steps in `docs/KOK Kitchens - Stripe Go-Live.pdf`.
-- [ ] **Domain setup on Vercel** — add custom domain, configure SSL, set up DNS records
+- [ ] **Domain setup on Vercel** — add **kokkitchens.com** as the primary domain; add `www` + **.co.uk / .online / .org / .store** as **redirects → kokkitchens.com** (one live site, four brand redirects — no duplicate content). Add the A/CNAME records each domain shows; SSL auto-issues. Then confirm **SPF + DKIM** and add a **DMARC** record on kokkitchens.com for order-email deliverability + anti-spoofing.
 - [ ] **Google Analytics GA4** — create property, add tracking snippet
 - [x] **Privacy Policy & Terms** pages — **drafted & published** at `/privacy` and `/terms`, linked from the footer + a consent line at checkout/hire. Commercial terms (deposit, cancellation, hire) + retention periods now filled with standard UK defaults — worth a solicitor's once-over. Remaining identity fields (legal entity, trading address, ICO) come from KOK **Monday** — tracked under **Post-live tasks**.
 - [ ] **Uber Direct activation** — once the client sends credentials: add `UBER_CLIENT_ID`, `UBER_CLIENT_SECRET`, `UBER_CUSTOMER_ID` (+ optional `NEXT_PUBLIC_SITE_URL`) in Vercel, redeploy, then run a sandbox test delivery before enabling. Code is built & gap-fixed; DB columns are in place.
