@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "Our Story — Nigerian Kitchen in Hertfordshire",
   description:
-    "Learn about KOK Kitchens — our story, our passion for authentic Nigerian cuisine, and our commitment to delivering the best food experience.",
+    "The story behind KOK Kitchens — our passion for authentic Nigerian cuisine and home-style cooking, served across Hertfordshire for everyday meals and events.",
 };
 
 export default function AboutPage() {
