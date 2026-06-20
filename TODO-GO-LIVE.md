@@ -30,8 +30,8 @@
 **Outstanding** (priority order for a local food/catering business):
 - [ ] **Google Business Profile** 🔑 — highest local-SEO impact. KOK to claim/create: business name, address, phone (matching the site exactly = consistent NAP), categories (Caterer / Nigerian restaurant), opening hours, service area (Hertfordshire), photos, and start collecting reviews. _(Owner)_
 - [ ] **Google Search Console** — verify kokkitchens.com, submit `sitemap.xml`, monitor indexing + search queries. _(Dev, once the domain is live)_
-- [ ] **LocalBusiness / Restaurant structured data** — add JSON-LD with name, address, geo, phone, opening hours, `servesCuisine: Nigerian`, `areaServed: Hertfordshire`, price range, social `sameAs` and menu URL, for the local pack + rich results (currently only FAQ schema exists). _(Dev)_
-- [ ] **Keyword-targeted titles/descriptions** — tune each page for local intent ("Nigerian food delivery Hertfordshire", "Nigerian event catering", "jollof rice delivery", "tableware & chafing-dish hire"); add descriptions to menu detail pages. _(Dev)_
+- [x] **LocalBusiness / Restaurant structured data** — ✅ `RestaurantSchema` JSON-LD live site-wide (name, phone, email, `servesCuisine: Nigerian`, `areaServed: Hertfordshire`, opening hours, menu URL, Instagram). _Street address + geo to add once the trading address is confirmed (Monday)._
+- [x] **Keyword-targeted titles/descriptions** — ✅ local-intent titles/descriptions live on home, menu, catering, hire, about. _(Menu detail-page descriptions still a nice follow-up.)_
 - [ ] **Image alt text + filenames** — give menu/dish images descriptive alt text (many are decorative `alt=""`) for image search. _(Dev)_
 - [ ] **Core Web Vitals / Lighthouse pass** — the homepage hero serves full-res `unoptimized` images, which likely hurts LCP; review sizing/optimisation, check CLS + performance. _(Dev)_
 - [ ] **GA4 + cookie consent** — needed to measure SEO/organic traffic (see analytics item above; build the consent gate in the same change). _(Dev)_
