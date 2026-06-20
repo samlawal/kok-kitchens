@@ -24,6 +24,19 @@
 - [x] **Privacy Policy & Terms** pages — **drafted & published** at `/privacy` and `/terms`, linked from the footer + a consent line at checkout/hire. ⚠️ Owner/legal to **review and complete the bracketed placeholders** (legal entity, ICO registration, trading address, deposit/cancellation/hire-damage terms) **before launch**.
 - [ ] **Uber Direct activation** — once the client sends credentials: add `UBER_CLIENT_ID`, `UBER_CLIENT_SECRET`, `UBER_CUSTOMER_ID` (+ optional `NEXT_PUBLIC_SITE_URL`) in Vercel, redeploy, then run a sandbox test delivery before enabling. Code is built & gap-fixed; DB columns are in place.
 - [ ] **Uber: server-side fee validation** — checkout sends the delivery fee from the client; re-fetch/validate the Uber quote server-side at order/checkout time before trusting it. Do this during activation (needs live quotes to test) — matters now that card payments are live.
+## SEO optimisation
+**Done so far:** canonical URLs (`NEXT_PUBLIC_SITE_URL` → kokkitchens.com), `sitemap.xml` + `robots.txt`, web manifest + favicon/apple icons, per-page `<title>`/meta descriptions, OpenGraph/Twitter cards + `og-image.png`, FAQ rich-result schema on `/catering`.
+
+**Outstanding** (priority order for a local food/catering business):
+- [ ] **Google Business Profile** 🔑 — highest local-SEO impact. KOK to claim/create: business name, address, phone (matching the site exactly = consistent NAP), categories (Caterer / Nigerian restaurant), opening hours, service area (Hertfordshire), photos, and start collecting reviews. _(Owner)_
+- [ ] **Google Search Console** — verify kokkitchens.com, submit `sitemap.xml`, monitor indexing + search queries. _(Dev, once the domain is live)_
+- [ ] **LocalBusiness / Restaurant structured data** — add JSON-LD with name, address, geo, phone, opening hours, `servesCuisine: Nigerian`, `areaServed: Hertfordshire`, price range, social `sameAs` and menu URL, for the local pack + rich results (currently only FAQ schema exists). _(Dev)_
+- [ ] **Keyword-targeted titles/descriptions** — tune each page for local intent ("Nigerian food delivery Hertfordshire", "Nigerian event catering", "jollof rice delivery", "tableware & chafing-dish hire"); add descriptions to menu detail pages. _(Dev)_
+- [ ] **Image alt text + filenames** — give menu/dish images descriptive alt text (many are decorative `alt=""`) for image search. _(Dev)_
+- [ ] **Core Web Vitals / Lighthouse pass** — the homepage hero serves full-res `unoptimized` images, which likely hurts LCP; review sizing/optimisation, check CLS + performance. _(Dev)_
+- [ ] **GA4 + cookie consent** — needed to measure SEO/organic traffic (see analytics item above; build the consent gate in the same change). _(Dev)_
+- [ ] **Local citations / directories** — list KOK on Yell + local/Nigerian community directories with consistent NAP to reinforce local ranking. _(Owner, ongoing)_
+
 ## Completed
 - [x] **Go-live hardening pass** — fixed the hardcoded Vercel preview URL across the SEO/canonical files (now `NEXT_PUBLIC_SITE_URL` → kokkitchens.com); admin auth **fails closed in prod**, `/api/init` gated, and the hire-admin password no longer rides in the URL; added Privacy/Terms pages + footer & consent links; branded 404/error pages; checkout/catering/hire form-label accessibility (`htmlFor`/`id` + `aria-label`); favicon/apple-icon/web-manifest; `.env.example`. `npm run build` + **118 tests** green.
 - [x] Equipment hire — live inventory MVP: stock counts + date‑ranged availability (`/api/hire-availability`), enquiries persist as 48h soft‑hold bookings with server‑side oversell protection + 1‑day turnaround buffer, customer date‑picker with live stock badges + capped steppers, admin **Hire stock** tab (set/clear counts, manage booking statuses), and a separate `kok-kitchen-hire` ntfy topic. Design doc + workflow diagrams in `/docs`. Verified end‑to‑end (13 unit tests + live API + UI). **Owner actions in lists above.**
