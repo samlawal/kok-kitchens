@@ -71,9 +71,8 @@ That's it! You'll now get a push notification every time someone orders.
 
 You can update any dish photo yourself — no need to contact us.
 
-1. **Go to:** [https://kok-kitchens-samlawals-projects.vercel.app/admin](https://kok-kitchens-samlawals-projects.vercel.app/admin)
-   _(Once the custom domain is connected, this will be `kokkitchen.co.uk/admin`)_
-2. **Password:** `kok-admin-2026`
+1. **Go to:** [https://kokkitchens.com/admin](https://kokkitchens.com/admin)
+2. **Password:** the admin password set in Vercel (kept private — ask Ophir Digital if you don't have it on file). _The old default password no longer works._
 3. **Select the dish** you want to update from the dropdown
 4. **Upload a new photo** — any format from your phone (JPG, PNG, HEIC)
 5. **Done** — the photo is automatically resized, optimized, and live on the site instantly
@@ -88,9 +87,9 @@ You can update any dish photo yourself — no need to contact us.
 
 ### 3. Check Your Email
 
-Order notification emails come from `orders@kokkitchen.co.uk`. Make sure to:
+Order notification emails come from `orders@kokkitchens.com`. Make sure to:
 - Check your inbox (and spam folder initially)
-- Add `orders@kokkitchen.co.uk` to your contacts so emails don't go to spam
+- Add `orders@kokkitchens.com` to your contacts so emails don't go to spam
 
 ---
 
@@ -193,7 +192,7 @@ As your business grows, we can easily add new postcodes to either the local or e
 | Contact Method | Details | Where It Appears |
 |---|---|---|
 | **WhatsApp** | +44 7447 82712 | Floating button (every page), hero section, footer |
-| **Email** | hello@kokkitchen.co.uk | Footer |
+| **Email** | orders@kokkitchens.com | Footer |
 | **Phone** | +44 7447 82712 | Footer |
 
 The WhatsApp button has a pre-filled message: *"Hi KOK Kitchen! I'd like to place an order"*
@@ -241,7 +240,7 @@ The WhatsApp button has a pre-filled message: *"Hi KOK Kitchen! I'd like to plac
 | Optimised images (WebP, blur placeholders) | ✅ Live |
 | SEO meta tags | ⏳ Pending custom domain |
 | Stripe card payments | ⏳ Pending your Stripe account |
-| Custom domain (kokkitchen.co.uk) | ⏳ Pending domain purchase/transfer |
+| Custom domain (kokkitchens.com) | ✅ Live — DNS + SSL on Vercel (.co.uk/.online/.org/.store redirect to it) |
 | Privacy Policy + Terms | ⏳ Pending your review |
 | Google Analytics | ⏳ Pending GA4 setup |
 
