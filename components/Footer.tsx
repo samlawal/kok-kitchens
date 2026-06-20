@@ -124,8 +124,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
-          &copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.
+        <div className="mt-10 border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+          <p>&copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="hover:text-orange-400 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-orange-400 transition-colors">
+              Terms &amp; Conditions
+            </Link>
+          </div>
         </div>
 
         <div className="mt-6">
