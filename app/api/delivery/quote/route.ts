@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         quote: null,
-        fallbackFee: 7.99,
+        fallbackFee: 13.99,
         message: "Uber not configured — using flat-rate delivery fee",
       });
     }
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       quote: null,
-      fallbackFee: 7.99,
+      fallbackFee: 13.99,
       message: "Could not get live quote — using flat-rate delivery fee",
     });
   }

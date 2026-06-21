@@ -1,7 +1,7 @@
 # Uber Direct — Activation Runbook (internal)
 
 Internal steps to switch Uber Direct courier delivery **on** once the client
-provides credentials. Until then, extended-zone delivery uses the flat **£7.99**
+provides credentials. Until then, extended-zone delivery uses the flat **£13.99**
 fallback and **no Uber calls are made**. The *client-facing* signup steps live in
 `KOK Kitchens - Uber Direct Setup.pdf` — this is the engineer's counterpart.
 
@@ -55,11 +55,11 @@ vercel --prod
 
 ## 5. Go-live
 With the smoke test passing and hardening done, extended-zone orders auto-quote
-and auto-dispatch. Local postcodes stay self-delivery at £4.99.
+and auto-dispatch. Local postcodes stay self-delivery at £8.99.
 
 ## Rollback / disable (instant, no code change)
 Remove or blank the `UBER_*` env vars in Vercel and redeploy → `isUberConfigured()`
-returns `false` → immediate fallback to the flat £7.99. No customer impact.
+returns `false` → immediate fallback to the flat £13.99. No customer impact.
 
 ## Key files
 | File | Role |

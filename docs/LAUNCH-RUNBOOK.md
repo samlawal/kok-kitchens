@@ -74,4 +74,4 @@ See [`../.env.example`](../.env.example) for the full annotated list.
 
 ---
 
-_Rollback for any integration: blank its env vars in Vercel and redeploy — the site falls back (cards → pay-on-delivery, courier → flat £7.99, address autofill → manual entry). No code change needed._
+_Rollback for any integration: blank its env vars in Vercel and redeploy — the site falls back (cards → pay-on-delivery, courier → flat £13.99, address autofill → manual entry). No code change needed._

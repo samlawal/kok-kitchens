@@ -8,7 +8,7 @@
 - [ ] **Domains** — KOK owns **kokkitchens.com** (primary) plus **.co.uk / .online / .org / .store** (brand redirects). Give Ophir registrar/DNS access, and turn on **auto-renew + registrar lock** on all five (they expire 20 Jun 2027).
 - [ ] **Real customer testimonials** — replace the invented placeholder quotes in the homepage testimonial marquee (or remove the section until real reviews exist)
 - [ ] **Business identity & ICO** — confirm legal status (sole trader vs Ltd), register with the ICO + pay the data-protection fee if required, and supply a trading address (fills the Privacy/Terms placeholders + footer)
-- [ ] **Delivery fees** — confirm local (£4.99) and extended (£7.99) pricing
+- [ ] **Delivery fees** — interim flat rates now live: local **£8.99**, extended **£13.99** (until Uber Direct is integrated). Confirm with KOK; on Uber activation, extended switches to live courier quotes and both rates should be revisited.
 - [~] **Allergen information** — ✅ launch-minimum live: `/allergens` page + statement + "tell us before you order" notice on menu/checkout, linked in footer. **Still to do (owner):** supply the per-dish allergen data (dish × 14 allergens) so we can add the full matrix / "contains" tags. _Dev will build it from your data._
 - [ ] **Equipment hire stock** — in Admin → **Hire stock**, set how many of each item you own. Items left blank stay "unmanaged" (shown without a stock cap, exactly as before). Live availability + the customer's date picker only apply to items you give a count.
 - [ ] **Hire alerts (ntfy)** — subscribe to the **`kok-kitchen-hire`** topic in your ntfy app so equipment‑hire enquiries come through separately from food orders (`kok-kitchen-orders`).
@@ -59,6 +59,6 @@
 - [x] Client setup guide — Stripe + WhatsApp (DOCX + PDF in `/docs`)
 - [x] Menu photos — all 35 originals restored from backup
 - [x] Admin photo upload — working via Vercel Blob
-- [x] Uber Direct integration — API client, quote endpoint, dispatch on order (awaited; tracking-URL bug fixed), status webhook. DB columns (`delivery_id`/`delivery_status`/`delivery_tracking_url`/`updated_at`) applied via `/api/init`. Dormant until credentials; falls back to flat £7.99.
+- [x] Uber Direct integration — API client, quote endpoint, dispatch on order (awaited; tracking-URL bug fixed), status webhook. DB columns (`delivery_id`/`delivery_status`/`delivery_tracking_url`/`updated_at`) applied via `/api/init`. Dormant until credentials; falls back to flat £13.99.
 - [x] Delivery comparison doc — Stuart vs Uber vs Gophr (DOCX + PDF in `/docs`)
 - [x] Uber Direct client signup guide — DOCX + PDF in `/docs`

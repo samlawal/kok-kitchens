@@ -41,7 +41,12 @@ export async function POST(request: Request) {
     }
 
     const ref = generateRef();
-    const deliveryFee = deliveryType === "delivery" ? 4.99 : 0;
+    const deliveryFee =
+      deliveryType !== "delivery"
+        ? 0
+        : deliveryZone === "extended"
+          ? 13.99
+          : 8.99;
     const subtotal = items.reduce(
       (sum: number, item: { menuItem: { price: number }; quantity: number }) =>
         sum + item.menuItem.price * item.quantity,

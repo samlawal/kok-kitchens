@@ -33,7 +33,7 @@ const CATERING_FAQS = [
   },
   {
     q: "Is there a delivery charge for food orders?",
-    a: "For food orders, local delivery is £4.99 and extended delivery is £7.99 (a live quote may apply for far-out areas), with free collection too. Catering is quoted separately based on your menu and guest numbers.",
+    a: "For food orders, local delivery is £8.99 and extended delivery is £13.99 (a live quote may apply for far-out areas), with free collection too. Catering is quoted separately based on your menu and guest numbers.",
   },
 ];
 

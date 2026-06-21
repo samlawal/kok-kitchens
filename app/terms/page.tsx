@@ -50,7 +50,7 @@ export default function TermsPage() {
             <ul className="list-disc pl-5 space-y-1">
               <li>
                 Prices are shown on the menu in GBP. Delivery is charged at
-                checkout: local delivery £4.99 and extended delivery £7.99 (a live
+                checkout: local delivery £8.99 and extended delivery £13.99 (a live
                 quote may apply for areas further out). Collection is free.
               </li>
               <li>

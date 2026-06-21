@@ -17,9 +17,12 @@ import type { AddressSuggestion } from "@/lib/address";
 
 type DeliveryType = "delivery-local" | "delivery-extended" | "pickup";
 
+// Interim flat delivery rates until Uber Direct is live. Once Uber is
+// configured, extended switches to live Uber quotes (uberQuote takes precedence
+// below); local stays self-delivery. Revisit both rates at Uber activation.
 function getDeliveryFee(type: DeliveryType): number {
-  if (type === "delivery-local") return 4.99;
-  if (type === "delivery-extended") return 7.99;
+  if (type === "delivery-local") return 8.99;
+  if (type === "delivery-extended") return 13.99;
   return 0;
 }
 
@@ -319,7 +322,7 @@ export default function CheckoutPage() {
                     <MapPin className={`h-5 w-5 ${deliveryType === "delivery-local" ? "text-orange-700" : "text-stone-500"}`} />
                     <div className="text-center">
                       <p className="font-medium text-stone-900 text-sm">Local</p>
-                      <p className="text-xs text-stone-500">{formatPrice(4.99)}</p>
+                      <p className="text-xs text-stone-500">{formatPrice(8.99)}</p>
                     </div>
                   </button>
                   <button
@@ -334,7 +337,7 @@ export default function CheckoutPage() {
                     <Truck className={`h-5 w-5 ${deliveryType === "delivery-extended" ? "text-orange-700" : "text-stone-500"}`} />
                     <div className="text-center">
                       <p className="font-medium text-stone-900 text-sm">Extended</p>
-                      <p className="text-xs text-stone-500">{formatPrice(7.99)}</p>
+                      <p className="text-xs text-stone-500">{formatPrice(13.99)}</p>
                     </div>
                   </button>
                   <button
@@ -416,14 +419,14 @@ export default function CheckoutPage() {
                     {postcodeChecked && postcodeZone === "local" && (
                       <div className="mt-2 flex items-center gap-2 text-sm text-green-700">
                         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-green-100 text-xs">✓</span>
-                        Local delivery — {formatPrice(4.99)}
+                        Local delivery — {formatPrice(8.99)}
                       </div>
                     )}
                     {postcodeChecked && postcodeZone === "extended" && (
                       <div className="mt-2 space-y-2">
                         <div className="flex items-center gap-2 text-sm text-orange-700">
                           <Truck className="h-4 w-4" />
-                          Extended delivery — {uberQuote ? formatPrice(uberQuote.fee) : formatPrice(7.99)}
+                          Extended delivery — {uberQuote ? formatPrice(uberQuote.fee) : formatPrice(13.99)}
                           {uberQuote && (
                             <span className="text-xs text-stone-500 ml-1">
                               (~{uberQuote.estimatedMinutes} min via courier)
@@ -432,7 +435,7 @@ export default function CheckoutPage() {
                         </div>
                         {!uberQuote && (
                           <p className="text-xs text-stone-500 leading-relaxed">
-                            {formatPrice(7.99)} is our standard delivery rate. For a few
+                            {formatPrice(13.99)} is our standard delivery rate. For a few
                             further-out postcodes it can be a little more — we&apos;ll give you a
                             quick call to agree the delivery charge before we deliver, so
                             there are never any surprises.
