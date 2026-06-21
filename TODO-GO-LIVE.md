@@ -43,6 +43,10 @@
   - **ICO registration number** — or confirmation KOK will register (a business processing customer data online very likely must register + pay the ICO data-protection fee) _(Mon)_
   - **Legal entity** name + structure (sole trader vs Ltd) — for the "Who we are" line
   - _Until updated, both pages show bracketed placeholders on these lines only; everything else is complete._
+- [ ] **Set up `staging.kokkitchens.com` UAT** 🌅 _(morning)_ — `staging` branch is created & pushed. To finish: in Vercel add `staging.kokkitchens.com` pinned to the **`staging`** branch; add GoDaddy `CNAME staging → cname.vercel-dns.com`; scope the **Preview** env (Neon branch `DATABASE_URL` + Stripe **test** keys + `*-preview` ntfy topics); add a Stripe **test** webhook → `staging…/api/stripe/webhook`; run `/api/init` on staging; turn on **Deployment Protection** (password) for client review. Full steps: `docs/LAUNCH-RUNBOOK.md` → Preview/UAT.
+
+## Future / Phase 2 (post-launch enhancements)
+- [ ] **Admin Business Intelligence** — an "Insights" tab over the orders data: historical **revenue & order volume**, **top dishes**, **busy days/times**, average order value, repeat-customer rate, channel split (food/catering/hire), delivery-zone mix. Then a **demand-forecast** layer (prep/buy estimates per dish for the coming week) once there's ~8–12 weeks of history — folding in already-booked catering/hire as known future demand. _Needs real order history first; build on a branch → staging → merge._
 
 ## Completed
 - [x] **Go-live hardening pass** — fixed the hardcoded Vercel preview URL across the SEO/canonical files (now `NEXT_PUBLIC_SITE_URL` → kokkitchens.com); admin auth **fails closed in prod**, `/api/init` gated, and the hire-admin password no longer rides in the URL; added Privacy/Terms pages + footer & consent links; branded 404/error pages; checkout/catering/hire form-label accessibility (`htmlFor`/`id` + `aria-label`); favicon/apple-icon/web-manifest; `.env.example`. `npm run build` + **118 tests** green.
