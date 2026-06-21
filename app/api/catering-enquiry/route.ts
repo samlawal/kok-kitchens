@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { dispatchNotifications } from "@/lib/order-notifications";
+import { londonTime } from "@/lib/notify";
 import { validateCateringEnquiry } from "@/lib/catering-validation";
 import { getDb } from "@/lib/db";
 
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
             Tags: "tada,plate_with_cutlery",
             Actions: `view, Call, tel:${phone}`,
           },
-          body: `${eventLabel} · ${guestCount} guests · ${eventIso}\nPhone: ${phone}${details ? `\nNotes: ${details}` : ""}`,
+          body: `Placed ${londonTime()}\n${eventLabel} · ${guestCount} guests · ${eventIso}\nPhone: ${phone}${details ? `\nNotes: ${details}` : ""}`,
         }),
       () =>
         resend.emails.send({

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { dispatchNotifications } from "@/lib/order-notifications";
+import { londonTime } from "@/lib/notify";
 import { hireItems } from "@/lib/hire-data";
 import { getDb } from "@/lib/db";
 import { computeAvailability, type HireBooking } from "@/lib/hire-availability";
@@ -173,7 +174,7 @@ export async function POST(request: Request) {
             Tags: "package,moneybag",
             Actions: `view, Call, tel:${phone}`,
           },
-          body: `${itemsText}\n\nEstimated: ${gbp(total)}${eventDate ? `\nEvent: ${eventDate}` : ""}\nPhone: ${phone}`,
+          body: `Placed ${londonTime()}\n${itemsText}\n\nEstimated: ${gbp(total)}${eventDate ? `\nEvent: ${eventDate}` : ""}\nPhone: ${phone}`,
         }),
     ];
 
