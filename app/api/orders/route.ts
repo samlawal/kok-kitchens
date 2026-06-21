@@ -67,13 +67,14 @@ export async function POST(request: Request) {
     // Save to Neon database
     const sql = getDb();
     await sql`
-      INSERT INTO orders (ref, customer_name, customer_email, customer_phone, delivery_type, delivery_address, delivery_city, items, subtotal, delivery_fee, total, notes)
+      INSERT INTO orders (ref, customer_name, customer_email, customer_phone, delivery_type, delivery_zone, delivery_address, delivery_city, items, subtotal, delivery_fee, total, notes)
       VALUES (
         ${ref},
         ${customer.name},
         ${customer.email},
         ${customer.phone},
         ${deliveryType},
+        ${deliveryType === "delivery" ? deliveryZone : null},
         ${customer.address || null},
         ${customer.city || null},
         ${JSON.stringify(orderItems)},

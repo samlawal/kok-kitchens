@@ -62,6 +62,10 @@ export async function initDb() {
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_tracking_url TEXT`;
   await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ`;
 
+  // Delivery zone (local / extended) captured at checkout — for analytics and
+  // (with Uber) routing. Nullable; pickup orders have no zone.
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_zone TEXT`;
+
   // Equipment-hire stock — how many of each hire item KOK owns. Availability
   // is computed live (total_qty minus overlapping bookings), so this number
   // only changes when the business buys more or writes off damaged/lost stock.
@@ -97,6 +101,24 @@ export async function initDb() {
 
   // Lookups when computing availability for a date window.
   await sql`CREATE INDEX IF NOT EXISTS hire_bookings_dates_idx ON hire_bookings (status, hire_out_date, return_date)`;
+
+  // Catering enquiries — persisted (best-effort) for records + future BI.
+  // /api/catering-enquiry still emails/pushes the lead even if this write fails.
+  await sql`
+    CREATE TABLE IF NOT EXISTS catering_enquiries (
+      id SERIAL PRIMARY KEY,
+      ref TEXT UNIQUE NOT NULL,
+      customer_name TEXT NOT NULL,
+      customer_phone TEXT NOT NULL,
+      customer_email TEXT NOT NULL,
+      event_date DATE NOT NULL,
+      guest_count INTEGER NOT NULL,
+      event_type TEXT,
+      details TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS catering_enquiries_created_idx ON catering_enquiries (created_at)`;
 
   return true;
 }

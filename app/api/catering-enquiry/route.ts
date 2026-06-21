@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { dispatchNotifications } from "@/lib/order-notifications";
 import { validateCateringEnquiry } from "@/lib/catering-validation";
+import { getDb } from "@/lib/db";
 
 const NOTIFICATION_EMAIL =
   process.env.NOTIFICATION_EMAIL || "orders@kokkitchens.com";
@@ -38,6 +39,19 @@ export async function POST(request: Request) {
       valid;
     const ref = `CATER-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
     const eventLabel = EVENT_LABELS[eventType] ?? "Other";
+
+    // Best-effort persistence for records + future BI — never block the lead
+    // notification on a DB hiccup (tables may also not be initialised yet).
+    try {
+      const sql = getDb();
+      await sql`
+        INSERT INTO catering_enquiries
+          (ref, customer_name, customer_phone, customer_email, event_date, guest_count, event_type, details)
+        VALUES (${ref}, ${name}, ${phone}, ${email}, ${eventIso}, ${guestCount}, ${eventType}, ${details || null})
+      `;
+    } catch (error) {
+      console.error("Catering enquiry persistence skipped:", error);
+    }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const from = "KOK Kitchens Catering <orders@kokkitchens.com>";

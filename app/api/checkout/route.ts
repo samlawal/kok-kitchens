@@ -31,6 +31,7 @@ export async function POST(request: Request) {
       items = [],
       customer = {},
       deliveryType = "delivery",
+      deliveryZone = "local",
       deliveryFee = 0,
       prefillBilling = false,
     } = body;
@@ -136,12 +137,12 @@ export async function POST(request: Request) {
     await sql`
       INSERT INTO orders (
         ref, customer_name, customer_email, customer_phone,
-        delivery_type, delivery_address, delivery_city,
+        delivery_type, delivery_zone, delivery_address, delivery_city,
         items, subtotal, delivery_fee, total, notes,
         payment_method, payment_status, stripe_session_id
       ) VALUES (
         ${ref}, ${customer.name}, ${customer.email}, ${customer.phone},
-        ${deliveryType}, ${customer.address || null}, ${customer.city || null},
+        ${deliveryType}, ${deliveryType === "delivery" ? deliveryZone : null}, ${customer.address || null}, ${customer.city || null},
         ${JSON.stringify(orderItems)}, ${subtotal}, ${fee}, ${orderTotal},
         ${customer.notes || null},
         'card', 'unpaid', ${session.id}
