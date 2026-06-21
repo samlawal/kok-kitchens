@@ -72,6 +72,23 @@ See [`../.env.example`](../.env.example) for the full annotated list.
 - [ ] **[KOK]** ICO registration, insurance, food-business registration (see `HANDOVER.md` → "Before You Trade")
 - [ ] **[Ophir]** Uber Direct activation + server-side delivery-fee validation (when couriers go live)
 
+## Post-launch — Preview/UAT environment & change workflow **[Ophir]**
+Once live, **don't fix-forward everything on prod.** Vercel's per-branch **preview deployments** are your UAT (external URL, automatic, free).
+
+**Change tiers**
+- **Trivial/reversible** (copy, prices, images, hide a component) → fix forward on `main`; **Vercel instant rollback** (one click to a previous deployment) is the safety net.
+- **Risky** (checkout/payments, DB schema/`init`, integrations, the order/enquiry pipeline) → **branch → preview URL → test → merge to `main`**. Never test payments or DB changes on prod.
+
+**Make previews a safe sandbox** — Vercel injects *production* env into previews by default, so scope the **Preview** environment separately (Settings → Environment Variables → **Preview**):
+- `DATABASE_URL` → a **Neon branch** (Neon → Branches → create from prod) so writes can't touch live orders — or enable the Vercel↔Neon integration's "branch per preview".
+- `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` → **test-mode** keys (test cards, no real money).
+- `NTFY_TOPIC` / `NTFY_HIRE_TOPIC` → separate `*-preview` topics.
+- **Deployment Protection** (Settings → Deployment Protection) → on, so the UAT isn't publicly reachable.
+
+**Already handled in code:** non-production deployments auto-return `robots: disallow /` (`app/robots.ts`), so previews are never indexed even if protection is off.
+
+**Optional:** pin a `staging` branch to `staging.<domain>` for a fixed client sign-off URL (otherwise per-PR preview URLs are enough).
+
 ---
 
 _Rollback for any integration: blank its env vars in Vercel and redeploy — the site falls back (cards → pay-on-delivery, courier → flat £13.99, address autofill → manual entry). No code change needed._
