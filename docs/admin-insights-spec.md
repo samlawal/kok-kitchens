@@ -10,11 +10,9 @@ Give the owner a single **Insights** tab answering *"what's selling, when, for h
 |---------|-------|--------|
 | Food orders | `orders` (`items` JSONB has per-dish lines) | ✅ ready |
 | Equipment hire | `hire_bookings` | ✅ ready |
-| **Catering enquiries** | — | ⚠️ **not persisted** — `/api/catering-enquiry` is notification-only |
+| Catering enquiries | `catering_enquiries` | ✅ now persisted (best-effort) by `/api/catering-enquiry` |
 
-**Prerequisite:** add a `catering_enquiries` table (mirror `hire_bookings`: ref, customer, event_date, guest_count, event_type, details, created_at) and persist on enquiry (best-effort, like hire). Without it, catering volume can't be charted. Small add; do it alongside Phase 1 so catering shows in the channel split.
-
-Also note: `orders` has **no `delivery_zone` column** — zone is currently only inferable from `delivery_fee` (`>= 13` → extended, `> 0` → local). Recommend adding `delivery_zone TEXT` (idempotent `ADD COLUMN`) and writing it on checkout, so zone analytics aren't brittle.
+**Both prerequisites are now in place** (commit `08a199c`): the `catering_enquiries` table exists and each lead is persisted, and **`orders.delivery_zone`** is written on both checkout paths (no more inferring zone from the fee). So catering volume and delivery-zone mix are queryable, and **history accrues from launch**. _Run `/api/init` on prod (and staging) once to apply the schema._
 
 ## Metrics (Phase 1)
 All scoped to a selectable date range `[from, to)`. Decide a **status filter** up front — suggest: count orders that were actually placed (exclude `status = 'cancelled'`); for revenue, card orders should be `payment_status = 'paid'`, COD orders count on placement.
