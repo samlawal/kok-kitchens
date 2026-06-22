@@ -11,7 +11,7 @@ export default function RestaurantSchema() {
     "@id": `${SITE_URL}/#restaurant`,
     name: "KOK Kitchens",
     description:
-      "Authentic Nigerian food for delivery across Hertfordshire, plus event catering and equipment hire.",
+      "Authentic Nigerian food for delivery across North London & Hertfordshire, plus event catering and equipment hire.",
     url: SITE_URL,
     telephone: "+447447982712",
     email: "orders@kokkitchens.com",
@@ -24,7 +24,10 @@ export default function RestaurantSchema() {
       addressRegion: "Hertfordshire",
       addressCountry: "GB",
     },
-    areaServed: { "@type": "AdministrativeArea", name: "Hertfordshire" },
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "North London" },
+      { "@type": "AdministrativeArea", name: "Hertfordshire" },
+    ],
     sameAs: ["https://www.instagram.com/kokkkitchen"],
     openingHoursSpecification: [
       {

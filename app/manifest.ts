@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "KOK Kitchens — Authentic Nigerian Food & Catering",
     short_name: "KOK Kitchens",
     description:
-      "Order authentic Nigerian meals for delivery across Hertfordshire, or let us cater your next event.",
+      "Order authentic Nigerian meals for delivery across North London & Hertfordshire, or let us cater your next event.",
     start_url: "/",
     display: "standalone",
     background_color: "#0c0a09",

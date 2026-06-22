@@ -59,7 +59,8 @@ export default function TermsPage() {
                 confirmation.
               </li>
               <li>
-                We deliver across Hertfordshire and nearby areas. We&apos;ll let
+                We deliver across North London &amp; Hertfordshire and nearby
+                areas. We&apos;ll let
                 you know if we can&apos;t reach your address.
               </li>
               <li>

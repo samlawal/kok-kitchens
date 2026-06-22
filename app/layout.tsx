@@ -22,11 +22,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "KOK Kitchens — Nigerian Food & Catering in Hertfordshire",
+    default: "KOK Kitchens — Nigerian Food & Catering, North London & Hertfordshire",
     template: "%s | KOK Kitchens",
   },
   description:
-    "Order authentic Nigerian meals for delivery across Hertfordshire or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",
+    "Order authentic Nigerian meals for delivery across North London & Hertfordshire or let us cater your next event. From smoky party jollof to rich egusi soup — taste the soul of Nigeria.",
   metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     siteName: "KOK Kitchens",
     title: "KOK Kitchens — Authentic Nigerian Food Ordering & Catering",
     description:
-      "50+ authentic Nigerian dishes delivered across Hertfordshire. Jollof rice, egusi soup, suya, peppered chicken & more. Order online or WhatsApp us.",
+      "50+ authentic Nigerian dishes delivered across North London & Hertfordshire. Jollof rice, egusi soup, suya, peppered chicken & more. Order online or WhatsApp us.",
     images: [
       {
         url: "/og-image.png",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KOK Kitchens — Authentic Nigerian Food",
     description:
-      "Order authentic Nigerian meals for delivery across Hertfordshire. 50+ dishes, event catering, fast delivery.",
+      "Order authentic Nigerian meals for delivery across North London & Hertfordshire. 50+ dishes, event catering, fast delivery.",
     images: ["/og-image.png"],
   },
   other: {

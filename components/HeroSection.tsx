@@ -246,7 +246,7 @@ export default function HeroSection() {
           className="mt-6 text-base sm:text-lg text-stone-200 leading-relaxed max-w-2xl mx-auto drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)]"
         >
           Authentic Nigerian cuisine made fresh daily. Order for delivery
-          across Hertfordshire or let us cater your next event — from intimate
+          across North London &amp; Hertfordshire or let us cater your next event — from intimate
           dinners to celebrations of 200+.
         </motion.p>
 
@@ -298,7 +298,7 @@ export default function HeroSection() {
             },
             {
               title: "Fast Delivery",
-              desc: "Across Hertfordshire & beyond",
+              desc: "Across North London & Hertfordshire",
               Icon: DeliveryIcon,
             },
             {

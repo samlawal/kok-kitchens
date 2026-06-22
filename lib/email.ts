@@ -136,7 +136,7 @@ export async function sendCustomerConfirmation(order: OrderEmailData) {
 
           <div style="padding:20px;text-align:center;font-size:13px;color:#78716c;border:1px solid #e7e5e4;border-top:none;border-radius:0 0 12px 12px;">
             <p style="margin:0;">Questions? WhatsApp us at <a href="https://wa.me/447447982712" style="color:#ea580c;">+44 7447 982712</a></p>
-            <p style="margin:8px 0 0;">KOK Kitchens — Authentic Nigerian Cuisine, Hertfordshire</p>
+            <p style="margin:8px 0 0;">KOK Kitchens — Authentic Nigerian Cuisine, North London & Hertfordshire</p>
           </div>
         </div>
       `,

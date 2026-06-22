@@ -20,7 +20,7 @@ export default function Footer() {
             <p className="text-sm leading-relaxed text-stone-400">
               Authentic Nigerian cuisine made with love. From our kitchen
               in Hertfordshire to your table — feeding individuals and
-              events across the region.
+              events across North London &amp; Hertfordshire.
             </p>
           </div>
 

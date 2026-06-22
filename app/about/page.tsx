@@ -5,7 +5,7 @@ import PageHero from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "Our Story — Nigerian Kitchen in Hertfordshire",
   description:
-    "The story behind KOK Kitchens — our passion for authentic Nigerian cuisine and home-style cooking, served across Hertfordshire for everyday meals and events.",
+    "The story behind KOK Kitchens — our passion for authentic Nigerian cuisine and home-style cooking, served across North London & Hertfordshire for everyday meals and events.",
 };
 
 export default function AboutPage() {

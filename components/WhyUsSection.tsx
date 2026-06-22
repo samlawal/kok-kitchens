@@ -44,7 +44,7 @@ const features = [
     StaticIcon: () => <DeliveryIcon animated={false} />,
     title: "Fast Delivery",
     description:
-      "Hot meals delivered straight to your door across Hertfordshire. We keep it warm and get it to you fast.",
+      "Hot meals delivered straight to your door across North London & Hertfordshire. We keep it warm and get it to you fast.",
   },
   {
     Icon: () => <ClocheIcon animated={true} />,
