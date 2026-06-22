@@ -7,7 +7,7 @@ const stats = [
   { value: "50+", label: "Dishes on Menu" },
   { value: "7", label: "Categories" },
   { value: "200+", label: "Guest Events" },
-  { value: "WD7", label: "Hertfordshire" },
+  { value: "2 areas", label: "North London & Hertfordshire" },
 ];
 
 export default function StatsSection() {

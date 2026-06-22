@@ -182,11 +182,11 @@ export default function HeroSection() {
           transition={{ duration: 0.6 }}
           className="flex items-center justify-center gap-3 mb-10"
         >
-          <span className="h-px w-8 bg-orange-500/50" />
-          <span className="text-xs font-semibold text-orange-400 uppercase tracking-[0.25em]">
-            Hertfordshire, UK
+          <span className="hidden sm:block h-px w-8 bg-orange-500/50" />
+          <span className="text-xs font-semibold text-orange-400 uppercase tracking-[0.2em] whitespace-nowrap">
+            North London &amp; Hertfordshire
           </span>
-          <span className="h-px w-8 bg-orange-500/50" />
+          <span className="hidden sm:block h-px w-8 bg-orange-500/50" />
         </motion.div>
 
         {/* Main headline */}
