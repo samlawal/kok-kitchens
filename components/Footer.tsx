@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { ChefHat, Phone, Mail, MapPin } from "lucide-react";
 import OphirCredit from "./OphirCredit";
+import { DELIVERY_AREAS } from "@/lib/delivery-areas";
 
 export default function Footer() {
   return (
@@ -127,16 +129,17 @@ export default function Footer() {
         <div className="mt-10 border-t border-stone-800 pt-6">
           <p className="text-center text-xs leading-relaxed text-stone-500">
             Delivering across{" "}
-            <span className="text-stone-400">Borehamwood</span> ·{" "}
-            <span className="text-stone-400">Radlett</span> ·{" "}
-            <span className="text-stone-400">Bushey</span> ·{" "}
-            <span className="text-stone-400">Watford</span> ·{" "}
-            <span className="text-stone-400">St Albans</span> ·{" "}
-            <span className="text-stone-400">Edgware</span> ·{" "}
-            <span className="text-stone-400">Hendon</span> ·{" "}
-            <span className="text-stone-400">Mill Hill</span> ·{" "}
-            <span className="text-stone-400">Finchley</span> ·{" "}
-            <span className="text-stone-400">Barnet</span>
+            {DELIVERY_AREAS.map((area, i) => (
+              <Fragment key={area.slug}>
+                {i > 0 && " · "}
+                <Link
+                  href={`/delivery/${area.slug}`}
+                  className="text-stone-400 hover:text-orange-400 transition-colors"
+                >
+                  {area.name}
+                </Link>
+              </Fragment>
+            ))}
           </p>
           <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
             <p>&copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.</p>
