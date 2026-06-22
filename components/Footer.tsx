@@ -124,18 +124,33 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
-          <p>&copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/allergens" className="hover:text-orange-400 transition-colors">
-              Allergens
-            </Link>
-            <Link href="/privacy" className="hover:text-orange-400 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-orange-400 transition-colors">
-              Terms &amp; Conditions
-            </Link>
+        <div className="mt-10 border-t border-stone-800 pt-6">
+          <p className="text-center text-xs leading-relaxed text-stone-500">
+            Delivering across{" "}
+            <span className="text-stone-400">Borehamwood</span> ·{" "}
+            <span className="text-stone-400">Radlett</span> ·{" "}
+            <span className="text-stone-400">Bushey</span> ·{" "}
+            <span className="text-stone-400">Watford</span> ·{" "}
+            <span className="text-stone-400">St Albans</span> ·{" "}
+            <span className="text-stone-400">Edgware</span> ·{" "}
+            <span className="text-stone-400">Hendon</span> ·{" "}
+            <span className="text-stone-400">Mill Hill</span> ·{" "}
+            <span className="text-stone-400">Finchley</span> ·{" "}
+            <span className="text-stone-400">Barnet</span>
+          </p>
+          <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
+            <p>&copy; {new Date().getFullYear()} KOK Kitchens. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <Link href="/allergens" className="hover:text-orange-400 transition-colors">
+                Allergens
+              </Link>
+              <Link href="/privacy" className="hover:text-orange-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-orange-400 transition-colors">
+                Terms &amp; Conditions
+              </Link>
+            </div>
           </div>
         </div>
 

@@ -25,7 +25,7 @@ const CATERING_FAQS = [
   },
   {
     q: "Which areas do you cover, and do you set up on site?",
-    a: "We’re based in Hertfordshire and cater across North London, Hertfordshire and beyond, handling everything from menu planning to on-site setup on the day. Pop your details into the quote form and we’ll confirm we can reach you.",
+    a: "We’re based in Hertfordshire and cater across North London and Hertfordshire — from Borehamwood, Radlett and St Albans to Edgware, Hendon, Mill Hill and Finchley, and beyond for larger events. We handle everything from menu planning to on-site setup. Pop your details into the quote form and we’ll confirm we can reach you.",
   },
   {
     q: "Can I hire tableware and equipment without ordering food?",
