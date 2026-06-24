@@ -235,7 +235,7 @@ This is the magic short URL you'll send to customers — it takes them straight 
 3. Copy the link — it looks like `https://g.page/r/...` or `https://g.co/kgs/...`.
 4. **Save this link somewhere you can grab it quickly** — pin it in your WhatsApp Notes, save as a phone shortcut, or write it on a sticky note by the till.
 
-> **Pro tip:** Ophir Digital can turn that link into a QR code on a small sticker that goes inside every delivery bag. *"Loved your meal? Leave us a review →"* + scan. The most effective single review-driver we've seen — just ask us when you're ready.
+> **Already done for you:** the review sticker is built and waiting in your launch assets (gold-on-dark, "Loved your meal? Leave us a Google review", five stars). It points at **`kokkitchens.com/review`** — a permanent short URL we control. As soon as you give us your Google review link, we paste it into one setting and every printed sticker starts bouncing customers straight to the Google review form. **You never have to reprint** even if Google ever changes its URL format. _File: `assets/launch/review-qr-card.png` — print 500 round 5cm stickers from Solopress (~£25), drop one in every delivery bag._
 
 ### Step 3 — The two moments customers are most likely to review
 Timing is everything. Asking at the right moment changes the response rate from ~5% to ~25%.
