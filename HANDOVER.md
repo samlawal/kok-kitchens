@@ -1,8 +1,8 @@
 # KOK Kitchen — Website Handover Documentation
 
 **Prepared by:** Ophir Digital — samuel@ophirdigital.com
-**Date:** May 2026
-**Live URL:** [TBC — pending custom domain]
+**Date:** June 2026
+**Live URL:** [kokkitchens.com](https://kokkitchens.com) (with `.co.uk`, `.online`, `.org` and `.store` redirecting to it)
 **Vercel Project:** kok-kitchens
 
 ---
@@ -67,25 +67,7 @@ That's it! You'll now get a push notification every time someone orders.
 
 > **Tip:** In the ntfy app settings, enable "Priority: High notifications" so order alerts bypass Do Not Disturb mode.
 
-### 2. Photo Manager (Update Dish Photos)
-
-You can update any dish photo yourself — no need to contact us.
-
-1. **Go to:** [https://kokkitchens.com/admin](https://kokkitchens.com/admin)
-2. **Password:** the admin password set in Vercel (kept private — ask Ophir Digital if you don't have it on file). _The old default password no longer works._
-3. **Select the dish** you want to update from the dropdown
-4. **Upload a new photo** — any format from your phone (JPG, PNG, HEIC)
-5. **Done** — the photo is automatically resized, optimized, and live on the site instantly
-
-> **Made a mistake?** Click "Undo Last Change" to revert to the previous photo.
-
-**Tips for great photos:**
-- Use natural daylight (near a window)
-- Shoot from above, looking down at the dish
-- Use a clean, plain surface (white plate, dark wood)
-- Avoid flash — it washes out food colours
-
-### 3. Check Your Email
+### 2. Check Your Email
 
 Order notification emails come from `orders@kokkitchens.com`. Make sure to:
 - Check your inbox (and spam folder initially)
@@ -184,6 +166,151 @@ Try these postcodes on your checkout page to see it in action:
 ### Expanding Your Delivery Area
 
 As your business grows, we can easily add new postcodes to either the local or extended zone. Just tell us which areas you want to cover and we'll update it within 24 hours.
+
+---
+
+## Your Admin Panel
+
+Your website has a **self-service admin panel** that lets you change photos, prices, availability, and equipment hire stock yourself — no waiting for a developer.
+
+- **Web address:** [kokkitchens.com/admin](https://kokkitchens.com/admin)
+- **Password:** the strong admin password set in Vercel (kept private — ask Ophir Digital if you don't have it on file). _The old default password is no longer accepted._
+
+No technical knowledge needed — everything works from your phone or computer.
+
+### Tab 1: Photos — update any dish photo
+
+Replace any dish photo on your website in under 30 seconds.
+
+1. Open the **Photos** tab.
+2. **Select the dish** from the dropdown (all 55+ items listed).
+3. You'll see the **current photo** displayed.
+4. Tap **"Select image"** and pick a new photo from your phone or computer.
+5. You'll see a **preview** of the new photo before confirming.
+6. Tap **"Upload & Replace"** — the new photo is **live on your website immediately**.
+
+**Key features:**
+- Any image format works: JPG, PNG, HEIC (iPhone), WebP.
+- Photos are **automatically resized and optimised** for fast loading.
+- The original is **saved as a backup** — made a mistake? Tap **"Undo Last Change"** to revert.
+- Maximum file size: 10 MB.
+
+### Tab 2: Pricing — change any price instantly
+
+Update any dish price without waiting for a developer.
+
+1. Open the **Pricing** tab.
+2. Browse by category, or use the **search bar** to find a dish quickly.
+3. **Tap the price** next to any dish and type the new amount.
+4. Changed prices are highlighted in **orange** so you can track edits.
+5. When you're happy, tap **"Save"** at the top — new prices are **live immediately**.
+
+**Key features:**
+- Change **multiple prices at once** — the Save button shows pending count (e.g. "Save (3)").
+- Custom prices show an **undo arrow** — tap to reset to the original.
+- Search by **dish name or category**.
+- Original prices are always kept as a fallback — you can never "lose" them.
+
+### Tab 3: Availability — control what's on your menu
+
+Perfect for stock management — mark items unavailable or hide them entirely.
+
+| Status | What customers see | When to use |
+|---|---|---|
+| **Available** (green eye) | Normal — on the menu, orderable | Default for all dishes |
+| **Temporarily Unavailable** (amber eye-off) | Greyed out with a "Temporarily Unavailable" badge — visible but can't order | Run out of an ingredient, pausing a dish |
+| **Hidden** (red eye-off) | Completely removed from the menu | Seasonal items, discontinued dishes |
+
+1. Open the **Availability** tab.
+2. Find the dish via search or by browsing categories.
+3. Each dish has **three icon buttons** on the right — tap the one you want; the change is **live instantly**.
+
+**Common scenarios:**
+- *"We ran out of Egusi today"* → tap amber eye-off → customers see it's temporarily unavailable → tap green eye tomorrow when it's back.
+- *"We're removing Palm Wine for the summer"* → tap red eye-off → completely gone from the menu.
+- *"Suya is back in season!"* → tap green eye → immediately available and orderable.
+
+### Tab 4: Hire stock — manage equipment hire
+
+Control how many of each item you actually own. Customers can only book what's in stock.
+
+1. Open the **Hire stock** tab.
+2. For each item (chafing dish, charger plate, etc.), set how many you own.
+3. **Live availability** — the customer's date picker on `/hire` shows what's still bookable for their event date, after deducting any overlapping bookings.
+4. The **Bookings** view below shows every hire enquiry — change status (enquiry → confirmed → out → returned → closed → cancelled) as the lifecycle moves on.
+
+> Items you leave blank stay "unmanaged" (no stock cap — same behaviour as before the hire feature went live).
+
+### What you can do yourself vs contact us
+
+| Task | Self-service? | How |
+|---|---|---|
+| Change a dish photo | ✅ Yes | Admin Panel → **Photos** |
+| Change a price (one or many) | ✅ Yes | Admin Panel → **Pricing** |
+| Mark item unavailable / hide / bring back | ✅ Yes | Admin Panel → **Availability** |
+| Undo a recent photo change | ✅ Yes | Admin Panel → **Photos → "Undo Last Change"** |
+| Reset a price to original | ✅ Yes | Admin Panel → **Pricing → undo arrow** |
+| Set hire stock counts | ✅ Yes | Admin Panel → **Hire stock** |
+| Move a hire booking through its lifecycle | ✅ Yes | Admin Panel → **Hire stock → Bookings** |
+| Add a brand new dish | ❌ Contact us | WhatsApp / email Ophir Digital |
+| Change delivery zones or fees | ❌ Contact us | WhatsApp / email Ophir Digital |
+| Update business hours | ❌ Contact us | WhatsApp / email Ophir Digital |
+| Change the WhatsApp number or business email | ❌ Contact us | WhatsApp / email Ophir Digital |
+
+---
+
+## Preparing Photos for Your Website
+
+When you're sending us a batch of photos (launch shoot or bulk update), this is how to prep them so we can match them to your dishes automatically.
+
+### Naming convention
+
+Name each file after the dish, using **hyphens between words** and **lowercase**:
+
+| Dish name | File name |
+|---|---|
+| Jollof Rice | `jollof-rice.jpg` |
+| Egusi Soup | `egusi-soup.jpg` |
+| Peppered Chicken | `peppered-chicken.jpg` |
+| Small Chops Platter | `small-chops-platter.jpg` |
+| Pounded Yam & Efo Riro | `pounded-yam-efo-riro.jpg` |
+| Fried Rice (Large) | `fried-rice-large.jpg` |
+
+> **Don't stress about perfect names** — as long as they're clear we'll match them up. If in doubt, just name them something recognisable.
+
+### File requirements
+
+| Requirement | Details |
+|---|---|
+| **Format** | JPG, PNG, or HEIC (iPhone photos are fine) |
+| **Minimum size** | 800 × 600 pixels (any modern phone camera exceeds this) |
+| **Maximum size** | 10 MB per photo |
+| **Orientation** | Landscape (wider than tall) works best — matches the card layout |
+| **Background** | Clean and uncluttered — white plate, dark wood, or plain surface |
+| **Packaging** | Plate the food on real dishes — avoid takeaway containers |
+
+### Tips for great food photos
+
+1. **Natural daylight** — shoot near a window, never use flash.
+2. **Shoot from above** — looking straight down at the plate gives the cleanest result.
+3. **Slight angle** — 45° works well for dishes with height (soups, stacked plates).
+4. **Clean the plate edge** — wipe any drips or splashes before shooting.
+5. **No filters** — we handle colour correction and optimisation.
+6. **Fill the frame** — the dish should take up most of the photo.
+7. **One dish per photo** — don't combine multiple items in one shot.
+
+### How to send photos to us
+
+| Method | Best for |
+|---|---|
+| **WhatsApp** | Quick batch of 5–15 photos — easiest |
+| **Email** | Up to ~20 photos per email to `samuel@ophirdigital.com` |
+| **Google Drive / Dropbox** | Large batches (20+) — share a folder link |
+| **WeTransfer** | One-off large transfer — wetransfer.com (free) |
+
+### Updating photos yourself once the site is live
+
+You **don't need to contact us** to change individual dish photos — use the **Photos** tab in your Admin Panel (see above). Select the dish, upload the new photo from your phone, and it's live in seconds.
 
 ---
 
