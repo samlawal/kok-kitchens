@@ -199,6 +199,106 @@ The WhatsApp button has a pre-filled message: *"Hi KOK Kitchen! I'd like to plac
 
 ---
 
+## Growing Your Business — Reviews That Convert
+
+After the launch, the single highest-ROI activity for KOK Kitchens is **getting customer reviews on Google**. Reviews drive new customers in three compounding ways: they push you up Google's local rankings, they remove the trust barrier for a first-time customer, and they make your catering enquiries close at a much higher rate.
+
+### Why this matters (the honest numbers)
+- **Google Business Profile is the #1 channel for "near me" searches.** When someone in Edgware searches "Nigerian food delivery", Google shows three businesses in a map box above everything else. The ones with **more recent reviews and a higher star rating sit at the top**. Without reviews, you don't appear.
+- **88% of consumers trust online reviews as much as personal recommendations.** A new customer who's never heard of KOK reads your reviews before ordering. Five-star reviews from real people remove the *"is this place any good?"* hesitation.
+- **For catering, reviews compound dramatically.** A glowing review of one wedding gets seen by the bride's friends — every guest is a potential future client. A single 5★ wedding review can convert to thousands of pounds of follow-on bookings.
+- **More reviews = better placement = more orders = more reviews.** This is the flywheel. The first 20 reviews are the hardest; after that it builds itself.
+
+### Where to focus (in priority order)
+1. **Google Business Profile** — by far the most important. Set this up first.
+2. **Instagram tagged posts** — customers posting their food and tagging `@kokkkitchen` is free advertising to their friends.
+3. **TripAdvisor / Trustpilot** — lower priority for delivery-led businesses but they help if customers want to leave a review there.
+
+### Step 1 — Set up Google Business Profile (one-time, ~20 min)
+1. Go to **[google.com/business](https://www.google.com/business)** and sign in with a Google account.
+2. Search for **"KOK Kitchens"** to claim the listing, or **Add your business** if there isn't one yet.
+3. Fill in the essentials carefully — **the details must match what's on the website exactly** (this is called consistent NAP — Name, Address, Phone — and Google uses it to verify you're a real business):
+   - **Business name:** KOK Kitchens
+   - **Category:** Caterer (primary), Nigerian restaurant (secondary)
+   - **Phone:** +44 7447 982712 (same as the website)
+   - **Website:** https://kokkitchens.com
+   - **Service area:** North London & Hertfordshire
+   - **Hours:** Mon–Fri 10am–9pm · Sat 11am–10pm · Sun by pre-booking
+4. **Verify the business** — Google will send a postcard with a code to your address (takes 5–14 days). Until verified, your listing isn't visible in search.
+5. Once verified, **add 8–12 of your best food photos** and a logo.
+
+### Step 2 — Get your "leave a review" link
+This is the magic short URL you'll send to customers — it takes them straight to the review form with one tap.
+
+1. Open the **Google Business Profile app** on your phone (or [business.google.com](https://business.google.com)).
+2. Tap **Customers** → **Reviews** → **Share review form**.
+3. Copy the link — it looks like `https://g.page/r/...` or `https://g.co/kgs/...`.
+4. **Save this link somewhere you can grab it quickly** — pin it in your WhatsApp Notes, save as a phone shortcut, or write it on a sticky note by the till.
+
+> **Pro tip:** Ophir Digital can turn that link into a QR code on a small sticker that goes inside every delivery bag. *"Loved your meal? Leave us a review →"* + scan. The most effective single review-driver we've seen — just ask us when you're ready.
+
+### Step 3 — The two moments customers are most likely to review
+Timing is everything. Asking at the right moment changes the response rate from ~5% to ~25%.
+
+**Moment 1 — 30 minutes after a food delivery.** They've eaten, they're satisfied, the experience is fresh. **Don't wait 2 days** — by then the memory's faded and the WhatsApp message feels like nagging.
+
+**Moment 2 — 2–3 days after a catering event.** Wait until the wedding/birthday buzz has settled. The host has shared photos, received compliments from guests, and is now in a happy nostalgic state. **This is when 5★ catering reviews land.**
+
+### Step 4 — What to send (copy-paste templates)
+
+**WhatsApp message after a food order** (send personally, not as a broadcast):
+> Hi [Name] 👋 Hope you enjoyed your jollof tonight! If you've got 30 seconds, a quick Google review would mean the world to us — it's how new customers find us. 🙏
+>
+> Here's the link → [your Google review link]
+>
+> Thank you for supporting KOK Kitchens! 🧡
+
+**WhatsApp message after a catering event** (send to the host 2–3 days after):
+> Hi [Name] 🎉 I hope the wedding/birthday was everything you wanted, and the food brought smiles to your guests! We loved being part of it.
+>
+> If you can spare 2 minutes, a Google review really helps other families find us when they're planning their own celebrations. Here's the link → [your Google review link]
+>
+> Sending love, KOK Kitchens 🧡
+
+**Sticker on every delivery bag** (we can design and print these — ask Ophir):
+> Loved your meal? Tell Google!
+> [QR code → Google review link]
+> Your review helps us cook for more families ❤️
+
+### Step 5 — Respond to every review (yes, every one)
+
+**Positive reviews** — respond within 48 hours with a personal thank-you. Mention something specific from their review (the dish they loved, the event) so it doesn't look generic. *"Sarah, so glad the jollof was a hit at Tunde's christening — thanks for choosing us 🧡"*. Future customers read your replies too.
+
+**Negative reviews (1–3 stars)** — respond within 24 hours, professionally, and **take the conversation offline**:
+> *"Hi [Name], we're really sorry the order didn't meet your expectations. We'd love to make this right — please WhatsApp us on +44 7447 982712 and we'll personally sort it out. — KOK Kitchens"*
+>
+> A measured public response to a bad review is **more reassuring to future customers than no bad reviews at all**. It shows you care and you're real.
+
+**Never argue publicly.** Never blame the customer. Never delete your replies. If the review is fake/abusive, **flag it through Google** — don't engage.
+
+### What NOT to do — UK law on reviews (this matters)
+
+The **Digital Markets, Competition and Consumers Act 2024** made several practices illegal with serious fines. Avoid every one of these:
+
+- ❌ **Don't pay anyone to write a review** (including discounts/free food specifically *for a positive review*). Asking for an honest review is fine; tying a reward to a *positive* review is not.
+- ❌ **Don't write your own reviews** or ask family/staff to. Google can detect this and penalise the entire listing.
+- ❌ **Don't hide bad reviews** by only asking happy customers — the CMA banned this in 2024.
+- ❌ **Don't post fake reviews of competitors**. Same act, same penalties.
+
+**What's allowed:** asking *every* customer for an *honest* review — by WhatsApp, email, sticker, or in person. That's it. The good news is — for a kitchen producing the food you do, honest reviews are the ones you want.
+
+### Realistic targets (the first 6 months)
+
+| Month | Realistic target | How |
+|---|---|---|
+| **Month 1** | First 5 reviews | Ask every single delivery customer personally on WhatsApp. Ask every catering host 2 days after their event. |
+| **Month 3** | 25 reviews | Sticker in every bag. Personal ask at every catering quote handover. |
+| **Month 6** | 50 reviews | The flywheel starts — Google now ranks you in the local pack, new customers flow in, and they review unprompted. |
+
+**Once you hit ~10 real reviews**, send them to Ophir — we'll wire them into the homepage testimonial section (currently hidden because we won't ship placeholder/fake quotes). Real reviews on the homepage are conversion gold.
+
+---
+
 ## Technical Details (For Reference)
 
 ### Technology Stack
