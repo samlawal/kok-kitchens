@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import UpsellToast from "@/components/UpsellToast";
 import RestaurantSchema from "@/components/RestaurantSchema";
 
 const geistSans = Geist({
@@ -83,6 +84,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <CartDrawer />
+            <UpsellToast />
             <WhatsAppButton />
           </CartProvider>
         </MotionConfig>

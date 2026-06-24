@@ -3,6 +3,14 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { CartItem, MenuItem } from "./types";
 
+// `lastAdd` carries a fresh id on every addItem call so an effect watching it
+// re-fires even when the same item is added twice in a row. Used by the
+// UpsellToast so re-adding jollof doesn't silently skip the upsell.
+export interface LastAddEvent {
+  item: MenuItem;
+  id: number;
+}
+
 interface CartContextValue {
   items: CartItem[];
   addItem: (menuItem: MenuItem, quantity?: number) => void;
@@ -13,6 +21,7 @@ interface CartContextValue {
   totalPrice: number;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+  lastAdd: LastAddEvent | null;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -20,6 +29,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [lastAdd, setLastAdd] = useState<LastAddEvent | null>(null);
 
   const addItem = useCallback((menuItem: MenuItem, quantity = 1) => {
     setItems((prev) => {
@@ -33,6 +43,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { menuItem, quantity }];
     });
+    setLastAdd((prev) => ({ item: menuItem, id: (prev?.id ?? 0) + 1 }));
   }, []);
 
   const removeItem = useCallback((itemId: string) => {
@@ -70,6 +81,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       totalPrice,
       isCartOpen,
       setIsCartOpen,
+      lastAdd,
     }}>
       {children}
     </CartContext>

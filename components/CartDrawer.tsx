@@ -6,18 +6,29 @@ import Image from "next/image";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
-import { formatPrice } from "@/lib/menu-data";
+import { formatPrice, menuItems } from "@/lib/menu-data";
+import { useMenuOverrides } from "@/lib/use-menu-overrides";
+import { resolveItem } from "@/lib/menu-overrides";
+import { getCartUpsell } from "@/lib/upsell";
 
 export default function CartDrawer() {
   const {
     items,
     isCartOpen,
     setIsCartOpen,
+    addItem,
     removeItem,
     updateQuantity,
     totalPrice,
     totalItems,
   } = useCart();
+  const overrides = useMenuOverrides();
+  const availableCatalogue = menuItems
+    .map((i) => resolveItem(i, overrides))
+    .filter(
+      (i) => i.availability !== "unavailable" && i.availability !== "hidden",
+    );
+  const upsell = getCartUpsell(items, availableCatalogue);
 
   useEffect(() => {
     if (isCartOpen) {
@@ -170,6 +181,50 @@ export default function CartDrawer() {
                     ))}
                   </AnimatePresence>
                 </div>
+
+                {upsell && (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="px-4 pb-3"
+                  >
+                    <div className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-orange-200 bg-orange-50/50 p-3">
+                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-orange-100 to-amber-50">
+                        {upsell.image && (
+                          <Image
+                            src={upsell.image}
+                            alt=""
+                            fill
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-orange-700">
+                          Don&apos;t forget
+                        </p>
+                        <p className="truncate text-sm font-semibold text-stone-900">
+                          {upsell.name}
+                        </p>
+                        <p className="text-xs text-stone-500">
+                          {formatPrice(upsell.price)}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => addItem(upsell)}
+                        className="inline-flex items-center gap-1 rounded-full bg-orange-600 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-700 active:scale-[0.97] transition-colors"
+                        aria-label={`Add ${upsell.name} to your order`}
+                      >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        Add
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
 
                 <motion.div
                   layout
