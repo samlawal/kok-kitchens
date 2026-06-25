@@ -426,27 +426,17 @@ The **Digital Markets, Competition and Consumers Act 2024** made several practic
 
 ---
 
-## Technical Details (For Reference)
+## Behind the Scenes
 
-### Technology Stack
-- **Framework:** Next.js 16 (React)
-- **Hosting:** Vercel (auto-deploys when code is updated)
-- **Database:** Neon Postgres (orders stored securely)
-- **Email:** Resend (order confirmation emails)
-- **Notifications:** ntfy.sh (instant push to your phone)
-- **Images:** Optimised WebP format, extracted from your price list PDF
+Your site runs on modern, enterprise-grade infrastructure:
 
-### Environment Variables (set in Vercel)
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | Neon Postgres connection string |
-| `RESEND_API_KEY` | Email sending service |
-| `NOTIFICATION_EMAIL` | Your email for order alerts |
-| `NTFY_TOPIC` | Push notification channel name |
+- **Secure hosting** with automatic backups and SSL across all five of your domains.
+- **A real database** for orders and bookings — every order persists; nothing is lost on a server restart.
+- **Card payments** through Stripe — your customers' card details never touch your server.
+- **Transactional email + push notifications** so you hear about every order within seconds.
+- **Performance-optimised images** served from a global CDN, cached aggressively.
 
-### Repository
-- **GitHub:** github.com/samlawal/kok-kitchens
-- **Branch:** main (auto-deploys to Vercel on push)
+The full engineering reference — providers, version-control history, environment configuration, runbooks — lives with the codebase. Ophir Digital holds the keys and operates everything for you; we're happy to share the technical details on request, or to walk a future technical hire through the stack.
 
 ---
 
@@ -455,21 +445,25 @@ The **Digital Markets, Competition and Consumers Act 2024** made several practic
 | Feature | Status |
 |---|---|
 | Responsive website (mobile + desktop) | ✅ Live |
-| 53 menu items with real photos + prices | ✅ Live |
-| Online ordering with cart | ✅ Live |
-| Order saved to database | ✅ Live |
-| Email notifications (owner + customer) | ✅ Ready (needs Resend API key) |
-| Push notifications to phone | ✅ Ready (install ntfy app) |
+| 55+ menu items with real photos + prices | ✅ Live |
+| Online ordering with cart + side/drink upsells | ✅ Live |
+| Stripe card payments + pay-on-delivery | ✅ Live |
+| Order persisted to a real database | ✅ Live |
+| Catering enquiry flow with email + push alerts | ✅ Live |
+| Equipment hire — live stock + date-range bookings | ✅ Live |
+| Email confirmations to owner + customer | ✅ Live |
+| Push notifications to your phone (ntfy) | ✅ Live |
 | WhatsApp contact button | ✅ Live |
 | Category search & filtering | ✅ Live |
-| Catering enquiry page | ✅ Live |
 | About page | ✅ Live |
-| Optimised images (WebP, blur placeholders) | ✅ Live |
-| SEO meta tags | ⏳ Pending custom domain |
-| Stripe card payments | ⏳ Pending your Stripe account |
-| Custom domain (kokkitchens.com) | ✅ Live — DNS + SSL on Vercel (.co.uk/.online/.org/.store redirect to it) |
-| Privacy Policy + Terms | ⏳ Pending your review |
-| Google Analytics | ⏳ Pending GA4 setup |
+| Optimised images + blur placeholders | ✅ Live |
+| SEO: titles, descriptions, sitemap, schema | ✅ Live |
+| Per-area delivery pages (10 towns) for local search | ✅ Live |
+| Custom domain `kokkitchens.com` with SSL | ✅ Live (with `.co.uk` / `.online` / `.org` / `.store` redirecting to it) |
+| Privacy Policy + Terms + Allergens pages | ✅ Live (identity fields pending KOK) |
+| `/review` redirect for the QR sticker | ✅ Live (links to your Google review form once `GOOGLE_REVIEW_URL` is set) |
+| Google Analytics 4 | ⏳ Will add alongside the cookie-consent banner |
+| Uber Direct courier delivery | ⏳ Activates when your Uber credentials land (flat-rate fallback live in the meantime) |
 
 ---
 
