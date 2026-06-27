@@ -112,6 +112,7 @@ export async function POST(request: Request) {
           customerName: customer.name,
           customerPhone: customer.phone,
           deliveryType,
+          paymentMethod: "cod",
           items: orderItems,
           total: orderTotal,
         }),

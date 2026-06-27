@@ -69,6 +69,7 @@ export async function POST(request: Request) {
               customerName: emailData.customerName,
               customerPhone: emailData.customerPhone,
               deliveryType: emailData.deliveryType,
+              paymentMethod: "card",
               items,
               total: emailData.total,
             }),
