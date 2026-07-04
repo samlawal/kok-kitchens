@@ -62,7 +62,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
           {hasImage ? (
             <Image
               src={imageSrc}
-              alt={item.name}
+              alt={resolved.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -102,7 +102,7 @@ export default function MealCard({ item }: { item: MenuItem }) {
       <div className="flex flex-1 flex-col p-4">
         <Link href={`/menu/${item.slug}`}>
           <h3 className="font-semibold text-stone-900 group-hover:text-orange-700 transition-colors">
-            {item.name}
+            {resolved.name}
           </h3>
         </Link>
 

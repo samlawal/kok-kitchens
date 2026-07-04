@@ -17,14 +17,20 @@ export interface StatusRow {
   status: string;
 }
 
+export interface NameRow {
+  menu_item_id: string;
+  name: string;
+}
+
 export interface OverridesDeps {
   listPage: (cursor?: string) => Promise<BlobPage>;
   queryPrices: () => Promise<PriceRow[]>;
   queryStatuses: () => Promise<StatusRow[]>;
+  queryNames: () => Promise<NameRow[]>;
 }
 
 /**
- * Gather price/status/image overrides for the customer menu.
+ * Gather name/price/status/image overrides for the customer menu.
  *
  * - pages through all blobs (Vercel Blob list() caps at 1000 per call)
  * - blob and DB lookups are isolated: one failing returns empty for that
@@ -33,6 +39,7 @@ export interface OverridesDeps {
 export async function gatherMenuOverrides(
   deps: OverridesDeps
 ): Promise<MenuOverrides> {
+  const names: Record<string, string> = {};
   const prices: Record<string, number> = {};
   const statuses: Record<string, Availability> = {};
   let images: Record<string, string> = {};
@@ -51,12 +58,16 @@ export async function gatherMenuOverrides(
     console.error("menu-overrides: blob list failed:", error);
   }
 
-  // Price + availability overrides (database).
+  // Name + price + availability overrides (database).
   try {
-    const [priceRows, statusRows] = await Promise.all([
+    const [nameRows, priceRows, statusRows] = await Promise.all([
+      deps.queryNames(),
       deps.queryPrices(),
       deps.queryStatuses(),
     ]);
+    for (const row of nameRows) {
+      names[row.menu_item_id] = row.name;
+    }
     for (const row of priceRows) {
       prices[row.menu_item_id] = Number(row.price);
     }
@@ -67,5 +78,5 @@ export async function gatherMenuOverrides(
     console.error("menu-overrides: db query failed:", error);
   }
 
-  return { prices, statuses, images };
+  return { names, prices, statuses, images };
 }

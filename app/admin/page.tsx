@@ -370,6 +370,11 @@ function PricingTab({ password }: { password: string }) {
   const [prices, setPrices] = useState<Record<string, number>>({});
   const [overrides, setOverrides] = useState<Record<string, number>>({});
   const [changed, setChanged] = useState<Set<string>>(new Set());
+  // Name overrides — the customer-facing name of any item can be renamed
+  // without a code deploy (previously required editing lib/menu-data.ts).
+  const [names, setNames] = useState<Record<string, string>>({});
+  const [nameOverrides, setNameOverrides] = useState<Record<string, string>>({});
+  const [changedNames, setChangedNames] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -377,28 +382,40 @@ function PricingTab({ password }: { password: string }) {
   } | null>(null);
   const [search, setSearch] = useState("");
 
-  // Load current overrides on mount
+  // Load current overrides on mount — fetch prices and names in parallel.
   useEffect(() => {
     const priceMap: Record<string, number> = {};
+    const nameMap: Record<string, string> = {};
     menuItems.forEach((item) => {
       priceMap[item.id] = item.price;
+      nameMap[item.id] = item.name;
     });
     setPrices(priceMap);
+    setNames(nameMap);
 
-    fetch("/api/pricing")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.success && data.overrides) {
-          const ov: Record<string, number> = {};
-          for (const row of data.overrides) {
-            ov[row.menu_item_id] = Number(row.price);
-            priceMap[row.menu_item_id] = Number(row.price);
-          }
-          setOverrides(ov);
-          setPrices({ ...priceMap });
+    Promise.all([
+      fetch("/api/pricing").then((r) => r.json()).catch(() => null),
+      fetch("/api/names").then((r) => r.json()).catch(() => null),
+    ]).then(([priceData, nameData]) => {
+      if (priceData?.success && priceData.overrides) {
+        const ov: Record<string, number> = {};
+        for (const row of priceData.overrides) {
+          ov[row.menu_item_id] = Number(row.price);
+          priceMap[row.menu_item_id] = Number(row.price);
         }
-      })
-      .catch(() => {});
+        setOverrides(ov);
+        setPrices({ ...priceMap });
+      }
+      if (nameData?.success && nameData.overrides) {
+        const ov: Record<string, string> = {};
+        for (const row of nameData.overrides) {
+          ov[row.menu_item_id] = String(row.name);
+          nameMap[row.menu_item_id] = String(row.name);
+        }
+        setNameOverrides(ov);
+        setNames({ ...nameMap });
+      }
+    });
   }, []);
 
   function handlePriceChange(itemId: string, value: string) {
@@ -409,37 +426,67 @@ function PricingTab({ password }: { password: string }) {
     setMessage(null);
   }
 
+  function handleNameChange(itemId: string, value: string) {
+    setNames((prev) => ({ ...prev, [itemId]: value }));
+    setChangedNames((prev) => new Set(prev).add(itemId));
+    setMessage(null);
+  }
+
   async function handleSave() {
-    if (changed.size === 0) return;
+    if (changed.size === 0 && changedNames.size === 0) return;
     setSaving(true);
     setMessage(null);
 
-    const updates = Array.from(changed).map((id) => ({
+    const priceUpdates = Array.from(changed).map((id) => ({
       menuItemId: id,
       price: prices[id],
     }));
+    const nameUpdates = Array.from(changedNames)
+      .map((id) => ({ menuItemId: id, name: names[id]?.trim() ?? "" }))
+      .filter((u) => u.name.length > 0);
 
     try {
-      const res = await fetch("/api/pricing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password, updates }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setMessage({ type: "success", text: data.message });
-        // Update overrides state
-        const newOverrides = { ...overrides };
-        for (const u of updates) {
-          newOverrides[u.menuItemId] = u.price;
-        }
-        setOverrides(newOverrides);
+      const calls: Promise<Response>[] = [];
+      if (priceUpdates.length > 0) {
+        calls.push(
+          fetch("/api/pricing", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password, updates: priceUpdates }),
+          }),
+        );
+      }
+      if (nameUpdates.length > 0) {
+        calls.push(
+          fetch("/api/names", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password, updates: nameUpdates }),
+          }),
+        );
+      }
+      const responses = await Promise.all(calls);
+      const results = await Promise.all(responses.map((r) => r.json()));
+      const allOk = results.every((d) => d.success);
+      if (allOk) {
+        setMessage({
+          type: "success",
+          text: results.map((d) => d.message).join(" · "),
+        });
+        const newPriceOverrides = { ...overrides };
+        for (const u of priceUpdates) newPriceOverrides[u.menuItemId] = u.price;
+        setOverrides(newPriceOverrides);
+        const newNameOverrides = { ...nameOverrides };
+        for (const u of nameUpdates) newNameOverrides[u.menuItemId] = u.name;
+        setNameOverrides(newNameOverrides);
         setChanged(new Set());
+        setChangedNames(new Set());
       } else {
-        setMessage({ type: "error", text: data.message });
+        const failing = results.find((d) => !d.success);
+        setMessage({ type: "error", text: failing?.message || "Save failed" });
       }
     } catch {
-      setMessage({ type: "error", text: "Failed to save prices" });
+      setMessage({ type: "error", text: "Failed to save changes" });
     } finally {
       setSaving(false);
     }
@@ -474,12 +521,44 @@ function PricingTab({ password }: { password: string }) {
     }
   }
 
-  const filtered = menuItems.filter(
-    (item) =>
-      !search ||
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase())
-  );
+  async function handleNameReset(itemId: string) {
+    try {
+      const res = await fetch("/api/names", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, menuItemId: itemId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const original = menuItems.find((m) => m.id === itemId)?.name || "";
+        setNames((prev) => ({ ...prev, [itemId]: original }));
+        setNameOverrides((prev) => {
+          const next = { ...prev };
+          delete next[itemId];
+          return next;
+        });
+        setChangedNames((prev) => {
+          const next = new Set(prev);
+          next.delete(itemId);
+          return next;
+        });
+        setMessage({ type: "success", text: `Reset ${itemId} name to default` });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to reset name" });
+    }
+  }
+
+  const filtered = menuItems.filter((item) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    const currentName = names[item.id] ?? item.name;
+    return (
+      item.name.toLowerCase().includes(q) ||
+      currentName.toLowerCase().includes(q) ||
+      item.category.toLowerCase().includes(q)
+    );
+  });
 
   // Group by category
   const categories = Array.from(new Set(filtered.map((i) => i.category)));
@@ -488,11 +567,11 @@ function PricingTab({ password }: { password: string }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <p className="text-stone-400 text-sm">
-          Edit prices live — changes apply immediately
+          Rename dishes and edit prices live — changes apply immediately
         </p>
         <button
           onClick={handleSave}
-          disabled={changed.size === 0 || saving}
+          disabled={(changed.size === 0 && changedNames.size === 0) || saving}
           className="flex items-center gap-2 rounded-lg bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {saving ? (
@@ -500,7 +579,9 @@ function PricingTab({ password }: { password: string }) {
           ) : (
             <Save className="h-4 w-4" />
           )}
-          {saving ? "Saving..." : `Save ${changed.size > 0 ? `(${changed.size})` : ""}`}
+          {saving
+            ? "Saving..."
+            : `Save ${changed.size + changedNames.size > 0 ? `(${changed.size + changedNames.size})` : ""}`}
         </button>
       </div>
 
@@ -526,12 +607,16 @@ function PricingTab({ password }: { password: string }) {
                 const isOverridden = item.id in overrides;
                 const isChanged = changed.has(item.id);
                 const currentPrice = prices[item.id] ?? item.price;
+                const isNameOverridden = item.id in nameOverrides;
+                const isNameChanged = changedNames.has(item.id);
+                const currentName = names[item.id] ?? item.name;
+                const rowHighlight = isChanged || isNameChanged;
 
                 return (
                   <div
                     key={item.id}
                     className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-colors ${
-                      isChanged
+                      rowHighlight
                         ? "bg-orange-900/20 border border-orange-800/50"
                         : "bg-stone-900 border border-stone-800"
                     }`}
@@ -547,18 +632,42 @@ function PricingTab({ password }: { password: string }) {
                       />
                     </div>
 
-                    {/* Name */}
+                    {/* Name (editable) */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
-                        {item.name}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={currentName}
+                          onChange={(e) => handleNameChange(item.id, e.target.value)}
+                          aria-label={`Name for ${item.name}`}
+                          className={`w-full rounded-lg border px-3 py-1.5 text-sm text-white focus:outline-none transition-colors ${
+                            isNameChanged
+                              ? "border-orange-500 bg-orange-950/50"
+                              : "border-stone-700 bg-stone-800 focus:border-orange-500"
+                          }`}
+                        />
+                        {isNameOverridden && (
+                          <button
+                            onClick={() => handleNameReset(item.id)}
+                            className="p-1.5 rounded-lg text-stone-500 hover:text-orange-400 hover:bg-stone-800 transition-colors shrink-0"
+                            title="Reset to default name"
+                          >
+                            <Undo2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
                       {isOverridden && !isChanged && (
-                        <p className="text-xs text-orange-400">
+                        <p className="mt-1 text-xs text-orange-400">
                           Custom price (default: {formatPrice(menuItems.find((m) => m.id === item.id)?.price || 0)})
                         </p>
                       )}
+                      {isNameOverridden && !isNameChanged && (
+                        <p className="mt-1 text-xs text-orange-400">
+                          Custom name (default: {menuItems.find((m) => m.id === item.id)?.name})
+                        </p>
+                      )}
                       {item.servings && (
-                        <p className="text-xs text-stone-500">{item.servings}</p>
+                        <p className="mt-1 text-xs text-stone-500">{item.servings}</p>
                       )}
                     </div>
 
@@ -604,13 +713,13 @@ function PricingTab({ password }: { password: string }) {
       )}
 
       <div className="mt-8 rounded-xl border border-stone-800 bg-stone-900/50 p-6 text-sm text-stone-400">
-        <p className="font-medium text-stone-300 mb-2">How pricing works:</p>
+        <p className="font-medium text-stone-300 mb-2">How this tab works:</p>
         <ul className="space-y-1.5 list-disc list-inside">
-          <li>Edit any price and click <strong className="text-stone-300">Save</strong> — changes are live immediately</li>
-          <li>Changed prices are highlighted in orange until saved</li>
-          <li>Custom prices show a <strong className="text-stone-300">reset</strong> button to revert to the default</li>
-          <li>Prices are stored in the database — no code changes needed</li>
-          <li>The menu page automatically shows updated prices</li>
+          <li>Edit any <strong className="text-stone-300">name</strong> or <strong className="text-stone-300">price</strong> and click <strong className="text-stone-300">Save</strong> — changes are live immediately</li>
+          <li>Changed rows are highlighted in orange until saved</li>
+          <li>Custom names or prices show a <strong className="text-stone-300">reset</strong> button to revert to the default</li>
+          <li>Both are stored in the database — no code changes needed</li>
+          <li>The menu page automatically shows the updated names and prices</li>
         </ul>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { list } from "@vercel/blob";
 import { getDb } from "@/lib/db";
 import {
   gatherMenuOverrides,
+  type NameRow,
   type PriceRow,
   type StatusRow,
 } from "@/lib/menu-overrides-server";
@@ -28,6 +29,12 @@ export async function GET() {
       return (await sql`
         SELECT menu_item_id, status FROM item_availability
       `) as StatusRow[];
+    },
+    queryNames: async () => {
+      const sql = getDb();
+      return (await sql`
+        SELECT menu_item_id, name FROM item_name_overrides
+      `) as NameRow[];
     },
   });
 

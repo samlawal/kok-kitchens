@@ -32,13 +32,18 @@ export default function MenuPage() {
       visibleItems.filter((item) => {
         const matchesCategory =
           category === "all" || item.category === category;
+        if (!search) return matchesCategory;
+        const q = search.toLowerCase();
+        // Match against the current (possibly renamed) name too so a customer
+        // searching for the new name finds the dish.
+        const currentName = overrides.names[item.id] ?? item.name;
         const matchesSearch =
-          !search ||
-          item.name.toLowerCase().includes(search.toLowerCase()) ||
-          item.description.toLowerCase().includes(search.toLowerCase());
+          item.name.toLowerCase().includes(q) ||
+          currentName.toLowerCase().includes(q) ||
+          item.description.toLowerCase().includes(q);
         return matchesCategory && matchesSearch;
       }),
-    [category, search, visibleItems]
+    [category, search, visibleItems, overrides.names]
   );
 
   return (

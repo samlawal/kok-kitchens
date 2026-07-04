@@ -65,7 +65,7 @@ export default function MealDetailClient({
             {hasImage ? (
               <Image
                 src={imageSrc}
-                alt={item.name}
+                alt={resolved.name}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
@@ -101,7 +101,7 @@ export default function MealDetailClient({
               transition={{ delay: 0.15 }}
             >
               <h1 className="text-3xl sm:text-4xl font-bold text-stone-900">
-                {item.name}
+                {resolved.name}
               </h1>
             </motion.div>
 

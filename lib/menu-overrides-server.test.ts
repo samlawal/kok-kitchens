@@ -14,6 +14,7 @@ function deps(over: Partial<OverridesDeps> = {}): OverridesDeps {
     listPage: async () => ({ blobs: [], hasMore: false }),
     queryPrices: async () => [],
     queryStatuses: async () => [],
+    queryNames: async () => [],
     ...over,
   };
 }
@@ -35,6 +36,37 @@ describe("gatherMenuOverrides", () => {
     expect(r.prices).toEqual({ "jollof-rice": 15 });
     expect(r.statuses).toEqual({ "egusi-soup": "unavailable" });
     expect(r.images["jollof-rice"]).toContain("meals/jollof-rice.webp");
+  });
+
+  // Regression: renaming an item required a code deploy because the override
+  // system had no name channel. gatherMenuOverrides must include names.
+  it("merges name overrides alongside prices/statuses/images", async () => {
+    const r = await gatherMenuOverrides(
+      deps({
+        queryNames: async () => [
+          { menu_item_id: "tiger-nut", name: "Tiger Nut Drink" },
+        ],
+      })
+    );
+    expect(r.names).toEqual({ "tiger-nut": "Tiger Nut Drink" });
+  });
+
+  it("isolates a DB failure — names also empty, images still return", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const r = await gatherMenuOverrides(
+      deps({
+        listPage: async () => ({
+          blobs: [blob("meals/tiger-nut.webp")],
+          hasMore: false,
+        }),
+        queryNames: async () => {
+          throw new Error("db down");
+        },
+      })
+    );
+    expect(r.names).toEqual({});
+    expect(r.images["tiger-nut"]).toContain("tiger-nut.webp");
+    spy.mockRestore();
   });
 
   it("coerces string prices to numbers", async () => {

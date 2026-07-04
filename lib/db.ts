@@ -39,6 +39,18 @@ export async function initDb() {
     )
   `;
 
+  // Name overrides — admin can rename any menu item without a code deploy.
+  // (Previously, price/availability/photo were editable but names required a
+  // git push — hence the "we thought we fixed this" bug.)
+  await sql`
+    CREATE TABLE IF NOT EXISTS item_name_overrides (
+      menu_item_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      updated_by TEXT DEFAULT 'admin',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   // Item availability — admin can mark items as unavailable or hidden
   await sql`
     CREATE TABLE IF NOT EXISTS item_availability (

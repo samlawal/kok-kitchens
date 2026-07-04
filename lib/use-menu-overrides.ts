@@ -35,10 +35,17 @@ export function createOverridesStore(
       .then((r) => r.json())
       .then((data) => {
         const d = data as
-          | { success?: boolean; prices?: unknown; statuses?: unknown; images?: unknown }
+          | {
+              success?: boolean;
+              names?: unknown;
+              prices?: unknown;
+              statuses?: unknown;
+              images?: unknown;
+            }
           | null;
         if (d?.success) {
           cache = {
+            names: (d.names as MenuOverrides["names"]) || {},
             prices: (d.prices as MenuOverrides["prices"]) || {},
             statuses: (d.statuses as MenuOverrides["statuses"]) || {},
             images: (d.images as MenuOverrides["images"]) || {},
