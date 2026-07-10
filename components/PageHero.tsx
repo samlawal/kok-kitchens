@@ -20,7 +20,7 @@ export default function PageHero({
         alt=""
         fill
         priority
-        unoptimized
+        sizes="100vw"
         className="object-cover object-center brightness-110 saturate-[1.08]"
       />
       {/* Very light brand-orange wash over the photo to tie the banners to the

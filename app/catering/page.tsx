@@ -143,7 +143,6 @@ export default function CateringPage() {
           src="/banners/catering-colour.webp"
           alt=""
           fill
-          unoptimized
           sizes="100vw"
           className="object-cover object-center"
         />
