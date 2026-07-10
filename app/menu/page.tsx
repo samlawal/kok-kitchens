@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { menuItems } from "@/lib/menu-data";
+import { sortMenuForDisplay } from "@/lib/menu-sort";
 import type { Category } from "@/lib/types";
 import CategoryFilter from "@/components/CategoryFilter";
 import MealCard from "@/components/MealCard";
@@ -29,20 +30,24 @@ export default function MenuPage() {
 
   const filtered = useMemo(
     () =>
-      visibleItems.filter((item) => {
-        const matchesCategory =
-          category === "all" || item.category === category;
-        if (!search) return matchesCategory;
-        const q = search.toLowerCase();
-        // Match against the current (possibly renamed) name too so a customer
-        // searching for the new name finds the dish.
-        const currentName = overrides.names[item.id] ?? item.name;
-        const matchesSearch =
-          item.name.toLowerCase().includes(q) ||
-          currentName.toLowerCase().includes(q) ||
-          item.description.toLowerCase().includes(q);
-        return matchesCategory && matchesSearch;
-      }),
+      // Alphabetical A–Z within each category (customer request, KOK 2026-07-09).
+      sortMenuForDisplay(
+        visibleItems.filter((item) => {
+          const matchesCategory =
+            category === "all" || item.category === category;
+          if (!search) return matchesCategory;
+          const q = search.toLowerCase();
+          // Match against the current (possibly renamed) name too so a customer
+          // searching for the new name finds the dish.
+          const currentName = overrides.names[item.id] ?? item.name;
+          const matchesSearch =
+            item.name.toLowerCase().includes(q) ||
+            currentName.toLowerCase().includes(q) ||
+            item.description.toLowerCase().includes(q);
+          return matchesCategory && matchesSearch;
+        }),
+        overrides.names
+      ),
     [category, search, visibleItems, overrides.names]
   );
 
