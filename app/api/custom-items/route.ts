@@ -93,7 +93,7 @@ export async function POST(request: Request) {
   const sql = getDb();
   const staticSlugs = new Set(menuItems.map((i) => i.slug));
   const existingCustom = await sql`SELECT slug FROM custom_menu_items`;
-  const customSlugs = new Set(existingCustom.map((r: { slug: string }) => r.slug));
+  const customSlugs = new Set(existingCustom.map((r) => r.slug as string));
 
   let slug = baseSlug;
   let n = 2;
