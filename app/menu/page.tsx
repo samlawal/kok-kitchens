@@ -46,7 +46,8 @@ export default function MenuPage() {
             item.description.toLowerCase().includes(q);
           return matchesCategory && matchesSearch;
         }),
-        overrides.names
+        overrides.names,
+        category === "all"
       ),
     [category, search, visibleItems, overrides.names]
   );

@@ -55,4 +55,23 @@ describe("sortMenuForDisplay", () => {
     sortMenuForDisplay(input);
     expect(input).toEqual(copy);
   });
+
+  it("flat mode sorts all items A–Z regardless of category", () => {
+    const items = [
+      make("z", "Zobo", "drinks"),
+      make("a", "Amala", "soups-swallows"),
+      make("m", "Moi Moi", "sides"),
+    ];
+    const sorted = sortMenuForDisplay(items, {}, true);
+    expect(sorted.map((i) => i.name)).toEqual(["Amala", "Moi Moi", "Zobo"]);
+  });
+
+  it("flat mode still respects admin renames", () => {
+    const items = [
+      make("a", "Apple", "rice-dishes"),
+      make("b", "Banana", "sides"),
+    ];
+    const sorted = sortMenuForDisplay(items, { a: "Zucchini" }, true);
+    expect(sorted.map((i) => i.name)).toEqual(["Banana", "Apple"]);
+  });
 });
