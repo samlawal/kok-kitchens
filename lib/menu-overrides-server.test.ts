@@ -15,6 +15,7 @@ function deps(over: Partial<OverridesDeps> = {}): OverridesDeps {
     queryPrices: async () => [],
     queryStatuses: async () => [],
     queryNames: async () => [],
+    queryCustomItems: async () => [],
     ...over,
   };
 }
@@ -106,6 +107,48 @@ describe("gatherMenuOverrides", () => {
     );
     expect(r.images).toEqual({});
     expect(r.prices).toEqual({ x: 9 });
+    spy.mockRestore();
+  });
+
+  it("maps custom item rows to MenuItem objects", async () => {
+    const r = await gatherMenuOverrides(
+      deps({
+        queryCustomItems: async () => [
+          {
+            id: "custom-chin-chin",
+            slug: "chin-chin",
+            name: "Chin Chin",
+            description: "Crunchy snack",
+            price: "8.00",
+            category: "snacks",
+            image: "https://blob/meals/chin-chin.webp",
+            spicy: false,
+            servings: "Small bag",
+          },
+        ],
+      })
+    );
+    expect(r.customItems).toHaveLength(1);
+    const item = r.customItems[0];
+    expect(item.id).toBe("custom-chin-chin");
+    expect(item.slug).toBe("chin-chin");
+    expect(item.name).toBe("Chin Chin");
+    expect(item.price).toBe(8);
+    expect(item.category).toBe("snacks");
+    expect(item.tags).toEqual([]);
+    expect(item.servings).toBe("Small bag");
+  });
+
+  it("returns empty customItems when DB fails", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const r = await gatherMenuOverrides(
+      deps({
+        queryCustomItems: async () => {
+          throw new Error("db down");
+        },
+      })
+    );
+    expect(r.customItems).toEqual([]);
     spy.mockRestore();
   });
 

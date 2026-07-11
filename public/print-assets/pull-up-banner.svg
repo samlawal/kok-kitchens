@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 2000" width="850" height="2000">
+  <title>KOK Kitchens Pull-up Banner</title>
+  <desc>Full-height pull-up banner (850×2000mm standard) — dark background, orange accents, wordmark, menu highlights, contact info</desc>
+
+  <!-- Dark background -->
+  <rect width="850" height="2000" fill="#1C1917"/>
+
+  <!-- Top accent bar -->
+  <rect width="850" height="8" fill="#F97316"/>
+
+  <!-- Eyebrow -->
+  <text x="425" y="120" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#F97316" letter-spacing="10" opacity="0.8">NORTH LONDON &amp; HERTFORDSHIRE</text>
+
+  <!-- Main wordmark -->
+  <text x="425" y="300" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="900" font-size="220" fill="#FFFFFF" letter-spacing="14">KOK</text>
+  <text x="425" y="430" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="110" fill="#F97316" letter-spacing="10">KITCHENS</text>
+
+  <!-- Tagline -->
+  <line x1="200" y1="490" x2="650" y2="490" stroke="#F97316" stroke-width="2" opacity="0.4"/>
+  <text x="425" y="550" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" letter-spacing="5" opacity="0.9">AUTHENTIC NIGERIAN CUISINE</text>
+  <line x1="200" y1="580" x2="650" y2="580" stroke="#F97316" stroke-width="2" opacity="0.4"/>
+
+  <!-- Menu highlights section -->
+  <text x="425" y="700" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="26" fill="#F97316" letter-spacing="6">OUR SPECIALITIES</text>
+
+  <!-- Dish items in two columns -->
+  <text x="200" y="780" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Party Jollof Rice</text>
+  <text x="650" y="780" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Peppered Chicken</text>
+
+  <text x="200" y="840" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Egusi Soup</text>
+  <text x="650" y="840" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Asun</text>
+
+  <text x="200" y="900" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Suya</text>
+  <text x="650" y="900" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Small Chops</text>
+
+  <text x="200" y="960" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Pepper Soup</text>
+  <text x="650" y="960" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FAFAF9" opacity="0.8">Fried Rice</text>
+
+  <text x="425" y="1030" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="24" fill="#F97316" opacity="0.7">+ 50 more dishes</text>
+
+  <!-- Services section -->
+  <line x1="150" y1="1100" x2="700" y2="1100" stroke="#44403C" stroke-width="1"/>
+
+  <!-- Three service pillars -->
+  <rect x="80" y="1140" width="200" height="200" rx="12" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="180" y="1220" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="24" fill="#F97316">DELIVERY</text>
+  <text x="180" y="1260" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">Fresh to</text>
+  <text x="180" y="1285" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">your door</text>
+
+  <rect x="325" y="1140" width="200" height="200" rx="12" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="425" y="1220" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="24" fill="#F97316">CATERING</text>
+  <text x="425" y="1260" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">Weddings</text>
+  <text x="425" y="1285" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">&amp; events</text>
+
+  <rect x="570" y="1140" width="200" height="200" rx="12" fill="#292524" stroke="#44403C" stroke-width="1"/>
+  <text x="670" y="1220" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="24" fill="#F97316">HIRE</text>
+  <text x="670" y="1260" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">Equipment</text>
+  <text x="670" y="1285" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#A8A29E">for events</text>
+
+  <!-- QR placeholder box -->
+  <rect x="275" y="1420" width="300" height="300" rx="16" fill="#FAFAF9"/>
+  <text x="425" y="1590" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="28" fill="#1C1917">QR CODE</text>
+  <text x="425" y="1625" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="18" fill="#78716C">Place order QR here</text>
+
+  <text x="425" y="1770" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="28" fill="#F97316" letter-spacing="3">SCAN TO ORDER</text>
+
+  <!-- Website URL -->
+  <text x="425" y="1850" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="48" fill="#FFFFFF" letter-spacing="2">KOKKITCHENS.COM</text>
+
+  <!-- Contact -->
+  <text x="425" y="1910" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="24" fill="#A8A29E" letter-spacing="2">07447 982712</text>
+  <text x="425" y="1945" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="20" fill="#A8A29E" letter-spacing="2">orders@kokkitchens.com</text>
+
+  <!-- Bottom accent bar -->
+  <rect y="1992" width="850" height="8" fill="#F97316"/>
+</svg>

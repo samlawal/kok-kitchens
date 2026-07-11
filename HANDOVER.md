@@ -426,6 +426,60 @@ The **Digital Markets, Competition and Consumers Act 2024** made several practic
 
 ---
 
+## Print & Social Media Assets — What to Print and Where to Use
+
+Everything listed below was created as part of your launch package. Files are in your `assets/launch/` folder. If you can't find a file, contact Ophir and we'll re-send it.
+
+### Quick Reference
+
+| Asset | File | What It's For | How to Print / Use |
+|---|---|---|---|
+| **Order QR Sticker** | `order-qr-sticker.png` | Customers scan → goes straight to your menu at kokkitchens.com/menu | Print as **5cm round stickers** (Solopress, ~£25 for 500). Stick on takeaway bags, flyers, business cards, market stall signage. |
+| **Review QR Sticker** | `review-qr-card.png` | Customers scan → goes to kokkitchens.com/review → your Google review form | Print as **5cm round stickers** (same order as above). Drop one in **every delivery bag**. The QR points at a URL we control, so even if Google changes their link format, we update one setting and all printed stickers keep working — **never reprint**. |
+| **Social Card (Square)** | `kok-launch-square.png` | 1080×1080 branded graphic — "Authentic Nigerian Cuisine, Delivered" | Post to **Instagram feed**, **Facebook**, **WhatsApp status**. Use as your profile/cover image if needed. |
+| **Social Card (Story)** | `kok-launch-story.png` | 1080×1920 story-format graphic — same branding, vertical layout | Post to **Instagram Stories**, **WhatsApp Status**, **TikTok** cover. |
+| **Promo Video** | `kok-promo.mp4` | Animated 15-second brand promo with Afrobeats audio | Post to **Instagram Reels**, **TikTok**, **Facebook**. Pin to top of your Instagram grid. |
+
+### Printing Tips
+
+- **QR stickers:** Order from [Solopress](https://www.solopress.com) or [Sticker Mule](https://www.stickermule.com/uk). Round 5cm, gloss or matte finish. 500 costs ~£25. You'll go through them fast — order 1000 if budget allows.
+- **Both QR codes work right now** — the order QR goes to your live menu, the review QR goes to `/review` (which redirects to your Google review form once `GOOGLE_REVIEW_URL` is set in Vercel).
+- **Flyers / table cards:** If you want A5 or A6 printed cards for catering events or market stalls, ask Ophir — we'll design them using the same brand assets.
+- **Business cards:** We can add the order QR to one side and your contact details to the other. Let us know.
+
+### Social Media Posting Guide
+
+| Platform | What to Post | When |
+|---|---|---|
+| **Instagram Feed** | Square card (`kok-launch-square.png`) | Launch day, pin to top |
+| **Instagram Reels** | Promo video (`kok-promo.mp4`) | Launch day + every 2 weeks |
+| **Instagram Stories** | Story card (`kok-launch-story.png`) | Weekly — add "Order now" link sticker pointing to kokkitchens.com |
+| **WhatsApp Status** | Story card or promo video | 2–3× per week (status expires after 24h) |
+| **Facebook** | Square card + promo video | Launch day, then weekly food photos |
+| **TikTok** | Promo video + kitchen cooking clips | Weekly |
+
+### T-shirts, Banners & Aprons
+
+These are print-ready SVG files in your `public/print-assets/` folder. SVGs scale to any size without losing quality — send them directly to the printer.
+
+| Asset | File | What It's For | Printing Notes |
+|---|---|---|---|
+| **T-shirt Front** | `tshirt-front.svg` | Logo on front of staff t-shirts — "KOK Kitchens" wordmark + tagline | Send to screen printer or DTG (direct-to-garment). Works best on **black or dark** t-shirts (white + orange print). Chest placement. |
+| **T-shirt Back** | `tshirt-back.svg` | Full back print — wordmark, dish list, website URL, phone number | Full back placement. Same dark fabric. The dish list is a conversation starter at events. |
+| **Pull-up Banner** | `pull-up-banner.svg` | Standard 850×2000mm pull-up/roller banner for market stalls, catering events, pop-ups | Order from [Instantprint](https://www.instantprint.co.uk) or Vistaprint (~£35–50). Has a white QR placeholder — **ask Ophir to drop in the order QR before sending to printer**. |
+| **Table Banner** | `table-banner.svg` | Wide 4:1 ratio banner for table fronts at market stalls and catering events | Print as vinyl banner or tablecloth wrap. Has a QR placeholder — same as above. |
+| **Apron Logo** | `apron-logo.svg` | Chest logo for staff aprons — compact version of the wordmark | Send to an embroidery or print service. Works on black aprons. |
+
+**Ordering t-shirts:** [Printful](https://www.printful.com/uk) or local screen printers. For 10+ shirts, screen printing is cheaper (~£8–12/shirt). For 1–5, DTG is easier (~£15–20/shirt). Always order a test print first.
+
+**Important:** The QR placeholder boxes on the banner and table banner need the actual order QR code dropped in before printing. Send the files to Ophir and we'll insert the QR and return print-ready versions.
+
+### Need More Assets?
+
+Contact Ophir Digital — we can create additional materials (A-frame signage, branded packaging labels, event menus, business cards) using the same brand kit. All included in your ongoing support package.
+
+---
+
 ## Behind the Scenes
 
 Your site runs on modern, enterprise-grade infrastructure:

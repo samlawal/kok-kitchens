@@ -10,6 +10,7 @@ export interface MenuOverrides {
   prices: Record<string, number>;
   statuses: Record<string, Availability>;
   images: Record<string, string>;
+  customItems: MenuItem[];
 }
 
 export const EMPTY_OVERRIDES: MenuOverrides = {
@@ -17,6 +18,7 @@ export const EMPTY_OVERRIDES: MenuOverrides = {
   prices: {},
   statuses: {},
   images: {},
+  customItems: [],
 };
 
 /**

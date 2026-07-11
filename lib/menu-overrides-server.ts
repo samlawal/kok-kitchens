@@ -1,5 +1,6 @@
 import { buildImageMap, type BlobLike } from "./blob-images";
 import type { Availability, MenuOverrides } from "./menu-overrides";
+import type { MenuItem } from "./types";
 
 export interface BlobPage {
   blobs: BlobLike[];
@@ -22,11 +23,24 @@ export interface NameRow {
   name: string;
 }
 
+export interface CustomItemRow {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  price: number | string;
+  category: string;
+  image: string;
+  spicy: boolean;
+  servings: string | null;
+}
+
 export interface OverridesDeps {
   listPage: (cursor?: string) => Promise<BlobPage>;
   queryPrices: () => Promise<PriceRow[]>;
   queryStatuses: () => Promise<StatusRow[]>;
   queryNames: () => Promise<NameRow[]>;
+  queryCustomItems: () => Promise<CustomItemRow[]>;
 }
 
 /**
@@ -43,6 +57,7 @@ export async function gatherMenuOverrides(
   const prices: Record<string, number> = {};
   const statuses: Record<string, Availability> = {};
   let images: Record<string, string> = {};
+  let customItems: MenuItem[] = [];
 
   // Uploaded photos (Vercel Blob) — independent of the database.
   try {
@@ -58,12 +73,13 @@ export async function gatherMenuOverrides(
     console.error("menu-overrides: blob list failed:", error);
   }
 
-  // Name + price + availability overrides (database).
+  // Name + price + availability overrides + custom items (database).
   try {
-    const [nameRows, priceRows, statusRows] = await Promise.all([
+    const [nameRows, priceRows, statusRows, customRows] = await Promise.all([
       deps.queryNames(),
       deps.queryPrices(),
       deps.queryStatuses(),
+      deps.queryCustomItems(),
     ]);
     for (const row of nameRows) {
       names[row.menu_item_id] = row.name;
@@ -74,9 +90,21 @@ export async function gatherMenuOverrides(
     for (const row of statusRows) {
       statuses[row.menu_item_id] = row.status as Availability;
     }
+    customItems = customRows.map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      description: row.description,
+      price: Number(row.price),
+      category: row.category as MenuItem["category"],
+      image: row.image,
+      spicy: row.spicy,
+      servings: row.servings || undefined,
+      tags: [],
+    }));
   } catch (error) {
     console.error("menu-overrides: db query failed:", error);
   }
 
-  return { names, prices, statuses, images };
+  return { names, prices, statuses, images, customItems };
 }

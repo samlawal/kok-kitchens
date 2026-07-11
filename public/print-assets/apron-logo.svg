@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <title>KOK Kitchens Apron Logo</title>
+  <desc>Compact logo for apron chest area — white wordmark with orange accent, transparent background</desc>
+  <text x="400" y="200" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="160" fill="#FFFFFF" letter-spacing="10">KOK</text>
+  <text x="400" y="320" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="86" fill="#F97316" letter-spacing="8">KITCHENS</text>
+  <line x1="200" y1="355" x2="600" y2="355" stroke="#F97316" stroke-width="3" opacity="0.5"/>
+  <text x="400" y="400" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="24" fill="#FFFFFF" letter-spacing="6" opacity="0.8">AUTHENTIC NIGERIAN CUISINE</text>
+</svg>

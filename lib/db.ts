@@ -132,5 +132,23 @@ export async function initDb() {
   `;
   await sql`CREATE INDEX IF NOT EXISTS catering_enquiries_created_idx ON catering_enquiries (created_at)`;
 
+  // Admin-created menu items — dishes added through the admin panel that don't
+  // exist in the static catalogue (lib/menu-data.ts). Stored with full item
+  // data so they render identically to code-defined items.
+  await sql`
+    CREATE TABLE IF NOT EXISTS custom_menu_items (
+      id TEXT PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      price NUMERIC(10,2) NOT NULL,
+      category TEXT NOT NULL,
+      image TEXT NOT NULL DEFAULT '',
+      spicy BOOLEAN NOT NULL DEFAULT FALSE,
+      servings TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
   return true;
 }

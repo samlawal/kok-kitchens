@@ -1,12 +1,37 @@
 import { notFound } from "next/navigation";
-import { getMenuItemBySlug, menuItems, formatPrice } from "@/lib/menu-data";
-import AddToCartButton from "./AddToCartButton";
+import { getMenuItemBySlug, menuItems } from "@/lib/menu-data";
 import MealDetailClient from "./MealDetailClient";
-import { Flame, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { getDb } from "@/lib/db";
+import type { MenuItem } from "@/lib/types";
 
 export function generateStaticParams() {
   return menuItems.map((item) => ({ slug: item.slug }));
+}
+
+async function getCustomItemBySlug(slug: string): Promise<MenuItem | null> {
+  try {
+    const sql = getDb();
+    const rows = await sql`
+      SELECT id, slug, name, description, price, category, image, spicy, servings
+      FROM custom_menu_items WHERE slug = ${slug} LIMIT 1
+    `;
+    if (rows.length === 0) return null;
+    const r = rows[0];
+    return {
+      id: r.id as string,
+      slug: r.slug as string,
+      name: r.name as string,
+      description: r.description as string,
+      price: Number(r.price),
+      category: r.category as MenuItem["category"],
+      image: (r.image as string) || "",
+      spicy: r.spicy as boolean,
+      servings: (r.servings as string) || undefined,
+      tags: [],
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({
@@ -15,7 +40,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const item = getMenuItemBySlug(slug);
+  const item = getMenuItemBySlug(slug) || (await getCustomItemBySlug(slug));
   if (!item) return {};
   return {
     title: item.name,
@@ -29,10 +54,9 @@ export default async function MealDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const item = getMenuItemBySlug(slug);
+  const item = getMenuItemBySlug(slug) || (await getCustomItemBySlug(slug));
   if (!item) notFound();
 
-  // Get related items from same category (exclude current)
   const related = menuItems
     .filter((m) => m.category === item.category && m.id !== item.id)
     .slice(0, 3);

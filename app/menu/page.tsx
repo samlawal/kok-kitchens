@@ -18,14 +18,13 @@ export default function MenuPage() {
   const [search, setSearch] = useState("");
   const overrides = useMenuOverrides();
 
-  // Hide items the admin marked "hidden". Price/status/image overrides are
-  // applied per-card by MealCard, so static items can be passed straight through.
+  const customItems = overrides.customItems ?? [];
   const visibleItems = useMemo(
     () =>
-      menuItems.filter(
+      [...menuItems, ...customItems].filter(
         (item) => (overrides.statuses[item.id] || "available") !== "hidden"
       ),
-    [overrides]
+    [overrides, customItems]
   );
 
   const filtered = useMemo(

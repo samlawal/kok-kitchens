@@ -41,6 +41,7 @@ export function createOverridesStore(
               prices?: unknown;
               statuses?: unknown;
               images?: unknown;
+              customItems?: unknown;
             }
           | null;
         if (d?.success) {
@@ -49,6 +50,7 @@ export function createOverridesStore(
             prices: (d.prices as MenuOverrides["prices"]) || {},
             statuses: (d.statuses as MenuOverrides["statuses"]) || {},
             images: (d.images as MenuOverrides["images"]) || {},
+            customItems: (d.customItems as MenuOverrides["customItems"]) || [],
           };
           subscribers.forEach((cb) => cb(cache!));
           return cache!;

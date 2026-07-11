@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600">
+  <title>KOK Kitchens T-shirt Back Design</title>
+  <desc>Back of t-shirt — wordmark top, tagline, website URL, and order info</desc>
+  <!-- Transparent background -->
+  <text x="600" y="200" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="180" fill="#FFFFFF" letter-spacing="12">KOK</text>
+  <text x="600" y="330" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="100" fill="#F97316" letter-spacing="8">KITCHENS</text>
+
+  <!-- Divider -->
+  <line x1="400" y1="390" x2="800" y2="390" stroke="#F97316" stroke-width="3" opacity="0.5"/>
+
+  <!-- Tagline -->
+  <text x="600" y="470" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="40" fill="#FFFFFF" letter-spacing="4" opacity="0.9">AUTHENTIC NIGERIAN CUISINE</text>
+
+  <!-- Dishes list -->
+  <text x="600" y="600" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">JOLLOF RICE</text>
+  <text x="600" y="655" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">EGUSI SOUP</text>
+  <text x="600" y="710" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">PEPPERED CHICKEN</text>
+  <text x="600" y="765" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">SUYA</text>
+  <text x="600" y="820" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">ASUN</text>
+  <text x="600" y="875" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">SMALL CHOPS</text>
+  <text x="600" y="930" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">FRIED RICE</text>
+  <text x="600" y="985" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="300" font-size="34" fill="#FFFFFF" opacity="0.7" letter-spacing="2">PEPPER SOUP</text>
+
+  <!-- Dots separator -->
+  <text x="600" y="1060" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="28" fill="#F97316" opacity="0.6">. . . AND MORE</text>
+
+  <!-- Divider -->
+  <line x1="350" y1="1120" x2="850" y2="1120" stroke="#F97316" stroke-width="3" opacity="0.5"/>
+
+  <!-- Order info -->
+  <text x="600" y="1200" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="42" fill="#F97316" letter-spacing="3">ORDER ONLINE</text>
+  <text x="600" y="1280" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="52" fill="#FFFFFF" letter-spacing="2">KOKKITCHENS.COM</text>
+
+  <!-- Location -->
+  <text x="600" y="1380" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="30" fill="#FFFFFF" opacity="0.6" letter-spacing="6">NORTH LONDON &amp; HERTFORDSHIRE</text>
+
+  <!-- Phone -->
+  <text x="600" y="1440" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="28" fill="#FFFFFF" opacity="0.5" letter-spacing="3">07447 982712</text>
+</svg>

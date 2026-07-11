@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 600" width="2400" height="600">
+  <title>KOK Kitchens Table Banner</title>
+  <desc>Wide table runner / tablecloth banner for market stalls and catering events — 4:1 ratio</desc>
+
+  <!-- Dark background -->
+  <rect width="2400" height="600" fill="#1C1917"/>
+
+  <!-- Top + bottom orange accents -->
+  <rect width="2400" height="6" fill="#F97316"/>
+  <rect y="594" width="2400" height="6" fill="#F97316"/>
+
+  <!-- Left section: wordmark -->
+  <text x="300" y="270" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="900" font-size="160" fill="#FFFFFF" letter-spacing="10">KOK</text>
+  <text x="300" y="380" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="80" fill="#F97316" letter-spacing="6">KITCHENS</text>
+  <text x="300" y="440" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="24" fill="#FAFAF9" letter-spacing="6" opacity="0.7">AUTHENTIC NIGERIAN CUISINE</text>
+
+  <!-- Vertical divider -->
+  <line x1="620" y1="80" x2="620" y2="520" stroke="#44403C" stroke-width="1"/>
+
+  <!-- Centre section: dish names flowing -->
+  <text x="900" y="170" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Party Jollof</text>
+  <text x="900" y="225" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Egusi Soup</text>
+  <text x="900" y="280" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Peppered Chicken</text>
+  <text x="900" y="335" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Suya</text>
+  <text x="900" y="390" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Asun</text>
+  <text x="900" y="445" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Small Chops</text>
+
+  <!-- Dots -->
+  <text x="1200" y="170" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Pepper Soup</text>
+  <text x="1200" y="225" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Fried Rice</text>
+  <text x="1200" y="280" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Ofada Stew</text>
+  <text x="1200" y="335" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Pounded Yam</text>
+  <text x="1200" y="390" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#FAFAF9" opacity="0.75">Moi Moi</text>
+  <text x="1200" y="445" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="32" fill="#F97316" opacity="0.7">+ 40 more dishes</text>
+
+  <!-- Vertical divider -->
+  <line x1="1500" y1="80" x2="1500" y2="520" stroke="#44403C" stroke-width="1"/>
+
+  <!-- Right section: services + contact -->
+  <text x="1750" y="170" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="28" fill="#F97316" letter-spacing="4">DELIVERY</text>
+  <text x="1750" y="210" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="22" fill="#A8A29E">North London &amp; Herts</text>
+
+  <text x="1750" y="280" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="28" fill="#F97316" letter-spacing="4">CATERING</text>
+  <text x="1750" y="320" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="22" fill="#A8A29E">Weddings &amp; Events</text>
+
+  <text x="1750" y="390" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="28" fill="#F97316" letter-spacing="4">EQUIPMENT HIRE</text>
+  <text x="1750" y="430" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="22" fill="#A8A29E">Chafing dishes &amp; more</text>
+
+  <!-- Right: QR placeholder + URL -->
+  <rect x="2000" y="120" width="260" height="260" rx="12" fill="#FAFAF9"/>
+  <text x="2130" y="270" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="24" fill="#1C1917">QR CODE</text>
+
+  <text x="2130" y="440" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="34" fill="#FFFFFF" letter-spacing="2">KOKKITCHENS.COM</text>
+  <text x="2130" y="485" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="22" fill="#A8A29E">07447 982712</text>
+</svg>

@@ -20,7 +20,7 @@ describe("createOverridesStore", () => {
     const p3 = store.load();
     expect(fetcher).toHaveBeenCalledTimes(1);
 
-    resolveJson({ success: true, prices: { a: 1 }, names: {}, statuses: {}, images: {} });
+    resolveJson({ success: true, prices: { a: 1 }, names: {}, statuses: {}, images: {}, customItems: [] });
     const [r1, r2, r3] = await Promise.all([p1, p2, p3]);
     expect(r1).toEqual(r2);
     expect(r2).toEqual(r3);
@@ -29,19 +29,19 @@ describe("createOverridesStore", () => {
 
   it("caches a successful response and does not refetch", async () => {
     const fetcher = vi.fn(async () =>
-      okResponse({ success: true, prices: { a: 2 }, names: {}, statuses: {}, images: {} })
+      okResponse({ success: true, prices: { a: 2 }, names: {}, statuses: {}, images: {}, customItems: [] })
     );
     const store = createOverridesStore(fetcher as unknown as Fetcher);
 
     await store.load();
-    expect(store.getCache()).toEqual({ prices: { a: 2 }, names: {}, statuses: {}, images: {} });
+    expect(store.getCache()).toEqual({ prices: { a: 2 }, names: {}, statuses: {}, images: {}, customItems: [] });
     await store.load();
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 
   it("notifies subscribers on success", async () => {
     const fetcher = vi.fn(async () =>
-      okResponse({ success: true, prices: {}, names: {}, statuses: { x: "hidden" }, images: {} })
+      okResponse({ success: true, prices: {}, names: {}, statuses: { x: "hidden" }, images: {}, customItems: [] })
     );
     const store = createOverridesStore(fetcher as unknown as Fetcher);
     const cb = vi.fn();
@@ -58,12 +58,12 @@ describe("createOverridesStore", () => {
       .fn()
       .mockResolvedValueOnce(okResponse({ success: false }))
       .mockResolvedValueOnce(
-        okResponse({ success: true, prices: { a: 3 }, names: {}, statuses: {}, images: {} })
+        okResponse({ success: true, prices: { a: 3 }, names: {}, statuses: {}, images: {}, customItems: [] })
       );
     const store = createOverridesStore(fetcher as unknown as Fetcher);
 
     const first = await store.load();
-    expect(first).toEqual({ names: {}, prices: {}, statuses: {}, images: {} });
+    expect(first).toEqual({ names: {}, prices: {}, statuses: {}, images: {}, customItems: [] });
     expect(store.getCache()).toBeNull();
 
     const second = await store.load();
@@ -76,12 +76,12 @@ describe("createOverridesStore", () => {
       .fn()
       .mockRejectedValueOnce(new Error("network"))
       .mockResolvedValueOnce(
-        okResponse({ success: true, prices: { a: 4 }, names: {}, statuses: {}, images: {} })
+        okResponse({ success: true, prices: { a: 4 }, names: {}, statuses: {}, images: {}, customItems: [] })
       );
     const store = createOverridesStore(fetcher as unknown as Fetcher);
 
     const first = await store.load();
-    expect(first).toEqual({ names: {}, prices: {}, statuses: {}, images: {} });
+    expect(first).toEqual({ names: {}, prices: {}, statuses: {}, images: {}, customItems: [] });
     expect(store.getCache()).toBeNull();
 
     const second = await store.load();

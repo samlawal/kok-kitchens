@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <title>KOK Kitchens T-shirt Front Design</title>
+  <desc>Large centred wordmark for front of t-shirt — KOK in white, Kitchens in orange</desc>
+  <!-- Transparent background — printer applies to fabric colour -->
+  <text x="600" y="520" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="260" fill="#FFFFFF" letter-spacing="16">KOK</text>
+  <text x="600" y="700" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="140" fill="#F97316" letter-spacing="12">KITCHENS</text>
+  <line x1="340" y1="750" x2="860" y2="750" stroke="#F97316" stroke-width="4" opacity="0.6"/>
+  <text x="600" y="810" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="400" font-size="36" fill="#FFFFFF" letter-spacing="8" opacity="0.85">AUTHENTIC NIGERIAN CUISINE</text>
+</svg>

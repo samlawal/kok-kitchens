@@ -17,6 +17,10 @@ import {
   ToggleLeft,
   Package,
   Boxes,
+  Plus,
+  Trash2,
+  UtensilsCrossed,
+  Flame,
 } from "lucide-react";
 import { menuItems, formatPrice } from "@/lib/menu-data";
 import {
@@ -25,7 +29,9 @@ import {
   HIRE_CATEGORY_ORDER,
 } from "@/lib/hire-data";
 
-type Tab = "photos" | "hire-photos" | "pricing" | "availability" | "hire-stock";
+import type { Category } from "@/lib/types";
+
+type Tab = "photos" | "hire-photos" | "pricing" | "availability" | "hire-stock" | "menu";
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
@@ -116,8 +122,19 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 mb-8 bg-stone-900 rounded-xl p-1">
+        {/* Tabs — two rows on mobile for legibility */}
+        <div className="flex flex-wrap gap-1 mb-8 bg-stone-900 rounded-xl p-1">
+          <button
+            onClick={() => setActiveTab("menu")}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
+              activeTab === "menu"
+                ? "bg-orange-600 text-white"
+                : "text-stone-400 hover:text-white"
+            }`}
+          >
+            <UtensilsCrossed className="h-4 w-4" />
+            Menu
+          </button>
           <button
             onClick={() => setActiveTab("photos")}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-medium transition-colors ${
@@ -175,11 +192,387 @@ export default function AdminPage() {
           </button>
         </div>
 
+        {activeTab === "menu" && <CustomItemsTab password={password} />}
         {activeTab === "photos" && <PhotosTab password={password} items={menuItems} type="meals" />}
         {activeTab === "hire-photos" && <PhotosTab password={password} items={hireItems} type="hire" />}
         {activeTab === "pricing" && <PricingTab password={password} />}
         {activeTab === "availability" && <AvailabilityTab password={password} />}
         {activeTab === "hire-stock" && <HireStockTab password={password} />}
+      </div>
+    </div>
+  );
+}
+
+// ── Custom Menu Items Tab ──────────────────────────────────
+const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
+  { value: "rice-dishes", label: "Rice Dishes" },
+  { value: "soups-swallows", label: "Soups & Swallows" },
+  { value: "grills-proteins", label: "Grills & Proteins" },
+  { value: "sides", label: "Sides" },
+  { value: "snacks", label: "Snacks" },
+  { value: "drinks", label: "Drinks" },
+  { value: "party-packs", label: "Party Packs" },
+];
+
+interface CustomItem {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+  spicy: boolean;
+  servings: string | null;
+}
+
+function CustomItemsTab({ password }: { password: string }) {
+  const [items, setItems] = useState<CustomItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Form state
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState<Category>("rice-dishes");
+  const [spicy, setSpicy] = useState(false);
+  const [servings, setServings] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  function loadItems() {
+    setLoading(true);
+    fetch("/api/custom-items")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setItems(data.items || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => { loadItems(); }, []);
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setMessage({ type: "error", text: "Please select an image file" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setMessage({ type: "error", text: "Image too large (max 10 MB)" });
+      return;
+    }
+    setPreview(URL.createObjectURL(file));
+    setMessage(null);
+  }
+
+  function resetForm() {
+    setName("");
+    setDescription("");
+    setPrice("");
+    setCategory("rice-dishes");
+    setSpicy(false);
+    setServings("");
+    setPreview(null);
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim() || !price) return;
+    setSaving(true);
+    setMessage(null);
+
+    const form = new FormData();
+    form.append("password", password);
+    form.append("name", name.trim());
+    form.append("description", description.trim());
+    form.append("price", price);
+    form.append("category", category);
+    form.append("spicy", String(spicy));
+    if (servings.trim()) form.append("servings", servings.trim());
+    const file = fileRef.current?.files?.[0];
+    if (file) form.append("image", file);
+
+    try {
+      const res = await fetch("/api/custom-items", { method: "POST", body: form });
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ type: "success", text: data.message });
+        resetForm();
+        loadItems();
+      } else {
+        setMessage({ type: "error", text: data.message });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to add item" });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(itemId: string, itemName: string) {
+    if (!confirm(`Remove "${itemName}" from the menu?`)) return;
+    setDeleting(itemId);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/custom-items", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password, itemId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ type: "success", text: data.message });
+        setItems((prev) => prev.filter((i) => i.id !== itemId));
+      } else {
+        setMessage({ type: "error", text: data.message });
+      }
+    } catch {
+      setMessage({ type: "error", text: "Failed to remove item" });
+    } finally {
+      setDeleting(null);
+    }
+  }
+
+  const catLabel = (val: string) =>
+    CATEGORY_OPTIONS.find((c) => c.value === val)?.label ?? val;
+
+  return (
+    <div>
+      <p className="text-stone-400 text-sm mb-6">
+        Add your own dishes to the menu — they appear alongside the standard items
+      </p>
+
+      {/* ── Add Item Form ── */}
+      <form onSubmit={handleAdd} className="rounded-2xl border border-stone-800 bg-stone-900/60 p-6 mb-8">
+        <h3 className="text-sm font-bold text-orange-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <Plus className="h-4 w-4" /> Add new item
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          {/* Name */}
+          <div>
+            <label htmlFor="ci-name" className="block text-xs font-medium text-stone-400 mb-1">
+              Name *
+            </label>
+            <input
+              id="ci-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Chin Chin"
+              required
+              className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Price */}
+          <div>
+            <label htmlFor="ci-price" className="block text-xs font-medium text-stone-400 mb-1">
+              Price (£) *
+            </label>
+            <input
+              id="ci-price"
+              type="number"
+              step="0.01"
+              min="0"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="0.00"
+              required
+              className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label htmlFor="ci-category" className="block text-xs font-medium text-stone-400 mb-1">
+              Category *
+            </label>
+            <select
+              id="ci-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value as Category)}
+              className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white focus:border-orange-500 focus:outline-none"
+            >
+              {CATEGORY_OPTIONS.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Servings */}
+          <div>
+            <label htmlFor="ci-servings" className="block text-xs font-medium text-stone-400 mb-1">
+              Servings (optional)
+            </label>
+            <input
+              id="ci-servings"
+              type="text"
+              value={servings}
+              onChange={(e) => setServings(e.target.value)}
+              placeholder="e.g. Small tray — serves 4-6"
+              className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="mb-4">
+          <label htmlFor="ci-desc" className="block text-xs font-medium text-stone-400 mb-1">
+            Description (optional)
+          </label>
+          <textarea
+            id="ci-desc"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={2}
+            placeholder="Short description for the dish detail page"
+            className="w-full rounded-lg border border-stone-700 bg-stone-800 px-4 py-2.5 text-sm text-white placeholder:text-stone-500 focus:border-orange-500 focus:outline-none resize-none"
+          />
+        </div>
+
+        {/* Spicy + Image row */}
+        <div className="flex flex-wrap items-end gap-4 mb-4">
+          {/* Spicy toggle */}
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={spicy}
+              onChange={(e) => setSpicy(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className={`w-9 h-5 rounded-full transition-colors ${spicy ? "bg-orange-600" : "bg-stone-700"} relative`}>
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${spicy ? "translate-x-4" : ""}`} />
+            </div>
+            <Flame className={`h-4 w-4 ${spicy ? "text-orange-400" : "text-stone-500"}`} />
+            <span className="text-sm text-stone-300">Spicy</span>
+          </label>
+
+          {/* Image upload */}
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs font-medium text-stone-400 mb-1">
+              Photo (optional)
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer rounded-lg border border-dashed border-stone-700 hover:border-orange-500 px-4 py-2.5 transition-colors w-fit">
+              <Upload className="h-4 w-4 text-orange-400" />
+              <span className="text-xs text-stone-300">
+                {preview ? "Change image" : "Select image (max 10 MB)"}
+              </span>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+            </label>
+          </div>
+
+          {preview && (
+            <div className="w-16 h-16 rounded-lg overflow-hidden bg-stone-800 border border-orange-500/30 shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+            </div>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={saving || !name.trim() || !price}
+          className="flex items-center gap-2 rounded-lg bg-orange-600 px-6 py-3 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {saving ? (
+            <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+          ) : (
+            <Plus className="h-4 w-4" />
+          )}
+          {saving ? "Adding…" : "Add to Menu"}
+        </button>
+      </form>
+
+      {/* ── Existing Custom Items ── */}
+      <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-3">
+        Custom items ({items.length})
+      </h3>
+
+      {loading ? (
+        <p className="text-sm text-stone-500">Loading…</p>
+      ) : items.length === 0 ? (
+        <div className="rounded-xl border border-stone-800 bg-stone-900/50 px-6 py-8 text-center">
+          <UtensilsCrossed className="h-8 w-8 text-stone-700 mx-auto mb-2" />
+          <p className="text-sm text-stone-500">No custom items yet — add one above</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center gap-3 rounded-xl px-4 py-3 border border-stone-800 bg-stone-900"
+            >
+              {/* Thumbnail */}
+              <div className="w-10 h-10 rounded-lg overflow-hidden bg-stone-800 relative shrink-0">
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                    sizes="40px"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <UtensilsCrossed className="h-4 w-4 text-stone-600" />
+                  </div>
+                )}
+              </div>
+
+              {/* Details */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">
+                  {item.name}
+                  {item.spicy && <Flame className="inline h-3.5 w-3.5 text-orange-400 ml-1" />}
+                </p>
+                <p className="text-xs text-stone-500">
+                  {formatPrice(item.price)} · {catLabel(item.category)}
+                  {item.servings ? ` · ${item.servings}` : ""}
+                </p>
+              </div>
+
+              {/* Delete */}
+              <button
+                onClick={() => handleDelete(item.id, item.name)}
+                disabled={deleting === item.id}
+                className="p-2 rounded-lg text-stone-500 hover:text-red-400 hover:bg-red-900/20 disabled:opacity-30 transition-colors"
+                title={`Remove ${item.name}`}
+              >
+                {deleting === item.id ? (
+                  <span className="block animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {message && (
+        <div className={`mt-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm ${message.type === "success" ? "bg-green-900/30 border border-green-800 text-green-300" : "bg-red-900/30 border border-red-800 text-red-300"}`}>
+          {message.type === "success" ? <Check className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
+          {message.text}
+        </div>
+      )}
+
+      <div className="mt-8 rounded-xl border border-stone-800 bg-stone-900/50 p-6 text-sm text-stone-400">
+        <p className="font-medium text-stone-300 mb-2">How custom items work:</p>
+        <ul className="space-y-1.5 list-disc list-inside">
+          <li>Items you add here appear on the menu alongside the standard dishes</li>
+          <li>Each item gets its own detail page at <strong className="text-stone-300">kokkitchens.com/menu/[name]</strong></li>
+          <li>Upload a photo or leave blank — a placeholder will be shown</li>
+          <li>To remove an item, click the <Trash2 className="h-3 w-3 inline" /> icon</li>
+          <li>Changes are <strong className="text-stone-300">instant</strong> — no deploy needed</li>
+        </ul>
       </div>
     </div>
   );
