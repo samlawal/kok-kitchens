@@ -21,6 +21,18 @@ const nextConfig: NextConfig = {
   compress: true,
   // Set production-grade response headers
   poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        // Staging (kok.staging.ophirdigital.com, branch domain on the
+        // `staging` git branch) must never be indexed — it duplicates the
+        // live site. Host-matched so kokkitchens.com is untouched.
+        source: "/:path*",
+        has: [{ type: "host", value: "(.*\\.)?staging\\.ophirdigital\\.com" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
