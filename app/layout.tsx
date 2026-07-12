@@ -6,6 +6,7 @@ import { SITE_URL as siteUrl } from "@/lib/site-url";
 import { CartProvider } from "@/lib/cart-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { StagingBanner } from "@/components/StagingBanner";
 import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpsellToast from "@/components/UpsellToast";
@@ -71,6 +72,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <StagingBanner />
         <RestaurantSchema />
         <a
           href="#main-content"
