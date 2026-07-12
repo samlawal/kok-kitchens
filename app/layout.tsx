@@ -10,6 +10,7 @@ import CartDrawer from "@/components/CartDrawer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import UpsellToast from "@/components/UpsellToast";
 import RestaurantSchema from "@/components/RestaurantSchema";
+import PWA from "@/components/PWA";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,6 +87,7 @@ export default function RootLayout({
             <CartDrawer />
             <UpsellToast />
             <WhatsAppButton />
+            <PWA />
           </CartProvider>
         </MotionConfig>
       </body>
