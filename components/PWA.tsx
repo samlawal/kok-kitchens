@@ -7,7 +7,7 @@ const DISMISS_KEY = "kok_install_dismissed";
 const INSTALLED_KEY = "kok_installed";
 const DISMISS_DAYS = 30;
 
-function isIOS() {
+export function isIOS() {
   const ua = navigator.userAgent;
   return (
     /iPad|iPhone|iPod/.test(ua) ||
@@ -15,7 +15,7 @@ function isIOS() {
   );
 }
 
-function isIOSSafari() {
+export function isIOSSafari() {
   return (
     isIOS() &&
     /Safari/.test(navigator.userAgent) &&
@@ -23,21 +23,26 @@ function isIOSSafari() {
   );
 }
 
-function isAndroidChrome() {
+export function isIOSChrome() {
+  return isIOS() && /CriOS/.test(navigator.userAgent);
+}
+
+export function isAndroidChrome() {
   return /Android/.test(navigator.userAgent) && /Chrome\//.test(navigator.userAgent);
 }
 
-function isStandalone() {
+export function isStandalone() {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
     (navigator as unknown as { standalone?: boolean }).standalone === true
   );
 }
 
+export type HintMode = "chromium" | "ios-safari" | "ios-chrome" | "android" | null;
+
 export default function PWA() {
   const [deferred, setDeferred] = useState<PromptEvent | null>(null);
-  const [iosHint, setIosHint] = useState(false);
-  const [androidHint, setAndroidHint] = useState(false);
+  const [hint, setHint] = useState<HintMode>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -57,17 +62,17 @@ export default function PWA() {
       return;
     }
 
-    if (isIOSSafari()) setIosHint(true);
+    if (isIOSSafari()) setHint("ios-safari");
+    else if (isIOSChrome()) setHint("ios-chrome");
 
     const onPrompt = (e: Event) => {
       e.preventDefault();
       setDeferred(e as PromptEvent);
-      setAndroidHint(false);
+      setHint("chromium");
     };
     const onInstalled = () => {
       setDeferred(null);
-      setIosHint(false);
-      setAndroidHint(false);
+      setHint(null);
       setDismissed(true);
       localStorage.setItem(INSTALLED_KEY, "1");
     };
@@ -78,10 +83,7 @@ export default function PWA() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (isAndroidChrome()) {
       timer = setTimeout(() => {
-        setAndroidHint((prev) => {
-          if (deferred) return false;
-          return true;
-        });
+        setHint((prev) => prev ?? "android");
       }, 2000);
     }
 
@@ -101,18 +103,17 @@ export default function PWA() {
 
   const dismiss = () => {
     setDismissed(true);
-    setIosHint(false);
-    setAndroidHint(false);
+    setHint(null);
     localStorage.setItem(DISMISS_KEY, String(Date.now()));
   };
 
-  const showChromium = !dismissed && Boolean(deferred);
-  const showIOS = !dismissed && iosHint && !deferred;
-  const showAndroid = !dismissed && androidHint && !deferred;
-  if (!showChromium && !showIOS && !showAndroid) return null;
+  if (dismissed || !hint) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-24 z-[55] mx-auto max-w-sm rounded-2xl border border-orange-200 bg-white p-4 shadow-xl sm:bottom-5">
+    <div
+      data-testid="pwa-banner"
+      className="fixed inset-x-3 bottom-24 z-[55] mx-auto max-w-sm rounded-2xl border border-orange-200 bg-white p-4 shadow-xl sm:bottom-5"
+    >
       <div className="flex items-center gap-3">
         <img src="/icon.png" alt="" className="h-11 w-11 rounded-xl" />
         <div className="flex-1">
@@ -130,14 +131,14 @@ export default function PWA() {
         </button>
       </div>
 
-      {showChromium ? (
+      {hint === "chromium" ? (
         <button
           onClick={install}
           className="mt-3 w-full rounded-lg bg-orange-600 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700 active:scale-95"
         >
           Install app
         </button>
-      ) : showIOS ? (
+      ) : hint === "ios-safari" ? (
         <p className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-orange-50 py-2.5 text-center text-xs font-medium text-stone-700">
           Tap <ShareIcon /> Share, then{" "}
           <span className="font-semibold">&quot;Add to Home Screen&quot;</span>
@@ -145,7 +146,7 @@ export default function PWA() {
       ) : (
         <p className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-orange-50 py-2.5 text-center text-xs font-medium text-stone-700">
           Tap <MenuDotsIcon /> menu, then{" "}
-          <span className="font-semibold">&quot;Install app&quot;</span>
+          <span className="font-semibold">&quot;Add to Home Screen&quot;</span>
         </p>
       )}
     </div>
