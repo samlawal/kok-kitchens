@@ -74,8 +74,12 @@ describe("PWA banner", () => {
     render(<PWA />);
     const banner = screen.getByTestId("pwa-banner");
     expect(banner).toBeTruthy();
-    expect(banner.textContent).toContain("menu, then");
+    // THE BUG: iOS Chrome adds to home via the Share sheet, NOT the ⋮ menu.
+    // Old copy sent them to "Tap ⋮ menu" → no such option on iOS. Pin the fix:
+    // must show the Share instruction, never the Android "Install app" menu one.
+    expect(banner.textContent).toContain("Share");
     expect(banner.textContent).toContain("Add to Home Screen");
+    expect(banner.textContent).not.toContain("Install app");
   });
 
   it("shows banner with menu instructions on Android Chrome after timeout", () => {
@@ -86,10 +90,32 @@ describe("PWA banner", () => {
     render(<PWA />);
     expect(screen.queryByTestId("pwa-banner")).toBeNull();
 
+    // Manual fallback is deliberately delayed (10s) so the one-click native
+    // prompt has time to win; still null before then.
     act(() => { vi.advanceTimersByTime(2500); });
+    expect(screen.queryByTestId("pwa-banner")).toBeNull();
+
+    act(() => { vi.advanceTimersByTime(8000); });
     const banner = screen.getByTestId("pwa-banner");
     expect(banner).toBeTruthy();
-    expect(banner.textContent).toContain("menu, then");
+    expect(banner.textContent).toContain("Install app");
+  });
+
+  it("native install button wins the race over the manual fallback", () => {
+    setUA(ANDROID_CHROME);
+    setPlatform("Linux armv8l");
+    setMaxTouchPoints(5);
+    render(<PWA />);
+    // Prompt fires at 3s — before the 10s fallback — so we show the button.
+    act(() => { vi.advanceTimersByTime(3000); });
+    act(() => {
+      const e = new Event("beforeinstallprompt", { cancelable: true });
+      Object.assign(e, { prompt: vi.fn(), userChoice: Promise.resolve() });
+      window.dispatchEvent(e);
+    });
+    act(() => { vi.advanceTimersByTime(9000); });
+    expect(screen.getByText("Install app")).toBeTruthy();
+    expect(screen.queryByText(/Open the/)).toBeNull();
   });
 
   it("does not show banner on desktop without beforeinstallprompt", () => {

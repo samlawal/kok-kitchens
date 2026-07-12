@@ -80,11 +80,15 @@ export default function PWA() {
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
 
+    // Prefer the one-click native prompt: give beforeinstallprompt plenty of
+    // time to fire (it can be delayed or gated on a gesture) before falling
+    // back to manual instructions. 2s was too eager and showed the manual
+    // hint over the button that was about to appear.
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (isAndroidChrome()) {
       timer = setTimeout(() => {
         setHint((prev) => prev ?? "android");
-      }, 2000);
+      }, 10_000);
     }
 
     return () => {
@@ -138,15 +142,16 @@ export default function PWA() {
         >
           Install app
         </button>
-      ) : hint === "ios-safari" ? (
+      ) : hint === "ios-safari" || hint === "ios-chrome" ? (
         <p className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-orange-50 py-2.5 text-center text-xs font-medium text-stone-700">
           Tap <ShareIcon /> Share, then{" "}
           <span className="font-semibold">&quot;Add to Home Screen&quot;</span>
         </p>
       ) : (
-        <p className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-orange-50 py-2.5 text-center text-xs font-medium text-stone-700">
-          Tap <MenuDotsIcon /> menu, then{" "}
-          <span className="font-semibold">&quot;Add to Home Screen&quot;</span>
+        <p className="mt-3 flex flex-wrap items-center justify-center gap-1.5 rounded-lg bg-orange-50 py-2.5 px-2 text-center text-xs font-medium text-stone-700">
+          Open the <MenuDotsIcon /> menu (top-right), then tap{" "}
+          <span className="font-semibold">&quot;Install app&quot;</span> or{" "}
+          <span className="font-semibold">&quot;Add to Home screen&quot;</span>
         </p>
       )}
     </div>
