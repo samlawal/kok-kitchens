@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 type PromptEvent = Event & { prompt: () => void; userChoice: Promise<unknown> };
 
 const DISMISS_KEY = "kok_install_dismissed";
+const INSTALLED_KEY = "kok_installed";
+const DISMISS_DAYS = 30;
 
 function isIOS() {
   const ua = navigator.userAgent;
@@ -38,7 +40,12 @@ export default function PWA() {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
 
-    if (sessionStorage.getItem(DISMISS_KEY)) {
+    if (localStorage.getItem(INSTALLED_KEY)) {
+      setDismissed(true);
+      return;
+    }
+    const dismissedAt = localStorage.getItem(DISMISS_KEY);
+    if (dismissedAt && Date.now() - Number(dismissedAt) < DISMISS_DAYS * 86_400_000) {
       setDismissed(true);
       return;
     }
@@ -52,6 +59,8 @@ export default function PWA() {
     const onInstalled = () => {
       setDeferred(null);
       setIosHint(false);
+      setDismissed(true);
+      localStorage.setItem(INSTALLED_KEY, "1");
     };
 
     window.addEventListener("beforeinstallprompt", onPrompt);
@@ -72,7 +81,7 @@ export default function PWA() {
   const dismiss = () => {
     setDismissed(true);
     setIosHint(false);
-    sessionStorage.setItem(DISMISS_KEY, "1");
+    localStorage.setItem(DISMISS_KEY, String(Date.now()));
   };
 
   const showChromium = !dismissed && Boolean(deferred);
