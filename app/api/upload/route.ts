@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyAdminSecret } from "@/lib/admin-auth";
 import { revertAction } from "@/lib/photo-revert";
 import { put, list, del } from "@vercel/blob";
+import { bustBlobCache } from "@/lib/blob-cache";
 
 // Photos are stored per-section: "meals/{id}.webp" (menu) or "hire/{id}.webp"
 // (equipment hire). Always the canonical .webp path so resolvers + static
@@ -83,6 +84,7 @@ export async function POST(request: Request) {
       addRandomSuffix: false,
       allowOverwrite: true,
     });
+    bustBlobCache(folder);
 
     const sizeKb = Math.round(buffer.length / 1024);
 
@@ -132,6 +134,7 @@ export async function PUT(request: Request) {
     // so "undo" means remove the upload and fall back to the original.
     if (action === "delete-to-default") {
       await del(current.blobs[0].url);
+      bustBlobCache(folder);
       return NextResponse.json({
         success: true,
         reverted: "default",
@@ -154,6 +157,7 @@ export async function PUT(request: Request) {
 
     // Remove the rollback copy now that it's been restored.
     await del(rollbackBlob.url);
+    bustBlobCache(folder);
 
     return NextResponse.json({
       success: true,

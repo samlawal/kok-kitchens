@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { list } from "@vercel/blob";
+import { getFolderBlobs } from "@/lib/blob-cache";
 
-// Resolves dish image: checks Blob first, falls back to static
+// Resolves dish image: checks Blob first, falls back to static.
+// Uses the cached folder listing (lib/blob-cache) instead of a list() per
+// request — this route alone was the project's biggest advanced-ops burner.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
@@ -11,11 +13,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Check Vercel Blob for an uploaded version
-    const result = await list({ prefix: `meals/${id}.webp` });
-    const match = result.blobs.find(
-      (b) => b.pathname === `meals/${id}.webp`
-    );
+    const blobs = await getFolderBlobs("meals");
+    const match = blobs.find((b) => b.pathname === `meals/${id}.webp`);
 
     if (match) {
       // Redirect to Blob URL (cached by browser + CDN)

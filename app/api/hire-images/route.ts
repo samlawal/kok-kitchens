@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
-import { list, type ListBlobResultBlob } from "@vercel/blob";
+import { getFolderBlobs } from "@/lib/blob-cache";
 import { buildImageMap } from "@/lib/blob-images";
 
 // GET — { hireItemId: blobUrl } for admin-uploaded hire photos. Mirrors
 // /api/menu-overrides' image handling, but on the "hire/" folder.
+// Served from the cached folder listing (lib/blob-cache).
 export async function GET() {
   try {
-    const blobs: ListBlobResultBlob[] = [];
-    let cursor: string | undefined;
-    do {
-      const result = await list({ prefix: "hire/", cursor, limit: 1000 });
-      blobs.push(...result.blobs);
-      cursor = result.hasMore ? result.cursor : undefined;
-    } while (cursor);
-
+    const blobs = await getFolderBlobs("hire");
     return NextResponse.json(
       { success: true, images: buildImageMap(blobs, "hire/") },
       { headers: { "Cache-Control": "no-store" } }

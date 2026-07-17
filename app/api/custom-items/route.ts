@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { verifyAdminSecret } from "@/lib/admin-auth";
 import { put } from "@vercel/blob";
+import { bustBlobCache } from "@/lib/blob-cache";
 import { menuItems } from "@/lib/menu-data";
 
 function slugify(name: string): string {
@@ -116,6 +117,7 @@ export async function POST(request: Request) {
         allowOverwrite: true,
       });
       imageUrl = blob.url;
+      bustBlobCache("meals");
     } catch (error) {
       console.error("Image upload failed:", error);
     }

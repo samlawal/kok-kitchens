@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { list } from "@vercel/blob";
+import { getFolderBlobs } from "@/lib/blob-cache";
 import { getDb } from "@/lib/db";
 import {
   gatherMenuOverrides,
@@ -15,9 +15,11 @@ import {
 // lib/menu-overrides-server.ts so it can be unit-tested without Next.
 export async function GET() {
   const overrides = await gatherMenuOverrides({
-    listPage: async (cursor) => {
-      const r = await list({ prefix: "meals/", cursor, limit: 1000 });
-      return { blobs: r.blobs, cursor: r.cursor, hasMore: r.hasMore };
+    // One "page" from the cached folder listing (lib/blob-cache) — no
+    // per-request Blob pagination.
+    listPage: async () => {
+      const blobs = await getFolderBlobs("meals");
+      return { blobs, cursor: undefined, hasMore: false };
     },
     queryPrices: async () => {
       const sql = getDb();
