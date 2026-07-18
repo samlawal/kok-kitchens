@@ -13,6 +13,8 @@ vi.mock("@/lib/db", () => ({
     // Tagged-template calls go through the function itself:
     // sql`SELECT ...` → mockSql(strings, ...values)
     mockSql,
+  // Passthrough — the heal path has its own tests (lib/db-ensure-schema.test.ts)
+  ensureSchema: (op: () => Promise<unknown>) => op(),
 }));
 
 vi.mock("@vercel/blob", () => ({

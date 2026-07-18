@@ -5,6 +5,27 @@ export function getDb() {
   return sql;
 }
 
+/**
+ * Self-healing schema guard (bug DRBfP9SOiPY): initDb() defines the tables
+ * but only runs when /api/init is called — custom_menu_items shipped in code
+ * while production's table was never created, so "add new item" 500'd for
+ * weeks. Wrap route DB work in this: on Postgres 42P01 (undefined_table) it
+ * runs initDb (idempotent CREATE IF NOT EXISTS) and retries once, so a
+ * missing table costs one slow request instead of a broken feature.
+ * `init` is injectable for tests only.
+ */
+export async function ensureSchema<T>(op: () => Promise<T>, init: () => Promise<unknown> = initDb): Promise<T> {
+  try {
+    return await op();
+  } catch (e) {
+    if ((e as { code?: string })?.code === "42P01") {
+      await init();
+      return await op();
+    }
+    throw e;
+  }
+}
+
 // Initialize the orders table (run once)
 export async function initDb() {
   const sql = getDb();

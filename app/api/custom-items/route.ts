@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
+import { getDb, ensureSchema } from "@/lib/db";
 import { verifyAdminSecret } from "@/lib/admin-auth";
 import { put } from "@vercel/blob";
 import { bustBlobCache } from "@/lib/blob-cache";
@@ -16,11 +16,13 @@ function slugify(name: string): string {
 export async function GET() {
   try {
     const sql = getDb();
-    const rows = await sql`
-      SELECT id, slug, name, description, price, category, image, spicy, servings
-      FROM custom_menu_items
-      ORDER BY created_at DESC
-    `;
+    const rows = await ensureSchema(
+      () => sql`
+        SELECT id, slug, name, description, price, category, image, spicy, servings
+        FROM custom_menu_items
+        ORDER BY created_at DESC
+      `
+    );
     return NextResponse.json(
       { success: true, items: rows },
       { headers: { "Cache-Control": "no-store" } }
@@ -93,7 +95,9 @@ export async function POST(request: Request) {
   // Ensure slug is unique across static + custom items
   const sql = getDb();
   const staticSlugs = new Set(menuItems.map((i) => i.slug));
-  const existingCustom = await sql`SELECT slug FROM custom_menu_items`;
+  // ensureSchema: this SELECT was the line that 500'd Taiwo's add-item save —
+  // it ran outside any try with the table missing in prod (42P01).
+  const existingCustom = await ensureSchema(() => sql`SELECT slug FROM custom_menu_items`);
   const customSlugs = new Set(existingCustom.map((r) => r.slug as string));
 
   let slug = baseSlug;
@@ -164,9 +168,11 @@ export async function DELETE(request: Request) {
 
   try {
     const sql = getDb();
-    const deleted = await sql`
-      DELETE FROM custom_menu_items WHERE id = ${itemId} RETURNING name
-    `;
+    const deleted = await ensureSchema(
+      () => sql`
+        DELETE FROM custom_menu_items WHERE id = ${itemId} RETURNING name
+      `
+    );
     if (deleted.length === 0) {
       return NextResponse.json(
         { success: false, message: "Item not found" },
