@@ -52,7 +52,7 @@ describe("gatherMenuOverrides", () => {
     expect(r.names).toEqual({ "tiger-nut": "Tiger Nut Drink" });
   });
 
-  it("isolates a DB failure — names also empty, images still return", async () => {
+  it("isolates a names failure — only names blank, other DB slices survive", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const r = await gatherMenuOverrides(
       deps({
@@ -63,10 +63,37 @@ describe("gatherMenuOverrides", () => {
         queryNames: async () => {
           throw new Error("db down");
         },
+        queryPrices: async () => [{ menu_item_id: "jollof-rice", price: 15 }],
       })
     );
     expect(r.names).toEqual({});
+    // A names-query failure must NOT blank prices (the BVY0TOg7M3c regression).
+    expect(r.prices).toEqual({ "jollof-rice": 15 });
     expect(r.images["tiger-nut"]).toContain("tiger-nut.webp");
+    spy.mockRestore();
+  });
+
+  // Bug BVY0TOg7M3c, exact shape: custom_menu_items missing in prod (42P01)
+  // used to collapse the shared try/catch and blank EVERY price + name override
+  // on the live menu — Taiwo's £60 goat price never reached customers.
+  it("a missing custom_menu_items does not blank prices or names", async () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const r = await gatherMenuOverrides(
+      deps({
+        queryCustomItems: async () => {
+          const e = new Error("relation custom_menu_items does not exist");
+          (e as Error & { code?: string }).code = "42P01";
+          throw e;
+        },
+        queryPrices: async () => [{ menu_item_id: "goat-meat-stew", price: 60 }],
+        queryNames: async () => [
+          { menu_item_id: "goat-meat-stew", name: "Goat meat" },
+        ],
+      })
+    );
+    expect(r.prices).toEqual({ "goat-meat-stew": 60 });
+    expect(r.names).toEqual({ "goat-meat-stew": "Goat meat" });
+    expect(r.customItems).toEqual([]);
     spy.mockRestore();
   });
 
@@ -152,7 +179,7 @@ describe("gatherMenuOverrides", () => {
     spy.mockRestore();
   });
 
-  it("isolates a DB failure — still returns images", async () => {
+  it("isolates a prices failure — statuses and images still return", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const r = await gatherMenuOverrides(
       deps({
@@ -163,10 +190,14 @@ describe("gatherMenuOverrides", () => {
         queryPrices: async () => {
           throw new Error("db down");
         },
+        queryStatuses: async () => [
+          { menu_item_id: "egusi-soup", status: "unavailable" },
+        ],
       })
     );
     expect(r.prices).toEqual({});
-    expect(r.statuses).toEqual({});
+    // A prices-query failure must NOT blank statuses.
+    expect(r.statuses).toEqual({ "egusi-soup": "unavailable" });
     expect(r.images["jollof-rice"]).toContain("jollof-rice.webp");
     spy.mockRestore();
   });

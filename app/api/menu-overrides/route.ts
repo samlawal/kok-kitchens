@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFolderBlobs } from "@/lib/blob-cache";
-import { getDb } from "@/lib/db";
+import { getDb, ensureSchema } from "@/lib/db";
 import {
   gatherMenuOverrides,
   type CustomItemRow,
@@ -23,29 +23,29 @@ export async function GET() {
     },
     queryPrices: async () => {
       const sql = getDb();
-      return (await sql`
+      return (await ensureSchema(() => sql`
         SELECT menu_item_id, price FROM price_overrides
-      `) as PriceRow[];
+      `)) as PriceRow[];
     },
     queryStatuses: async () => {
       const sql = getDb();
-      return (await sql`
+      return (await ensureSchema(() => sql`
         SELECT menu_item_id, status FROM item_availability
-      `) as StatusRow[];
+      `)) as StatusRow[];
     },
     queryNames: async () => {
       const sql = getDb();
-      return (await sql`
+      return (await ensureSchema(() => sql`
         SELECT menu_item_id, name FROM item_name_overrides
-      `) as NameRow[];
+      `)) as NameRow[];
     },
     queryCustomItems: async () => {
       const sql = getDb();
-      return (await sql`
+      return (await ensureSchema(() => sql`
         SELECT id, slug, name, description, price, category, image, spicy, servings
         FROM custom_menu_items
         ORDER BY created_at DESC
-      `) as CustomItemRow[];
+      `)) as CustomItemRow[];
     },
   });
 

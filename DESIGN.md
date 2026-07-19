@@ -48,3 +48,36 @@ costs one slow request, not a broken feature for weeks.
 manual init step). Other routes still fail soft (GET returns []) — wrap them
 in ensureSchema as they're next touched. Staging DB was initialized manually
 during verification (2026-07-18).
+
+## D-004 — Menu overrides degrade per-slice; missing table no longer blanks the live menu (2026-07-19)
+**Context:** Bug bug-2026-07-19-BVY0TOg7M3c ("two prices for goat meat"): Taiwo
+repriced Goat Meat Stew £55→£60 in admin and reported "two prices … not working".
+Initial hypothesis (a missing `item_name_overrides` table, mirroring D-003) was
+DISPROVEN by read-only prod probes: `/api/pricing` showed `goat-meat-stew: 60.00`
+and `/api/names` showed the rename — **both admin saves succeeded**. Yet
+`/api/menu-overrides` returned prices:0, names:0 and the live `/menu/goat-meat-stew`
+showed the £55 default. Root cause: `gatherMenuOverrides` ran its four DB queries
+(names/prices/statuses/customItems) under ONE shared `Promise.all`/try-catch. The
+`custom_menu_items` table is still absent in prod (the D-003 table, fix undeployed),
+so `queryCustomItems` threw 42P01 → the catch blanked **all 14 price overrides and
+every name override site-wide**. The "two prices" = £60 in admin vs £55 on the site.
+The function's own docstring claimed per-slice isolation it never delivered, and two
+tests (`prices fail → statuses also empty`, `names fail → names empty`) had locked
+in the collapsing behaviour.
+**Decision:** (1) Isolate each DB query in `gatherMenuOverrides` via a `safeQuery`
+wrapper — one failing/missing table blanks only its own slice. (2) Wrap the four
+menu-overrides route queries in `ensureSchema` (D-003 pattern) so a missing
+`custom_menu_items` self-heals on read. (3) Also wrap /api/names handlers in
+`ensureSchema` — defensive, per the D-003 "wrap routes as they're next touched"
+rollout, not the actual fix here. Corrected the two collapse-encoding tests and
+added a regression for the exact shape (missing custom_menu_items must not blank
+prices/names). Route test app/api/names/route.test.ts (10 cases) added.
+**Why:** The customer-facing menu must degrade per-slice: a table that is missing,
+empty, or transiently failing should cost only its own overrides, never silently
+revert every price on the site. Isolation is the correctness fix; ensureSchema
+removes the drift that triggered it.
+**Consequences:** After deploy the live menu immediately honours all existing
+price/name overrides again (no data was lost — the tables were fine; only the read
+collapsed). First public menu load heals `custom_menu_items` via ensureSchema.
+NOTE: deploying this also carries the still-undeployed D-003 custom-items fix
+(same branch), so one deploy closes both KOK bugs.

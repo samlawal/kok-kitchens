@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdminSecret } from "@/lib/admin-auth";
-import { getDb } from "@/lib/db";
+import { getDb, ensureSchema } from "@/lib/db";
 
 // Name overrides let the owner rename any menu item without a code deploy —
 // mirrors the /api/pricing shape so the admin UI can reuse the batched-save
@@ -21,11 +21,13 @@ function cleanName(input: unknown): string | null {
 export async function GET() {
   try {
     const sql = getDb();
-    const overrides = await sql`
-      SELECT menu_item_id, name, updated_at
-      FROM item_name_overrides
-      ORDER BY updated_at DESC
-    `;
+    const overrides = await ensureSchema(
+      () => sql`
+        SELECT menu_item_id, name, updated_at
+        FROM item_name_overrides
+        ORDER BY updated_at DESC
+      `
+    );
     return NextResponse.json({ success: true, overrides });
   } catch (error) {
     console.error("Failed to fetch name overrides:", error);
@@ -63,12 +65,14 @@ export async function POST(request: Request) {
       const clean = cleanName(name);
       if (!clean) continue;
 
-      await sql`
-        INSERT INTO item_name_overrides (menu_item_id, name, updated_at)
-        VALUES (${menuItemId}, ${clean}, NOW())
-        ON CONFLICT (menu_item_id)
-        DO UPDATE SET name = ${clean}, updated_at = NOW()
-      `;
+      await ensureSchema(
+        () => sql`
+          INSERT INTO item_name_overrides (menu_item_id, name, updated_at)
+          VALUES (${menuItemId}, ${clean}, NOW())
+          ON CONFLICT (menu_item_id)
+          DO UPDATE SET name = ${clean}, updated_at = NOW()
+        `
+      );
       updated++;
     }
 
@@ -99,7 +103,9 @@ export async function DELETE(request: Request) {
     }
 
     const sql = getDb();
-    await sql`DELETE FROM item_name_overrides WHERE menu_item_id = ${menuItemId}`;
+    await ensureSchema(
+      () => sql`DELETE FROM item_name_overrides WHERE menu_item_id = ${menuItemId}`
+    );
 
     return NextResponse.json({
       success: true,
