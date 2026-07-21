@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import type { CustomItem } from "@/lib/custom-items";
 import {
   Upload,
   RotateCcw,
@@ -214,17 +215,7 @@ const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
   { value: "party-packs", label: "Party Packs" },
 ];
 
-interface CustomItem {
-  id: string;
-  slug: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  spicy: boolean;
-  servings: string | null;
-}
+// CustomItem now comes from the shared data layer (@/lib/custom-items).
 
 function CustomItemsTab({ password }: { password: string }) {
   const [items, setItems] = useState<CustomItem[]>([]);

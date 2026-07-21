@@ -1,6 +1,14 @@
 import { buildImageMap, type BlobLike } from "./blob-images";
 import type { Availability, MenuOverrides } from "./menu-overrides";
 import type { MenuItem } from "./types";
+import {
+  mapCustomItemRow,
+  customItemToMenuItem,
+  type CustomItemRow,
+} from "./custom-items";
+
+// Re-exported so existing importers (app/api/menu-overrides/route.ts) keep working.
+export type { CustomItemRow };
 
 export interface BlobPage {
   blobs: BlobLike[];
@@ -21,18 +29,6 @@ export interface StatusRow {
 export interface NameRow {
   menu_item_id: string;
   name: string;
-}
-
-export interface CustomItemRow {
-  id: string;
-  slug: string;
-  name: string;
-  description: string;
-  price: number | string;
-  category: string;
-  image: string;
-  spicy: boolean;
-  servings: string | null;
 }
 
 export interface OverridesDeps {
@@ -108,18 +104,9 @@ export async function gatherMenuOverrides(
   for (const row of statusRows) {
     statuses[row.menu_item_id] = row.status as Availability;
   }
-  customItems = customRows.map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    name: row.name,
-    description: row.description,
-    price: Number(row.price),
-    category: row.category as MenuItem["category"],
-    image: row.image,
-    spicy: row.spicy,
-    servings: row.servings || undefined,
-    tags: [],
-  }));
+  // Coerce (esp. price) via the shared mapper, then adapt to the public MenuItem
+  // shape — one coercion point for the whole app (D-006).
+  customItems = customRows.map((row) => customItemToMenuItem(mapCustomItemRow(row)));
 
   return { names, prices, statuses, images, customItems };
 }

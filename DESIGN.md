@@ -103,3 +103,25 @@ client-only, so ANY `/admin` render error force-logs-out the admin — an
 admin-scoped error boundary that preserves the login would harden it;
 (2) pre-existing `lib/menu-overrides.test.ts` fixtures miss the `customItems`
 field (type-only, runtime-green).
+
+## D-006 — Consolidate custom-items data access (2026-07-21)
+**Context:** `custom_menu_items` had **5 consumers each writing raw SQL** and
+hand-coercing Neon's string `price` in **6 scattered places**, behind **2
+overlapping row types**. Missing one coercion is precisely what caused D-005
+(the admin string-price crash). The area kept producing bugs because the
+foundation was duplicated and inconsistent.
+**Decision:** One data-access module `lib/custom-items.ts` — a single
+`CustomItemRow` (raw, price may be string) + `CustomItem` (domain, price:number)
+type, `mapCustomItemRow` (the ONLY coercion point — `Number(price)`),
+`customItemToMenuItem` adapter, and `getCustomItems` / `getCustomItemBySlug`
+readers (SELECT + `ensureSchema` + map). Every consumer (admin GET route, public
+menu page, `menu-overrides-server`) now routes through it; the duplicate
+`CustomItem`/`CustomItemRow` types are deleted (re-exported for compatibility).
+**Why:** One coercion point instead of six means a new consumer or numeric column
+can't silently reintroduce the string-price crash, and the types are now honest
+at the DB boundary. Kills the bug class, not just the instance.
+**Consequences:** The separate `menu_overrides` price coercion (PriceRow) is left
+as-is (already correct); promoting a shared `num()`/db helper across all numeric
+columns and all zero-cost-stack client sites is a further generalisation.
+Pre-existing test-fixture type errors (`menu-overrides.test.ts`,
+`menu-sort.test.ts`) are tracked separately.

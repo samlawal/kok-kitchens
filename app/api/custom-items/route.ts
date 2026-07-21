@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb, ensureSchema } from "@/lib/db";
+import { getCustomItems } from "@/lib/custom-items";
 import { verifyAdminSecret } from "@/lib/admin-auth";
 import { put } from "@vercel/blob";
 import { bustBlobCache } from "@/lib/blob-cache";
@@ -12,23 +13,12 @@ function slugify(name: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-// GET — public, returns all custom items for the menu
+// GET — public, returns all custom items for the menu. Reads through the single
+// data-access layer (lib/custom-items) so price is coerced from Neon's string
+// NUMERIC in exactly one place (D-006).
 export async function GET() {
   try {
-    const sql = getDb();
-    const rows = await ensureSchema(
-      () => sql`
-        SELECT id, slug, name, description, price, category, image, spicy, servings
-        FROM custom_menu_items
-        ORDER BY created_at DESC
-      `
-    );
-    // Neon returns NUMERIC columns as strings — coerce price to a number at this
-    // boundary so consumers can safely do arithmetic / .toFixed(). The public
-    // menu paths already do this (menu-overrides-server, menu/[slug]); the admin
-    // Menu tab did not, so a string price crashed formatPrice() mid-render and
-    // took the whole /admin subtree down (bug-2026-07-21-Jc0pDnIObaI).
-    const items = rows.map((r) => ({ ...r, price: Number(r.price) }));
+    const items = await getCustomItems();
     return NextResponse.json(
       { success: true, items },
       { headers: { "Cache-Control": "no-store" } }
