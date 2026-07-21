@@ -64,6 +64,29 @@ describe("GET /api/custom-items", () => {
     expect(data.items).toEqual(rows);
   });
 
+  it("coerces string prices from Neon NUMERIC to numbers (bug-2026-07-21)", async () => {
+    // Neon returns NUMERIC columns as strings; the admin Menu tab then called
+    // formatPrice(price).toFixed() and crashed the whole /admin subtree. GET
+    // must hand back a numeric price.
+    mockSql.mockResolvedValueOnce([
+      {
+        id: "custom-x",
+        slug: "x",
+        name: "X",
+        description: "",
+        price: "12.00",
+        category: "snacks",
+        image: "",
+        spicy: false,
+        servings: null,
+      },
+    ]);
+    const res = await GET();
+    const data = await res.json();
+    expect(data.items[0].price).toBe(12);
+    expect(typeof data.items[0].price).toBe("number");
+  });
+
   it("returns empty array on DB failure (graceful degradation)", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     mockSql.mockRejectedValueOnce(new Error("db down"));

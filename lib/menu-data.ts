@@ -692,5 +692,9 @@ export function getFeaturedItems(): MenuItem[] {
 }
 
 export function formatPrice(amount: number): string {
-  return `£${amount.toFixed(2)}`;
+  // Defensive: coerce first so a stray string price (e.g. Neon NUMERIC returned
+  // as a string) can never throw ".toFixed is not a function" mid-render and
+  // crash the page. The data-boundary coercion is the primary fix; this is a
+  // backstop for the shared render util.
+  return `£${Number(amount).toFixed(2)}`;
 }

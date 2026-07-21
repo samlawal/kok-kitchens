@@ -81,3 +81,25 @@ price/name overrides again (no data was lost — the tables were fine; only the 
 collapsed). First public menu load heals `custom_menu_items` via ensureSchema.
 NOTE: deploying this also carries the still-undeployed D-003 custom-items fix
 (same branch), so one deploy closes both KOK bugs.
+
+## D-005 — Coerce Neon NUMERIC price at the custom-items boundary (2026-07-21)
+**Context:** `bug-2026-07-21-Jc0pDnIObaI` (Taiwo, P2) — clicking the admin Menu
+tab crashed to the "Something went wrong" error boundary AND force-logged-out the
+admin. Root cause: Neon returns the `price` NUMERIC column as a **string**; the
+admin `GET /api/custom-items` returned rows raw (unlike the public menu paths,
+which already do `Number(row.price)`), so `formatPrice(price).toFixed()` threw
+mid-render. The admin logout is a side effect: admin auth is client-only React
+state, so any render crash remounts `/admin` and resets `authenticated` → login
+screen. Only surfaced now because the ensureSchema self-heal (68e101f) let items
+finally save, so `custom_menu_items` had rows for the first time.
+**Decision:** Coerce `price` to a number at the GET boundary
+(`rows.map(r => ({ ...r, price: Number(r.price) }))`), matching the established
+pattern in `menu-overrides-server.ts` and `menu/[slug]/page.tsx`. Also harden
+`formatPrice` with `Number(amount).toFixed(2)` as a render-util backstop.
+**Why:** Keep the string→number coercion consistent at every DB boundary; the
+shared price formatter must never be able to crash a page on a stray string.
+**Consequences:** Not fixed here (separate follow-ups): (1) admin auth is
+client-only, so ANY `/admin` render error force-logs-out the admin — an
+admin-scoped error boundary that preserves the login would harden it;
+(2) pre-existing `lib/menu-overrides.test.ts` fixtures miss the `customItems`
+field (type-only, runtime-green).

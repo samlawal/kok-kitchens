@@ -23,8 +23,14 @@ export async function GET() {
         ORDER BY created_at DESC
       `
     );
+    // Neon returns NUMERIC columns as strings — coerce price to a number at this
+    // boundary so consumers can safely do arithmetic / .toFixed(). The public
+    // menu paths already do this (menu-overrides-server, menu/[slug]); the admin
+    // Menu tab did not, so a string price crashed formatPrice() mid-render and
+    // took the whole /admin subtree down (bug-2026-07-21-Jc0pDnIObaI).
+    const items = rows.map((r) => ({ ...r, price: Number(r.price) }));
     return NextResponse.json(
-      { success: true, items: rows },
+      { success: true, items },
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {
